@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund a Business | CDI Smart Hub</title>
+    <meta name="description" content="Support local businesses in Dayton and earn merchant coins. 100% of your donation becomes store credit.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            min-height: 100vh;
+        }
+        
+        .card-glass {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .progress-bar {
+            transition: width 1s ease-out;
+        }
+    </style>
+</head>
+<body class="text-slate-200">
+    <!-- Header -->
+    <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">CDI Smart Hub</h1>
+                        <p class="text-xs text-slate-400">Turnkey Business Engine</p>
+                    </div>
+                </div>
+                <a href="https://wallet.constructivedesignsinc.org" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">
+                    Open Wallet
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    Fund a Business.<br/>
+                    <span class="gradient-text">Get Store Credit.</span>
+                </h2>
+                <p class="text-xl text-slate-300 mb-6">
+                    Support local entrepreneurs and receive 100% of your donation back in merchant coins.
+                </p>
+                <div class="flex items-center justify-center space-x-8 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-slate-300">100% Store Credit</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-slate-300">Transparent Funding</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-slate-300">Support Local</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Projects will be loaded here -->
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+                <p class="text-slate-400 mt-4">Loading projects...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-12">
+                <svg class="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <h3 class="text-xl font-bold text-white mb-2">No Active Campaigns</h3>
+                <p class="text-slate-400">Check back soon for new business opportunities!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 bg-slate-800/30">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-bold text-white text-center mb-12">How It Works</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">1</span>
+                    </div>
+                    <h4 class="font-bold text-white mb-2">Choose a Project</h4>
+                    <p class="text-sm text-slate-400">Browse businesses being incubated in your community</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">2</span>
+                    </div>
+                    <h4 class="font-bold text-white mb-2">Donate via Cash App or PayPal</h4>
+                    <p class="text-sm text-slate-400">Use your preferred payment method</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">3</span>
+                    </div>
+                    <h4 class="font-bold text-white mb-2">Receive Merchant Coins</h4>
+                    <p class="text-sm text-slate-400">Get 100% value back as store credit</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">4</span>
+                    </div>
+                    <h4 class="font-bold text-white mb-2">Redeem When They Launch</h4>
+                    <p class="text-sm text-slate-400">Use your coins when the business opens</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-400">© 2025 Constructive Designs Inc. - Building Community, One Business at a Time</p>
+            <p class="text-slate-500 text-sm mt-2">🔐 All transactions are secure and transparent</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Mock data for demo (replace with real Supabase query)
+        const mockProjects = [
+            {
+                id: '1',
+                name: 'Picnic Perfect',
+                tagline: 'Luxury Pop-Up Events',
+                fundingGoal: 2000,
+                fundsRaised: 1200,
+                cashtag: '$PicnicPerfectDayton',
+                paypalUrl: 'https://paypal.me/picnicdayton',
+                imageUrl: '🧺'
+            },
+            {
+                id: '2',
+                name: 'Dayton Micro-Farms',
+                tagline: 'Superfoods in the City',
+                fundingGoal: 2200,
+                fundsRaised: 450,
+                cashtag: '$DaytonMicroGreens',
+                paypalUrl: 'https://paypal.me/daytonmicro',
+                imageUrl: '🌱'
+            }
+        ];
+
+        function renderProjects(projects) {
+            const grid = document.getElementById('projects-grid');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+
+            loading.classList.add('hidden');
+
+            if (projects.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.innerHTML = projects.map(project => {
+                const progress = Math.min((project.fundsRaised / project.fundingGoal) * 100, 100);
+                
+                return `
+                    <div class="card-glass rounded-xl overflow-hidden">
+                        <div class="h-32 bg-gradient-to-r from-indigo-900 to-purple-900 relative flex items-center justify-center">
+                            <span class="text-6xl">${project.imageUrl}</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">${project.name}</h3>
+                                <p class="text-sm text-indigo-200">${project.tagline}</p>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-400">Raised</span>
+                                    <span class="text-white font-medium">$${project.fundsRaised.toLocaleString()} / $${project.fundingGoal.toLocaleString()}</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="progress-bar h-full bg-gradient-to-r from-green-400 to-emerald-500" style="width: ${progress}%"></div>
+                                </div>
+                                <p class="text-xs text-slate-500 text-right">${progress.toFixed(0)}% Funded</p>
+                            </div>
+
+                            <div class="bg-indigo-900/20 border border-indigo-500/20 rounded-lg p-3 flex items-center space-x-3">
+                                <div class="p-2 bg-indigo-500/20 rounded-full">
+                                    <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-white font-medium">Get 100% Value Back</p>
+                                    <p class="text-xs text-slate-400">Donate $50 → Get 50 Store Coins</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                ${project.cashtag ? `
+                                    <a href="https://cash.app/${project.cashtag}" target="_blank" rel="noopener noreferrer"
+                                       class="flex items-center justify-center space-x-2 py-2.5 bg-green-600/10 hover:bg-green-600/20 text-green-400 border border-green-500/30 rounded-lg transition-colors font-medium">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span>Cash App</span>
+                                    </a>
+                                ` : ''}
+                                ${project.paypalUrl ? `
+                                    <a href="${project.paypalUrl}" target="_blank" rel="noopener noreferrer"
+                                       class="flex items-center justify-center space-x-2 py-2.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg transition-colors font-medium">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span>PayPal</span>
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load projects (replace with real Supabase query)
+        setTimeout(() => {
+            renderProjects(mockProjects);
+        }, 500);
+    </script>
+</body>
+</html>
