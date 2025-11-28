@@ -1,0 +1,5 @@
+{
+  "name": "CDI Image Editor",
+  "description": "A multi-modal AI image editing suite for Home Renovation visualization, Marketplace product staging, and general creative edits using Gemini 2.5 Flash Image.",
+  "requestFramePermissions": []
+}

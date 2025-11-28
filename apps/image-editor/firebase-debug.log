@@ -1,0 +1,34 @@
+[debug] [2025-11-25T14:43:54.996Z] ----------------------------------------------------------------------
+[debug] [2025-11-25T14:43:55.000Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\heath\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2025-11-25T14:43:55.001Z] CLI Version:   14.26.0
+[debug] [2025-11-25T14:43:55.001Z] Platform:      win32
+[debug] [2025-11-25T14:43:55.001Z] Node Version:  v22.19.0
+[debug] [2025-11-25T14:43:55.002Z] Time:          Tue Nov 25 2025 09:43:55 GMT-0500 (Eastern Standard Time)
+[debug] [2025-11-25T14:43:55.002Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-11-25T14:43:55.617Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-25T14:43:55.618Z] > authorizing via signed-in user (heatherf@constructivedesignsinc.org)
+[debug] [2025-11-25T14:43:55.619Z] [iam] checking project constructive-designs-inc for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-11-25T14:43:55.620Z] Checked if tokens are valid: true, expires at: 1764085321499
+[debug] [2025-11-25T14:43:55.621Z] Checked if tokens are valid: true, expires at: 1764085321499
+[debug] [2025-11-25T14:43:55.623Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/constructive-designs-inc:testIamPermissions [none]
+[debug] [2025-11-25T14:43:55.624Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/constructive-designs-inc:testIamPermissions x-goog-quota-user=projects/constructive-designs-inc
+[debug] [2025-11-25T14:43:55.624Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/constructive-designs-inc:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-11-25T14:43:56.200Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/constructive-designs-inc:testIamPermissions 200
+[debug] [2025-11-25T14:43:56.200Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/constructive-designs-inc:testIamPermissions {}
+[debug] [2025-11-25T14:43:56.201Z] [iam] error while checking permissions, command may fail: Authorization failed. This account is missing the following required permissions on project constructive-designs-inc:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2025-11-25T14:43:56.202Z] Checked if tokens are valid: true, expires at: 1764085321499
+[debug] [2025-11-25T14:43:56.202Z] Checked if tokens are valid: true, expires at: 1764085321499
+[debug] [2025-11-25T14:43:56.202Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/constructive-designs-inc [none]
+[debug] [2025-11-25T14:43:56.856Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/constructive-designs-inc 403
+[debug] [2025-11-25T14:43:56.856Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/constructive-designs-inc {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2025-11-25T14:43:56.858Z] Request to https://firebase.googleapis.com/v1beta1/projects/constructive-designs-inc had HTTP Error: 403, The caller does not have permission
+[debug] [2025-11-25T14:43:57.168Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/constructive-designs-inc had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\heath\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\heath\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:322:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to get Firebase project constructive-designs-inc. Please make sure the project exists and your account has permission to access it.
