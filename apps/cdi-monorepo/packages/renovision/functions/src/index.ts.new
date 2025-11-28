@@ -1,0 +1,178 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
+import * as admin from 'firebase-admin';
+import { https } from 'firebase-functions';
+import { CorsOptions } from 'cors';
+import { GoogleGenAI } from '@google/genai';
+const cors = require('cors');
+
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+
+// Initialize CORS middleware with specific allowed origins
+const corsOptions: CorsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://home-reno-vision-pro.web.app', 'https://home-reno-vision-pro.firebaseapp.com'],
+  methods: ['POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+};
+
+const corsHandler = cors(corsOptions);
+
+// --- LIVE DATA FETCHING FUNCTION ---
+async function getRealPrices(items: {name: string, quantity: number}[], zipCode: string): Promise<any> {
+  console.log(`Fetching prices for zip code: ${zipCode}`, items);
+  
+  const materials = [];
+  let totalMaterialCost = 0;
+
+  // Use mock data as a fallback
+  for (const item of items) {
+    const mockPrices: {[key: string]: number} = {
+        'modern armchair': 479.99,
+        'floor lamp': 125.50,
+        'potted plant': 85.00,
+        'paint': 55.00, // per gallon
+    };
+    
+    const unitCost = mockPrices[item.name.toLowerCase()] || 150.00;
+    const totalCost = unitCost * item.quantity;
+    
+    materials.push({
+      item: item.name,
+      quantity: item.quantity,
+      unitCost: unitCost,
+      totalCost: totalCost,
+    });
+    totalMaterialCost += totalCost;
+  }
+
+  // Mock labor estimate
+  const labor = [{
+      item: "General Labor & Installation",
+      quantity: 8, // hours
+      unitCost: 70, // per hour, could be adjusted by zip code
+      totalCost: 8 * 70
+  }];
+  const totalLaborCost = labor.reduce((sum, item) => sum + item.totalCost, 0);
+
+  return {
+      materials,
+      labor,
+      totalMaterialCost,
+      totalLaborCost,
+      totalProjectCost: totalMaterialCost + totalLaborCost,
+      zipCode,
+      notes: "This is a preliminary estimate based on typical market rates. Prices may vary based on local suppliers and contractor rates. Always get a binding quote from a professional.",
+  };
+}
+
+export const getCostEstimate = https.onRequest((request, response) => {
+  corsHandler(request, response, async () => {
+    if (request.method !== "POST") {
+      response.status(405).send("Method Not Allowed");
+      return;
+    }
+
+    try {
+      const {items, zipCode} = request.body;
+
+      if (!Array.isArray(items) || !zipCode || typeof zipCode !== 'string') {
+        response.status(400).send("Invalid request body. Expected 'items' (array) and 'zipCode' (string).");
+        return;
+      }
+
+      const estimate = await getRealPrices(items, zipCode);
+      
+      response.set('Access-Control-Allow-Origin', request.headers.origin || '*');
+      response.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      response.set('Access-Control-Allow-Headers', 'Content-Type');
+      response.set('Access-Control-Allow-Credentials', 'true');
+      
+      response.status(200).json(estimate);
+    } catch (error) {
+      console.error("Error in getCostEstimate function:", error);
+      response.status(500).send("Internal Server Error");
+    }
+  });
+});
+
+export const analyzeVideoQuestion = https.onRequest((request, response) => {
+  corsHandler(request, response, async () => {
+    if (request.method !== "POST") {
+      response.status(405).send("Method Not Allowed");
+      return;
+    }
+
+    try {
+      const { videoUrl, question, transcription } = request.body;
+
+      if (!videoUrl || !question) {
+        response.status(400).send("Invalid request body. Expected 'videoUrl' and 'question'.");
+        return;
+      }
+
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("Missing Gemini API key");
+      }
+      const ai = new GoogleGenAI({ apiKey });
+
+      const context = `
+Video Description: ${transcription || 'No transcription available'}
+Customer Question: ${question}
+
+Please analyze this renovation project request and provide:
+1. A detailed analysis of what's needed
+2. Suggested products and materials with specific recommendations
+3. Estimated cost range based on current market prices
+4. Estimated timeline for completion
+5. Additional notes or considerations for the project
+
+Format the response in a clear, structured way that can be parsed into sections.`;
+
+      const result = await ai.models.generateContent({
+        model: 'gemini-pro',
+        contents: [{ role: 'user', parts: [{ text: context }] }],
+      });
+
+      const aiResponse = result.text;
+
+      const sections = aiResponse.split('\n\n');
+      const structuredResponse = {
+        analysis: sections[0] || '',
+        suggestedProducts: (sections[1] || '').split('\n').filter(Boolean),
+        estimatedCost: parseFloat(sections[2]?.match(/\$?([\d,]+)/)?.[1]?.replace(',', '') || '0'),
+        timelineEstimate: parseInt(sections[3]?.match(/(\d+)/)?.[1] || '0'),
+        additionalNotes: sections[4] || ''
+      };
+
+      const videoQuestionRef = admin.firestore().collection('videoQuestions').doc();
+      await videoQuestionRef.set({
+        id: videoQuestionRef.id,
+        videoUrl,
+        question,
+        transcription: transcription || '',
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'completed',
+        aiResponse: structuredResponse
+      });
+
+      response.set('Access-Control-Allow-Origin', request.headers.origin || '*');
+      response.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      response.set('Access-Control-Allow-Headers', 'Content-Type');
+      response.set('Access-Control-Allow-Credentials', 'true');
+
+      response.status(200).json({
+        id: videoQuestionRef.id,
+        aiResponse: structuredResponse
+      });
+    } catch (error) {
+      console.error("Error in analyzeVideoQuestion function:", error);
+      response.status(500).send("Internal Server Error");
+    }
+  });
+});

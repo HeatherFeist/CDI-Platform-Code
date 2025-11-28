@@ -1,0 +1,356 @@
+{
+  "businessName": "Home Canvas Pro",
+  "version": "1.0.0",
+  "services": [
+    "Interior Design",
+    "Remodeling",
+    "Home Improvement",
+    "Project Management",
+    "3D Visualization",
+    "AI-Assisted Design"
+  ],
+  "features": {
+    "customer_management": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "label": "Full Name"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "label": "Email Address"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "required": true,
+          "label": "Phone Number"
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "required": true,
+          "label": "Address"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "label": "Notes"
+        }
+      ]
+    },
+    "project_management": {
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "label": "Project Title"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": true,
+          "label": "Description"
+        },
+        {
+          "name": "customer",
+          "type": "reference",
+          "required": true,
+          "label": "Customer",
+          "ref": "customers"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "label": "Status",
+          "options": [
+            "Pending",
+            "In Progress",
+            "On Hold",
+            "Completed",
+            "Cancelled"
+          ]
+        },
+        {
+          "name": "startDate",
+          "type": "date",
+          "required": true,
+          "label": "Start Date"
+        },
+        {
+          "name": "endDate",
+          "type": "date",
+          "required": false,
+          "label": "End Date"
+        },
+        {
+          "name": "budget",
+          "type": "number",
+          "required": true,
+          "label": "Budget"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "label": "Notes"
+        }
+      ]
+    },
+    "estimate_management": {
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "label": "Estimate Title"
+        },
+        {
+          "name": "customer",
+          "type": "reference",
+          "required": true,
+          "label": "Customer",
+          "ref": "customers"
+        },
+        {
+          "name": "project",
+          "type": "reference",
+          "required": false,
+          "label": "Project",
+          "ref": "projects"
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "required": true,
+          "label": "Line Items",
+          "itemFields": {
+            "description": "string",
+            "quantity": "number",
+            "unitPrice": "number",
+            "totalPrice": "number"
+          }
+        },
+        {
+          "name": "labor",
+          "type": "array",
+          "required": true,
+          "label": "Labor Items",
+          "itemFields": {
+            "description": "string",
+            "hours": "number",
+            "ratePerHour": "number",
+            "totalPrice": "number"
+          }
+        },
+        {
+          "name": "subtotal",
+          "type": "number",
+          "required": true,
+          "label": "Subtotal"
+        },
+        {
+          "name": "taxRate",
+          "type": "number",
+          "required": true,
+          "label": "Tax Rate"
+        },
+        {
+          "name": "taxAmount",
+          "type": "number",
+          "required": true,
+          "label": "Tax Amount"
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "required": true,
+          "label": "Total"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "label": "Status",
+          "options": [
+            "Draft",
+            "Sent",
+            "Approved",
+            "Declined",
+            "Expired"
+          ]
+        },
+        {
+          "name": "validUntil",
+          "type": "date",
+          "required": true,
+          "label": "Valid Until"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "label": "Notes"
+        }
+      ]
+    },
+    "invoice_management": {
+      "fields": [
+        {
+          "name": "invoiceNumber",
+          "type": "string",
+          "required": true,
+          "label": "Invoice Number"
+        },
+        {
+          "name": "customer",
+          "type": "reference",
+          "required": true,
+          "label": "Customer",
+          "ref": "customers"
+        },
+        {
+          "name": "project",
+          "type": "reference",
+          "required": false,
+          "label": "Project",
+          "ref": "projects"
+        },
+        {
+          "name": "estimate",
+          "type": "reference",
+          "required": false,
+          "label": "Estimate",
+          "ref": "estimates"
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "required": true,
+          "label": "Line Items",
+          "itemFields": {
+            "description": "string",
+            "quantity": "number",
+            "unitPrice": "number",
+            "totalPrice": "number"
+          }
+        },
+        {
+          "name": "subtotal",
+          "type": "number",
+          "required": true,
+          "label": "Subtotal"
+        },
+        {
+          "name": "taxRate",
+          "type": "number",
+          "required": true,
+          "label": "Tax Rate"
+        },
+        {
+          "name": "taxAmount",
+          "type": "number",
+          "required": true,
+          "label": "Tax Amount"
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "required": true,
+          "label": "Total"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "label": "Status",
+          "options": [
+            "Draft",
+            "Sent",
+            "Paid",
+            "Overdue",
+            "Cancelled"
+          ]
+        },
+        {
+          "name": "issueDate",
+          "type": "date",
+          "required": true,
+          "label": "Issue Date"
+        },
+        {
+          "name": "dueDate",
+          "type": "date",
+          "required": true,
+          "label": "Due Date"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "label": "Notes"
+        }
+      ]
+    },
+    "team_management": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "label": "Full Name"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "label": "Email Address"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "required": true,
+          "label": "Phone Number"
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "required": true,
+          "label": "Role",
+          "options": [
+            "Admin",
+            "Project Manager",
+            "Designer",
+            "Contractor",
+            "Support Staff"
+          ]
+        },
+        {
+          "name": "skills",
+          "type": "array",
+          "required": false,
+          "label": "Skills",
+          "itemType": "string"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "label": "Status",
+          "options": [
+            "Active",
+            "On Leave",
+            "Inactive"
+          ]
+        }
+      ]
+    }
+  }
+}

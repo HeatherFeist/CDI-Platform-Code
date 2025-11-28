@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-purple: #9333ea;
+    --gradient-blue: #3b82f6;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #f3e7ff 0%, #e0f2fe 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  }
+  
+  .bg-gradient-primary-hover {
+    background: linear-gradient(135deg, #7e22ce 0%, #2563eb 100%);
+  }
+  
+  .text-gradient-primary {
+    background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .border-gradient-primary {
+    border-image: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%) 1;
+  }
+}

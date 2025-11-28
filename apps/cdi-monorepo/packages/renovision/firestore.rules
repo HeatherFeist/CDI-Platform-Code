@@ -1,0 +1,93 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Function to check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Function to check if the user is an admin
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/team/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Function to check if the user is on the team
+    function isTeamMember() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/team/$(request.auth.uid));
+    }
+    
+    // Function to check if the user is assigned to a project
+    function isAssignedToProject(projectId) {
+      return isTeamMember() && 
+        projectId in get(/databases/$(database)/documents/team/$(request.auth.uid)).data.activeProjectIds;
+    }
+
+    // Customer rules
+    match /customers/{customerId} {
+      allow read: if isTeamMember();
+      allow write: if isAuthenticated() && (isAdmin() || isTeamMember());
+    }
+
+    // Project rules
+    match /projects/{projectId} {
+      allow read: if isTeamMember();
+      allow write: if isAuthenticated() && (isAdmin() || isAssignedToProject(projectId));
+      
+      // Nested collections within projects
+      match /tasks/{taskId} {
+        allow read: if isTeamMember();
+        allow write: if isAuthenticated() && (isAdmin() || isAssignedToProject(projectId));
+      }
+      
+      match /notes/{noteId} {
+        allow read: if isTeamMember();
+        allow write: if isAuthenticated() && (isAdmin() || isAssignedToProject(projectId));
+      }
+      
+      match /photos/{photoId} {
+        allow read: if isTeamMember();
+        allow write: if isAuthenticated() && (isAdmin() || isAssignedToProject(projectId));
+      }
+    }
+
+    // Estimate rules
+    match /estimates/{estimateId} {
+      allow read: if isTeamMember();
+      allow write: if isAuthenticated() && (isAdmin() || isTeamMember());
+    }
+
+    // Invoice rules
+    match /invoices/{invoiceId} {
+      allow read: if isTeamMember();
+      allow write: if isAuthenticated() && (isAdmin() || isTeamMember());
+    }
+
+    // Team member rules
+    match /team/{memberId} {
+      allow read: if isTeamMember();
+      allow write: if isAdmin();
+    }
+
+    // Schedule rules
+    match /schedules/{scheduleId} {
+      allow read: if isTeamMember();
+      allow write: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.memberId);
+    }
+
+    // Design rules (existing)
+    match /designs/{designId} {
+      allow read: if true;
+      allow write: if request.auth.uid != null && request.resource.data.userId == request.auth.uid;
+      allow delete: if request.auth.uid != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Analytics rules
+    match /analytics/{documentId} {
+      allow read: if isTeamMember();
+      allow write: if isAdmin();
+    }
+  }
+}

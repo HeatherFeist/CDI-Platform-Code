@@ -1,0 +1,16 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#3B82F6"/>
+  
+  <!-- White Circle -->
+  <circle cx="256" cy="256" r="200" fill="white" opacity="0.95"/>
+  
+  <!-- Blue Inner Circle -->
+  <circle cx="256" cy="256" r="160" fill="#3B82F6"/>
+  
+  <!-- CD Letters -->
+  <text x="256" y="280" font-family="Arial, sans-serif" font-size="140" font-weight="bold" fill="white" text-anchor="middle">CD</text>
+  
+  <!-- Subtitle -->
+  <text x="256" y="390" font-family="Arial, sans-serif" font-size="32" fill="white" text-anchor="middle" opacity="0.9">MARKETPLACE</text>
+</svg>

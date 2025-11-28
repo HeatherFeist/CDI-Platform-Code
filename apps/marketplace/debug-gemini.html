@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .test-result { white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Gemini API Debug Tool</h1>
+    <p>This tool will help diagnose exactly why your Gemini API key isn't working.</p>
+    
+    <div>
+        <label for="apiKey">Enter your Gemini API Key:</label>
+        <input type="text" id="apiKey" placeholder="AIza..." />
+        <button onclick="runDiagnostics()" id="testBtn">Run Full Diagnostics</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        window.runDiagnostics = async function() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const results = document.getElementById('results');
+            const testBtn = document.getElementById('testBtn');
+            
+            if (!apiKey) {
+                results.innerHTML = '<div class="error">Please enter an API key</div>';
+                return;
+            }
+            
+            testBtn.disabled = true;
+            testBtn.textContent = 'Testing...';
+            results.innerHTML = '<div class="info">Running diagnostics...</div>';
+            
+            try {
+                // Test 1: Basic key format
+                const test1 = testKeyFormat(apiKey);
+                results.innerHTML += formatResult('Key Format Check', test1.success, test1.message);
+                
+                // Test 2: Try importing the library
+                let GoogleGenerativeAI;
+                try {
+                    const module = await import('https://esm.run/@google/generative-ai');
+                    GoogleGenerativeAI = module.GoogleGenerativeAI;
+                    results.innerHTML += formatResult('Library Import', true, 'Successfully imported @google/generative-ai');
+                } catch (error) {
+                    results.innerHTML += formatResult('Library Import', false, `Failed to import: ${error.message}`);
+                    return;
+                }
+                
+                // Test 3: Initialize client
+                let genAI;
+                try {
+                    genAI = new GoogleGenerativeAI(apiKey);
+                    results.innerHTML += formatResult('Client Initialization', true, 'GoogleGenerativeAI client created successfully');
+                } catch (error) {
+                    results.innerHTML += formatResult('Client Initialization', false, `Failed to create client: ${error.message}`);
+                    return;
+                }
+                
+                // Test 4: Try different models
+                const modelsToTest = [
+                    'gemini-pro',
+                    'gemini-1.5-pro',
+                    'gemini-1.5-flash',
+                    'gemini-1.5-pro-latest',
+                    'gemini-1.5-flash-latest'
+                ];
+                
+                for (const modelName of modelsToTest) {
+                    try {
+                        const model = genAI.getGenerativeModel({ model: modelName });
+                        const result = await model.generateContent('Say "test" if you can read this.');
+                        const response = await result.response;
+                        const text = response.text();
+                        
+                        results.innerHTML += formatResult(
+                            `Model: ${modelName}`, 
+                            true, 
+                            `✅ SUCCESS! Response: "${text.trim()}"`
+                        );
+                        
+                        // If we got here, the key works!
+                        results.innerHTML += '<div class="success"><h3>🎉 SOLUTION FOUND!</h3>Your API key works with model: <strong>' + modelName + '</strong><br>The issue might be that your app is using a different model name.</div>';
+                        break;
+                        
+                    } catch (error) {
+                        let errorMsg = error.message;
+                        let category = 'Unknown error';
+                        
+                        if (error.message?.includes('API_KEY_INVALID')) {
+                            category = '🔑 Invalid API Key';
+                            errorMsg = 'API key format is invalid or key doesn\'t exist';
+                        } else if (error.message?.includes('models/' + modelName)) {
+                            category = '🚫 Model Not Available';
+                            errorMsg = `Model "${modelName}" not available with this API key`;
+                        } else if (error.message?.includes('403') || error.message?.includes('PERMISSION_DENIED')) {
+                            category = '🔒 Permission Denied';
+                            errorMsg = 'API key lacks permission for Gemini models';
+                        } else if (error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
+                            category = '📊 Quota Exceeded';
+                            errorMsg = 'Rate limit or quota exceeded';
+                        } else if (error.message?.includes('LOCATION') || error.message?.includes('region')) {
+                            category = '🌍 Geographic Restriction';
+                            errorMsg = 'Gemini not available in your region';
+                        }
+                        
+                        results.innerHTML += formatResult(
+                            `Model: ${modelName}`, 
+                            false, 
+                            `${category}: ${errorMsg}`
+                        );
+                    }
+                }
+                
+                // Test 5: Check browser environment
+                results.innerHTML += formatResult('Browser Environment', true, 
+                    `User Agent: ${navigator.userAgent}\n` +
+                    `Location: ${window.location.origin}\n` +
+                    `HTTPS: ${window.location.protocol === 'https:'}`
+                );
+                
+                // Test 6: Network check
+                try {
+                    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey);
+                    const data = await response.json();
+                    
+                    if (response.ok && data.models) {
+                        results.innerHTML += formatResult('Available Models', true, 
+                            `Found ${data.models.length} available models:\n` +
+                            data.models.map(m => `- ${m.name}`).join('\n')
+                        );
+                    } else {
+                        results.innerHTML += formatResult('Available Models', false, 
+                            `HTTP ${response.status}: ${JSON.stringify(data, null, 2)}`
+                        );
+                    }
+                } catch (error) {
+                    results.innerHTML += formatResult('Available Models', false, `Network error: ${error.message}`);
+                }
+                
+            } catch (error) {
+                results.innerHTML += formatResult('Diagnostics', false, `Unexpected error: ${error.message}`);
+            }
+            
+            testBtn.disabled = false;
+            testBtn.textContent = 'Run Full Diagnostics';
+        };
+        
+        function testKeyFormat(key) {
+            if (!key) {
+                return { success: false, message: 'API key is empty' };
+            }
+            
+            if (key.length < 20) {
+                return { success: false, message: `API key too short (${key.length} characters)` };
+            }
+            
+            if (!key.startsWith('AIza')) {
+                return { success: false, message: `API key should start with "AIza" but starts with "${key.substring(0, 4)}"` };
+            }
+            
+            if (key.includes(' ')) {
+                return { success: false, message: 'API key contains spaces' };
+            }
+            
+            return { success: true, message: `Key format looks correct (${key.length} characters, starts with AIza)` };
+        }
+        
+        function formatResult(title, success, message) {
+            const className = success ? 'success' : 'error';
+            const icon = success ? '✅' : '❌';
+            return `<div class="result ${className}">
+                <strong>${icon} ${title}</strong>
+                <div class="test-result">${message}</div>
+            </div>`;
+        }
+    </script>
+</body>
+</html>

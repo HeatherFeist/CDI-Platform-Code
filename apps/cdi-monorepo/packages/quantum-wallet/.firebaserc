@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "cdi-marketplace-platform"
+  },
+  "targets": {
+    "cdi-marketplace-platform": {
+      "hosting": {
+        "wallet-cd": [
+          "quantum-wallet-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

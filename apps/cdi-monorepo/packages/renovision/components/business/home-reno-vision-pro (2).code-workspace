@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../constructive-designs-marketplace"
+		},
+		{
+			"path": "../../../CDI Gemini Image Editor"
+		}
+	],
+	"settings": {
+		"powershell.cwd": "home-reno-vision-pro (2)"
+	}
+}

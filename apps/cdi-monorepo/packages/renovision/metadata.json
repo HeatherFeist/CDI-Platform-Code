@@ -1,0 +1,8 @@
+{
+  "name": "Home Reno Pro",
+  "description": "Simply upload a photo of your scene, then choose a product or paint color, or describe changes you would like to see in the chat and \"Home Reno Pro\" will create a photorealistic composite for you to visualize changes.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}

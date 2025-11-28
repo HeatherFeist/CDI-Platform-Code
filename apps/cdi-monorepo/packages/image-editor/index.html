@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constructive Designs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    .drop-orb {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        pointer-events: none;
+        z-index: 10;
+        backdrop-filter: blur(8px);
+        box-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.7),
+            0 0 25px rgba(255, 255, 255, 0.5),
+            0 0 50px rgba(137, 196, 255, 0.6);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        opacity: 0;
+    }
+    .is-dragging-over .drop-orb {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    .paint-swatch {
+        transition: all 0.2s ease-in-out;
+    }
+    .paint-swatch:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 3px white, 0 0 0 5px var(--tw-shadow-color);
+    }
+    .paint-swatch.selected {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 3px white, 0 0 0 5px var(--tw-shadow-color);
+    }
+    .catalog-tab {
+        transition: all 0.2s ease-in-out;
+    }
+    .catalog-tab.active {
+        background-color: white;
+        color: #18181b; /* zinc-900 */
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    }
+    .catalog-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    .color-picker-image {
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' style='transform: rotate(90deg);'><path d='M12.043 2.022a1.045 1.045 0 0 0-1.043.07L1.442 7.73a1.045 1.045 0 0 0-.442.91v7.696a1.045 1.045 0 0 0 .546.94l9.213 4.607a1.044 1.044 0 0 0 1.01 0l9.213-4.607a1.045 1.045 0 0 0 .546-.94V8.64a1.045 1.045 0 0 0-.442-.91L12.043 2.022ZM2.088 8.352l8.955 4.975v8.13L2.088 16.5V8.352Zm10.005 13.105v-8.13l8.955-4.975v8.15l-8.955 4.955Zm8.955-12.835-8.413-4.673a.522.522 0 0 0-.503 0L3.67 8.622l8.373 4.651a.523.523 0 0 0 .504 0l8.373-4.65Z'/></svg>") 12 12, crosshair;
+    }
+    .color-picker-loupe {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        pointer-events: none;
+        display: none;
+        background-repeat: no-repeat;
+        z-index: 100;
+    }
+    .color-picker-loupe.visible {
+        display: block;
+    }
+    .color-picker-loupe::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        border: 2px solid white;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        border-radius: 50%;
+    }
+    .touch-none {
+      touch-action: none;
+    }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "vite": "https://aistudiocdn.com/vite@^7.2.2",
+    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.80.0",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.0",
+    "three/": "https://aistudiocdn.com/three@^0.181.0/",
+    "three": "https://aistudiocdn.com/three@^0.181.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-white text-zinc-800">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

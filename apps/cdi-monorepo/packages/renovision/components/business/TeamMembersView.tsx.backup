@@ -1,0 +1,932 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../supabase';
+import { useAuth } from '../../contexts/SupabaseAuthContext';
+
+interface TeamMember {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string | null;
+    role: string;
+    specialties: string[];
+    hourly_rate: number | null;
+    is_active: boolean;
+    invite_status: 'pending' | 'accepted' | 'declined';
+    invited_at: string;
+    accepted_at: string | null;
+    notes: string | null;
+}
+
+export default function TeamMembersView() {
+    const { userProfile } = useAuth();
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+    const [filter, setFilter] = useState<'all' | 'employee' | 'subcontractor' | 'helper'>('all');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted'>('all');
+
+    // Form state
+    const [formData, setFormData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone: '',
+        role: 'helper',
+        specialties: [] as string[],
+        hourly_rate: '',
+        notes: ''
+    });
+
+    const [newSpecialty, setNewSpecialty] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    useEffect(() => {
+        fetchTeamMembers();
+    }, [userProfile]);
+
+    const fetchTeamMembers = async () => {
+        if (!userProfile?.business_id) return;
+
+        try {
+            const { data, error } = await supabase
+                .from('team_members')
+                .select('*')
+                .eq('business_id', userProfile.business_id)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setTeamMembers(data || []);
+        } catch (error) {
+            console.error('Error fetching team members:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditMember = (member: TeamMember) => {
+        setSelectedMember(member);
+        setFormData({
+            first_name: member.first_name,
+            last_name: member.last_name,
+            email: member.email,
+            phone: member.phone || '',
+            role: member.role,
+            specialties: member.specialties,
+            hourly_rate: member.hourly_rate?.toString() || '',
+            notes: member.notes || ''
+        });
+        setIsEditing(true);
+        setShowEditModal(true);
+    };
+
+    const handleUpdateMember = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedMember || !userProfile?.business_id) {
+            alert('Error: Missing member or business information.');
+            return;
+        }
+
+        try {
+            const updateData: any = {
+                first_name: formData.first_name,
+                last_name: formData.last_name,
+                email: formData.email,
+                phone: formData.phone || null,
+                role: formData.role,
+                specialties: formData.specialties,
+                hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
+            };
+
+            if (formData.notes) {
+                updateData.notes = formData.notes;
+            }
+
+            const { error } = await supabase
+                .from('team_members')
+                .update(updateData)
+                .eq('id', selectedMember.id);
+
+            if (error) {
+                console.error('Supabase error:', error);
+                throw error;
+            }
+
+            // Reset form and close modal
+            resetForm();
+            setShowEditModal(false);
+            setSelectedMember(null);
+            setIsEditing(false);
+            fetchTeamMembers();
+            alert('Team member updated successfully!');
+        } catch (error: any) {
+            console.error('Error updating team member:', error);
+            alert(`Failed to update team member: ${error.message || 'Please try again.'}`);
+        }
+    };
+
+    const handleDeleteMember = async (member: TeamMember) => {
+        if (!confirm(`Are you sure you want to delete ${member.first_name} ${member.last_name}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('team_members')
+                .delete()
+                .eq('id', member.id);
+
+            if (error) throw error;
+
+            fetchTeamMembers();
+            alert('Team member deleted successfully!');
+        } catch (error: any) {
+            console.error('Error deleting team member:', error);
+            alert(`Failed to delete team member: ${error.message || 'Please try again.'}`);
+        }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
+            role: 'helper',
+            specialties: [],
+            hourly_rate: '',
+            notes: ''
+        });
+        setNewSpecialty('');
+    };
+
+    const handleAddTeamMember = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!userProfile?.business_id) {
+            alert('Business profile not found. Please complete your business setup first.');
+            return;
+        }
+
+        try {
+            // Generate org email address
+            const orgEmail = generateOrgEmail(formData.first_name, formData.last_name);
+            
+            // Build insert object
+            const insertData: any = {
+                business_id: userProfile.business_id,
+                first_name: formData.first_name,
+                last_name: formData.last_name,
+                email: formData.email,
+                org_email: orgEmail, // New org email field
+                phone: formData.phone || null,
+                role: formData.role,
+                specialties: formData.specialties,
+                hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
+            };
+
+            if (formData.notes) {
+                insertData.notes = formData.notes;
+            }
+
+            const { data, error } = await supabase
+                .from('team_members')
+                .insert(insertData)
+                .select()
+                .single();
+
+            if (error) {
+                console.error('Supabase error:', error);
+                throw error;
+            }
+
+            // Trigger Google Workspace onboarding
+            await initiateGoogleWorkspaceOnboarding(data);
+
+            // Reset form and refresh
+            resetForm();
+            setShowAddModal(false);
+            fetchTeamMembers();
+            alert(`Team member added successfully! Google Workspace account will be created for ${orgEmail}`);
+        } catch (error: any) {
+            // Reset form and refresh
+            resetForm();
+            setShowAddModal(false);
+            fetchTeamMembers();
+            alert(`Team member added successfully! Organization email will be: ${orgEmail}`);
+                errorMessage += error.message;
+            } else {
+                errorMessage += 'Please try again or contact support.';
+            }
+            
+            alert(errorMessage);
+        }
+    };
+
+    const generateOrgEmail = (firstName: string, lastName: string): string => {
+        const cleanFirstName = firstName.toLowerCase().replace(/[^a-z]/g, '');
+        const lastInitial = lastName.charAt(0).toLowerCase();
+        return `${cleanFirstName}.${lastInitial}@constructivedesignsinc.org`;
+    };
+
+    const initiateGoogleWorkspaceOnboarding = async (memberData: any) => {
+        try {
+            // Set up onboarding flow state
+            setOnboardingMember({
+                id: memberData.id,
+                name: `${memberData.first_name} ${memberData.last_name}`,
+                orgEmail: memberData.org_email || generateOrgEmail(memberData.first_name, memberData.last_name)
+            });
+            setShowOnboarding(true);
+        } catch (error) {
+            console.warn('Google Workspace integration error:', error);
+            // Don't fail member creation if workspace fails
+        }
+    };
+
+    const addSpecialty = () => {
+        if (newSpecialty.trim() && !formData.specialties.includes(newSpecialty.trim())) {
+            setFormData({
+                ...formData,
+                specialties: [...formData.specialties, newSpecialty.trim()]
+            });
+            setNewSpecialty('');
+        }
+    };
+
+    const removeSpecialty = (specialty: string) => {
+        setFormData({
+            ...formData,
+            specialties: formData.specialties.filter(s => s !== specialty)
+        });
+    };
+
+    const filteredMembers = teamMembers.filter(member => {
+        const roleMatch = filter === 'all' || member.role === filter;
+        const statusMatch = statusFilter === 'all' || member.invite_status === statusFilter;
+        return roleMatch && statusMatch;
+    });
+
+    const getRoleBadgeColor = (role: string) => {
+        switch (role) {
+            case 'employee': return 'bg-blue-100 text-blue-800';
+            case 'subcontractor': return 'bg-purple-100 text-purple-800';
+            case 'helper': return 'bg-green-100 text-green-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const getStatusBadgeColor = (status: string) => {
+        switch (status) {
+            case 'accepted': return 'bg-green-100 text-green-800';
+            case 'pending': return 'bg-yellow-100 text-yellow-800';
+            case 'declined': return 'bg-red-100 text-red-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-start">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Team Members</h1>
+                    <p className="mt-1 text-sm text-gray-600">
+                        Manage employees, subcontractors, and helpers for your projects
+                    </p>
+                </div>
+                <button
+                    onClick={() => setShowAddModal(true)}
+                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                    <span className="material-icons text-sm mr-2">add</span>
+                    Members
+                </button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Total Team</p>
+                            <p className="text-2xl font-bold text-gray-900">{teamMembers.length}</p>
+                        </div>
+                        <span className="material-icons text-3xl text-blue-600">group</span>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Employees</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {teamMembers.filter(m => m.role === 'employee').length}
+                            </p>
+                        </div>
+                        <span className="material-icons text-3xl text-blue-600">badge</span>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Subcontractors</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {teamMembers.filter(m => m.role === 'subcontractor').length}
+                            </p>
+                        </div>
+                        <span className="material-icons text-3xl text-purple-600">handyman</span>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Pending Invites</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {teamMembers.filter(m => m.invite_status === 'pending').length}
+                            </p>
+                        </div>
+                        <span className="material-icons text-3xl text-yellow-600">pending</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white p-4 rounded-lg shadow-sm border">
+                <div className="flex flex-wrap gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                        <div className="flex gap-2">
+                            {['all', 'employee', 'subcontractor', 'helper'].map((f) => (
+                                <button
+                                    key={f}
+                                    onClick={() => setFilter(f as any)}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                                        filter === f
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <div className="flex gap-2">
+                            {['all', 'pending', 'accepted'].map((s) => (
+                                <button
+                                    key={s}
+                                    onClick={() => setStatusFilter(s as any)}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                                        statusFilter === s
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Team Members List */}
+            <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50 border-b">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Contact
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Role
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Specialties
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Rate
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {filteredMembers.length === 0 ? (
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                                        <span className="material-icons text-4xl mb-2 opacity-50">group_off</span>
+                                        <p>No team members found</p>
+                                        <p className="text-sm mt-1">Add your first team member to get started</p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredMembers.map((member) => (
+                                    <tr key={member.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                                    <span className="material-icons text-blue-600">person</span>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {member.first_name} {member.last_name}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm text-gray-900">{member.email}</div>
+                                            {member.phone && (
+                                                <div className="text-sm text-gray-500">{member.phone}</div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeColor(member.role)}`}>
+                                                {member.role}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1">
+                                                {member.specialties.slice(0, 3).map((specialty, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded"
+                                                    >
+                                                        {specialty}
+                                                    </span>
+                                                ))}
+                                                {member.specialties.length > 3 && (
+                                                    <span className="px-2 py-1 text-xs text-gray-500">
+                                                        +{member.specialties.length - 3} more
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {member.hourly_rate ? `$${member.hourly_rate}/hr` : '—'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeColor(member.invite_status)}`}>
+                                                {member.invite_status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleEditMember(member)}
+                                                    className="text-blue-600 hover:text-blue-900"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleToggleActive(member.id, member.is_active)}
+                                                    className={`${
+                                                        member.is_active ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'
+                                                    }`}
+                                                >
+                                                    {member.is_active ? 'Deactivate' : 'Activate'}
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setOnboardingMember({
+                                                            id: member.id,
+                                                            name: `${member.first_name} ${member.last_name}`,
+                                                            orgEmail: generateOrgEmail(member.first_name, member.last_name)
+                                                        });
+                                                        setShowOnboarding(true);
+                                                    }}
+                                                    className="text-purple-600 hover:text-purple-900"
+                                                    title="Setup Google Workspace Account"
+                                                >
+                                                    Workspace
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteMember(member)}
+                                                    className="text-red-600 hover:text-red-900"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                                                <button
+                                                    onClick={() => {
+                                                        alert(`Organization email: ${generateOrgEmail(member.first_name, member.last_name)}`);
+                                                    }}
+                                                    className="text-purple-600 hover:text-purple-900"
+                                                    title="View Organization Email"
+                                                >
+                                                    Org Email
+                                                </button>
+                                >
+                                    <span className="material-icons">close</span>
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleAddTeamMember} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            First Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.first_name}
+                                            onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Last Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.last_name}
+                                            onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Email *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Phone
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Role *
+                                        </label>
+                                        <select
+                                            value={formData.role}
+                                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value="helper">Helper</option>
+                                            <option value="employee">Employee</option>
+                                            <option value="subcontractor">Subcontractor</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Hourly Rate (optional)
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-2 text-gray-500">$</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.hourly_rate}
+                                                onChange={(e) => setFormData({ ...formData, hourly_rate: e.target.value })}
+                                                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Specialties
+                                    </label>
+                                    <div className="flex gap-2 mb-2">
+                                        <input
+                                            type="text"
+                                            value={newSpecialty}
+                                            onChange={(e) => setNewSpecialty(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialty())}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Plumbing, Electrical, Painting"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={addSpecialty}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {formData.specialties.map((specialty, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-1"
+                                            >
+                                                {specialty}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeSpecialty(specialty)}
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                >
+                                                    <span className="material-icons text-sm">close</span>
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Notes
+                                    </label>
+                                    <textarea
+                                        value={formData.notes}
+                                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                        rows={3}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Any additional information about this team member..."
+                                    />
+                                </div>
+
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            resetForm();
+                                            setShowAddModal(false);
+                                        }}
+                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    >
+                                        Add Team Member
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Team Member Modal */}
+            {showEditModal && selectedMember && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-gray-900">Edit Team Member</h2>
+                                <button
+                                    onClick={() => {
+                                        resetForm();
+                                        setShowEditModal(false);
+                                        setSelectedMember(null);
+                                        setIsEditing(false);
+                                    }}
+                                    className="text-gray-400 hover:text-gray-600"
+                                >
+                                    <span className="material-icons">close</span>
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleUpdateMember} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            First Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.first_name}
+                                            onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Last Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.last_name}
+                                            onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Personal Email *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Phone
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Display org email if available */}
+                                {selectedMember && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Organization Email
+                                        </label>
+                                        <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
+                                            {generateOrgEmail(formData.first_name, formData.last_name)}
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Auto-generated from name changes
+                                        </p>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Role *
+                                        </label>
+                                        <select
+                                            value={formData.role}
+                                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value="helper">Helper</option>
+                                            <option value="employee">Employee</option>
+                                            <option value="subcontractor">Subcontractor</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Hourly Rate (optional)
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-2 text-gray-500">$</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.hourly_rate}
+                                                onChange={(e) => setFormData({ ...formData, hourly_rate: e.target.value })}
+                                                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Specialties
+                                    </label>
+                                    <div className="flex gap-2 mb-2">
+                                        <input
+                                            type="text"
+                                            value={newSpecialty}
+                                            onChange={(e) => setNewSpecialty(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialty())}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Plumbing, Electrical, Painting"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={addSpecialty}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {formData.specialties.map((specialty, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-1"
+                                            >
+                                                {specialty}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeSpecialty(specialty)}
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                >
+                                                    <span className="material-icons text-sm">close</span>
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Notes
+                                    </label>
+                                    <textarea
+                                        value={formData.notes}
+                                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                        rows={3}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Any additional information about this team member..."
+                                    />
+                                </div>
+
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            resetForm();
+                                            setShowEditModal(false);
+                                            setSelectedMember(null);
+                                            setIsEditing(false);
+                                        }}
+                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    >
+                                        Update Team Member
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Google Workspace Onboarding Flow */}
+            {showOnboarding && onboardingMember && (
+                <GoogleWorkspaceOnboardingFlow
+                    teamMemberId={onboardingMember.id}
+                    teamMemberName={onboardingMember.name}
+                    orgEmail={onboardingMember.orgEmail}
+                    onComplete={() => {
+                        setShowOnboarding(false);
+                        setOnboardingMember(null);
+                        fetchTeamMembers(); // Refresh the team members list
+                    }}
+                    onCancel={() => {
+                        setShowOnboarding(false);
+                        setOnboardingMember(null);
+                    }}
+                />
+            )}
+        </div>
+    );
+}

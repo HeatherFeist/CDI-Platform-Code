@@ -1,0 +1,8 @@
+{
+  "name": "Constructive Designs",
+  "description": "An AI-powered design studio to visualize your ideas. Upload a photo, add products, try paint colors, or describe edits to create photorealistic results.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}

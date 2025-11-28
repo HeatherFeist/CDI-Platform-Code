@@ -1,0 +1,6 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://gjbrjysuqdvvqlxklvos.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqYnJqeXN1cWR2dnFseGtsdm9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2OTQ3MTAsImV4cCI6MjA3NzI3MDcxMH0.YN3BuI6f39P4Vl3yF6nFlMYnbBEu47dpTwmyjDsMfKg';
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
