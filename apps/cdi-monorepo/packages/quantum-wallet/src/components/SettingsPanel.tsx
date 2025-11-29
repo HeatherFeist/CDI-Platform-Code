@@ -78,12 +78,7 @@ export default function SettingsPanel() {
 
   return (
     <div className="max-w-3xl space-y-6">
-      {/* Payment Integrations (BYOK) */}
-      <div className="bg-slate-800/50 backdrop-blur-lg rounded-2xl p-6 border border-slate-700">
-        <PaymentIntegrationsManager />
-      </div>
-
-      {/* Plaid API Configuration */}
+      {/* Plaid API Configuration - Moved to top to prevent overlap */}
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
         <div className="flex items-center space-x-3 mb-4">
           <Key className="w-6 h-6 text-blue-300" />
@@ -165,70 +160,78 @@ export default function SettingsPanel() {
         </div>
       </div>
 
-      {/* Demo Mode */}
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-        <h3 className="text-xl font-bold text-white mb-4">🎮 Demo Mode</h3>
-        <p className="text-blue-200 mb-4">
-          Don't have a Plaid account yet? Try our demo mode with sample data to explore Quantum Wallet features.
-        </p>
-        <button className="px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all">
-          Enable Demo Mode
-        </button>
+      {/* Payment Integrations (BYOK) - Full Width */}
+      <div className="bg-slate-800/50 backdrop-blur-lg rounded-2xl p-6 border border-slate-700">
+        <PaymentIntegrationsManager />
       </div>
 
-      {/* Platform Apps Launcher */}
-      <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-        <h3 className="text-xl font-bold text-white mb-2">🚀 Platform Apps</h3>
-        <p className="text-blue-200 mb-6 text-sm">Access other tools in your Constructive Designs suite</p>
+      {/* Demo Mode & Platform Apps - Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Demo Mode */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-4">🎮 Demo Mode</h3>
+          <p className="text-blue-200 mb-4">
+            Don't have a Plaid account yet? Try our demo mode with sample data to explore Quantum Wallet features.
+          </p>
+          <button className="px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all">
+            Enable Demo Mode
+          </button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <a
-            href="http://localhost:3003"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl">🏠</span>
-              </div>
-              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-            </div>
-            <h4 className="text-white font-semibold mb-1">RenovVision</h4>
-            <p className="text-blue-200 text-xs">Estimates & Project Management</p>
-          </a>
+        {/* Platform Apps Launcher */}
+        <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-2">🚀 Platform Apps</h3>
+          <p className="text-blue-200 mb-6 text-sm">Access other tools in your Constructive Designs suite</p>
 
-          <a
-            href="http://localhost:3001"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl">🛒</span>
+          <div className="grid grid-cols-1 gap-4">
+            <a
+              href="http://localhost:3003"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xl">🏠</span>
+                </div>
+                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </div>
-              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-            </div>
-            <h4 className="text-white font-semibold mb-1">Marketplace</h4>
-            <p className="text-blue-200 text-xs">Trade Equipment & Phone Donations</p>
-          </a>
+              <h4 className="text-white font-semibold mb-1">RenovVision</h4>
+              <p className="text-blue-200 text-xs">Estimates & Project Management</p>
+            </a>
 
-          <a
-            href="http://localhost:3000"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl">🎨</span>
+            <a
+              href="http://localhost:3001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xl">🛒</span>
+                </div>
+                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </div>
-              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-            </div>
-            <h4 className="text-white font-semibold mb-1">AI Design Studio</h4>
-            <p className="text-blue-200 text-xs">Virtual Staging & Visualization</p>
-          </a>
+              <h4 className="text-white font-semibold mb-1">Marketplace</h4>
+              <p className="text-blue-200 text-xs">Trade Equipment & Phone Donations</p>
+            </a>
+
+            <a
+              href="http://localhost:3000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/20 rounded-lg p-4 transition-all hover:scale-105"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xl">🎨</span>
+                </div>
+                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+              </div>
+              <h4 className="text-white font-semibold mb-1">AI Design Studio</h4>
+              <p className="text-blue-200 text-xs">Virtual Staging & Visualization</p>
+            </a>
+          </div>
         </div>
       </div>
 

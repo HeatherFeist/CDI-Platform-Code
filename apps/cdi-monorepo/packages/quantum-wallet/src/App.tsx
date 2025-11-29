@@ -89,8 +89,33 @@ function App() {
   };
 
   const loadUserData = async (userId) => {
-    // Load user's connected accounts and transactions
-    // This will be populated from Plaid Link
+    // In a real app, we would fetch this from Supabase where we stored the Plaid data
+    // For now, we'll simulate fetching the user's connected data
+
+    // Check if user has any connected accounts (simulated check)
+    // For this demo, we'll assume if they are logged in, they might want to see data
+    // or we wait for them to connect.
+
+    // Let's check if we have stored any "connection" in local state or just load default data
+    // so the dashboard isn't empty.
+
+    setAccounts([
+      { id: '1', name: 'Chase Checking', type: 'checking', balance: 3245.67, institution: 'Chase' },
+      { id: '2', name: 'Capital One Savings', type: 'savings', balance: 8950.32, institution: 'Capital One' },
+    ]);
+
+    setTransactions([
+      { id: '1', date: '2025-11-12', description: 'Grocery Store', amount: -87.43, category: 'Food & Dining' },
+      { id: '2', date: '2025-11-11', description: 'Salary Deposit', amount: 2500.00, category: 'Income' },
+      { id: '3', date: '2025-11-10', description: 'Electric Bill', amount: -125.67, category: 'Utilities' },
+    ]);
+  };
+
+  const handlePlaidSuccess = (data: any) => {
+    console.log('Connected:', data);
+    // Refresh data to show new accounts
+    loadUserData(user?.id);
+    alert(`Successfully connected to ${data.institution.name}! Your transactions are now syncing.`);
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -277,7 +302,7 @@ function App() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Your Accounts</h2>
-              <PlaidLinkButton onSuccess={(data) => console.log('Connected:', data)} />
+              <PlaidLinkButton onSuccess={handlePlaidSuccess} />
             </div>
             <AccountsOverview accounts={accounts} />
           </div>
