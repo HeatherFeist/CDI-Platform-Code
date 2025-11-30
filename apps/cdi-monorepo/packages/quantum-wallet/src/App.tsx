@@ -89,26 +89,48 @@ function App() {
   };
 
   const loadUserData = async (userId) => {
-    // In a real app, we would fetch this from Supabase where we stored the Plaid data
-    // For now, we'll simulate fetching the user's connected data
+    try {
+      // 1. Fetch Accounts
+      const { data: accountsData, error: accountsError } = await supabase
+        .from('accounts')
+        .select('*')
+        .eq('user_id', userId);
 
-    // Check if user has any connected accounts (simulated check)
-    // For this demo, we'll assume if they are logged in, they might want to see data
-    // or we wait for them to connect.
+      if (accountsError) throw accountsError;
 
-    // Let's check if we have stored any "connection" in local state or just load default data
-    // so the dashboard isn't empty.
+      if (accountsData) {
+        setAccounts(accountsData.map(acc => ({
+          id: acc.id,
+          name: acc.name,
+          type: acc.type,
+          balance: acc.current_balance,
+          institution: acc.institution_name || 'Connected Bank'
+        })));
+      }
 
-    setAccounts([
-      { id: '1', name: 'Chase Checking', type: 'checking', balance: 3245.67, institution: 'Chase' },
-      { id: '2', name: 'Capital One Savings', type: 'savings', balance: 8950.32, institution: 'Capital One' },
-    ]);
+      // 2. Fetch Transactions
+      const { data: transactionsData, error: transactionsError } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false })
+        .limit(50);
 
-    setTransactions([
-      { id: '1', date: '2025-11-12', description: 'Grocery Store', amount: -87.43, category: 'Food & Dining' },
-      { id: '2', date: '2025-11-11', description: 'Salary Deposit', amount: 2500.00, category: 'Income' },
-      { id: '3', date: '2025-11-10', description: 'Electric Bill', amount: -125.67, category: 'Utilities' },
-    ]);
+      if (transactionsError) throw transactionsError;
+
+      if (transactionsData) {
+        setTransactions(transactionsData.map(tx => ({
+          id: tx.id,
+          date: tx.date,
+          description: tx.name,
+          amount: -tx.amount, // Plaid: positive = spent, so we flip to negative for UI
+          category: tx.category ? (Array.isArray(tx.category) ? tx.category[0] : 'Uncategorized') : 'Uncategorized'
+        })));
+      }
+
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
 
   const handlePlaidSuccess = (data: any) => {

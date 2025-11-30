@@ -1,0 +1,41 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="walletGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764BA2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667EEA;stop-opacity:1" />
+    </linearGradient>
+    <filter id="walletGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Quantum spiral/vortex -->
+  <g transform="translate(100, 100)">
+    <!-- Outer spiral rings -->
+    <path d="M 0,-60 Q 60,-40 60,0 Q 60,40 0,60 Q -60,40 -60,0 Q -60,-40 0,-60" 
+          fill="none" stroke="url(#walletGrad1)" stroke-width="8" opacity="0.6" filter="url(#walletGlow)"/>
+    <path d="M 0,-45 Q 45,-30 45,0 Q 45,30 0,45 Q -45,30 -45,0 Q -45,-30 0,-45" 
+          fill="none" stroke="url(#walletGrad1)" stroke-width="7" opacity="0.7" filter="url(#walletGlow)"/>
+    <path d="M 0,-30 Q 30,-20 30,0 Q 30,20 0,30 Q -30,20 -30,0 Q -30,-20 0,-30" 
+          fill="none" stroke="url(#walletGrad1)" stroke-width="6" opacity="0.85" filter="url(#walletGlow)"/>
+    <path d="M 0,-15 Q 15,-10 15,0 Q 15,10 0,15 Q -15,10 -15,0 Q -15,-10 0,-15" 
+          fill="none" stroke="#FFFFFF" stroke-width="5" opacity="1" filter="url(#walletGlow)"/>
+    
+    <!-- Center glow -->
+    <circle cx="0" cy="0" r="8" fill="#FFFFFF" filter="url(#walletGlow)"/>
+  </g>
+  
+  <!-- Dollar sign accent -->
+  <text x="30" y="45" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" opacity="0.9" filter="url(#walletGlow)">$</text>
+  
+  <!-- Decorative dots -->
+  <circle cx="40" cy="160" r="4" fill="#667EEA" opacity="0.8"/>
+  <circle cx="160" cy="60" r="4" fill="#764BA2" opacity="0.8"/>
+  <circle cx="30" cy="100" r="3" fill="#667EEA" opacity="0.6"/>
+  <circle cx="170" cy="140" r="3" fill="#764BA2" opacity="0.6"/>
+</svg>

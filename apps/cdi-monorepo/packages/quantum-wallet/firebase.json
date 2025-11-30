@@ -1,19 +1,17 @@
 {
-    "hosting": [
-        {
-            "target": "wallet-cd",
-            "public": "dist",
+    "hosting": {
+        "site": "wallet-cdi",
+        "public": "dist",
             "ignore": [
                 "firebase.json",
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "rewrites": [
-                {
-                    "source": "**",
-                    "destination": "/index.html"
-                }
-            ]
-        }
-    ]
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
 }

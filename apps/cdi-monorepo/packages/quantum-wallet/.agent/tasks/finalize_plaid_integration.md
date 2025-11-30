@@ -17,8 +17,8 @@ Complete the "Go Live" process for the Quantum Wallet by ensuring Plaid integrat
    - *Alternative*: If Edge Functions are too complex to deploy right now, ensure the "Simulation Mode" works perfectly for the user's immediate demo needs.
 
 2. **Save Workspace (Git Commit)** <!-- id: 1 -->
-   - Stage all changes.
-   - Commit with a descriptive message ("feat: Complete Plaid integration and UI overhaul").
+   - [x] Stage all changes.
+   - [x] Commit with a descriptive message ("feat: Complete Plaid integration and UI overhaul").
 
 3. **Final Verification** <!-- id: 2 -->
    - User to test "Connect Bank" on the live site.

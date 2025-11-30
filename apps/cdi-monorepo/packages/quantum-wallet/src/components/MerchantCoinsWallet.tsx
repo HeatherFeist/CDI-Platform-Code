@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Coins, Clock, Store, Loader2 } from 'lucide-react';
 import CrowdfundingCard from './CrowdfundingCard';
+import CreateProjectModal from './CreateProjectModal';
 import { supabase } from '../supabase';
 import {
     getUserMerchantCoins,
@@ -71,6 +72,16 @@ const MerchantCoinsWallet: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [totalValue, setTotalValue] = useState(0);
     const [user, setUser] = useState<any>(null);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [createForm, setCreateForm] = useState({
+        name: '',
+        tagline: '',
+        description: '',
+        fundingGoal: '',
+        cashtag: '',
+        paypalUrl: '',
+        redemptionPolicy: ''
+    });
 
     useEffect(() => {
         // Check if user is logged in
@@ -143,6 +154,15 @@ const MerchantCoinsWallet: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex items-center space-x-4">
+                    {user && view === 'fund' && (
+                        <button
+                            onClick={() => setShowCreateModal(true)}
+                            className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                        >
+                            <span className="material-icons text-sm">add_circle</span>
+                            Create Project
+                        </button>
+                    )}
                     {view === 'wallet' && coins.length > 0 && (
                         <div className="bg-indigo-900/30 px-4 py-2 rounded-lg border border-indigo-500/30">
                             <span className="text-sm text-indigo-300">Total Value</span>
@@ -200,8 +220,8 @@ const MerchantCoinsWallet: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className={`px-2 py-1 rounded text-xs font-medium border ${coin.status === 'active'
-                                                ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                                                : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                            ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                            : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                                             }`}>
                                             {coin.status.toUpperCase()}
                                         </div>

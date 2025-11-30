@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "images",
+    "site": "images-cdi",
     "public": "dist",
     "ignore": [
       "firebase.json",

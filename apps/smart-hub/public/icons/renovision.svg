@@ -1,0 +1,52 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="renovisionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2D68FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4E9AFF;stop-opacity:1" />
+    </linearGradient>
+    <filter id="renovisionGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Building structure -->
+  <g filter="url(#renovisionGlow)">
+    <!-- Main building -->
+    <rect x="60" y="70" width="80" height="100" fill="url(#renovisionGrad)" rx="8"/>
+    
+    <!-- Windows grid -->
+    <rect x="70" y="85" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="92.5" y="85" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="115" y="85" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    
+    <rect x="70" y="110" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="92.5" y="110" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="115" y="110" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    
+    <rect x="70" y="135" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="92.5" y="135" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    <rect x="115" y="135" width="15" height="15" fill="white" opacity="0.8" rx="2"/>
+    
+    <!-- Door -->
+    <rect x="85" y="155" width="30" height="15" fill="white" opacity="0.9" rx="2"/>
+    
+    <!-- Roof accent -->
+    <polygon points="100,45 150,70 50,70" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Tech grid overlay -->
+  <g opacity="0.3">
+    <line x1="60" y1="70" x2="100" y2="45" stroke="white" stroke-width="1"/>
+    <line x1="140" y1="70" x2="100" y2="45" stroke="white" stroke-width="1"/>
+    <circle cx="100" cy="45" r="5" fill="white"/>
+  </g>
+  
+  <!-- Data points -->
+  <circle cx="155" cy="65" r="3" fill="#4E9AFF" opacity="0.8"/>
+  <circle cx="45" cy="65" r="3" fill="#2D68FF" opacity="0.8"/>
+  <circle cx="100" cy="35" r="3" fill="white" opacity="0.9"/>
+</svg>

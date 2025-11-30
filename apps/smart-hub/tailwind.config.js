@@ -7,21 +7,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        slate: {
-          900: '#0f172a',
-          800: '#1e293b',
-          700: '#334155',
-          500: '#64748b',
-          400: '#94a3b8',
-          200: '#e2e8f0',
+        primary: {
+          50: 'var(--primary-50)',
+          100: 'var(--primary-100)',
+          200: 'var(--primary-200)',
+          300: 'var(--primary-300)',
+          400: 'var(--primary-400)',
+          500: 'var(--primary-500)',
+          600: 'var(--primary-600)',
+          700: 'var(--primary-700)',
+          800: 'var(--primary-800)',
+          900: 'var(--primary-900)',
         },
-        indigo: {
-          600: '#6366f1',
-          500: '#818cf8',
-          400: '#818cf8',
-        },
-        cyan: {
-          400: '#22d3ee',
+        gray: {
+          50: 'var(--gray-50)',
+          100: 'var(--gray-100)',
+          200: 'var(--gray-200)',
+          300: 'var(--gray-300)',
+          400: 'var(--gray-400)',
+          500: 'var(--gray-500)',
+          600: 'var(--gray-600)',
+          700: 'var(--gray-700)',
+          800: 'var(--gray-800)',
+          900: 'var(--gray-900)',
         },
       },
       animation: {

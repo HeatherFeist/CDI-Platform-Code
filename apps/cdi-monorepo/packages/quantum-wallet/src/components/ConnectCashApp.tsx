@@ -52,6 +52,26 @@ export default function ConnectCashApp({ onSuccess }: ConnectCashAppProps) {
 
             if (dbError) throw dbError;
 
+            // ALSO create an account entry so it shows up in the dashboard
+            const { error: accountError } = await supabase
+                .from('accounts')
+                .upsert({
+                    user_id: user.id,
+                    plaid_account_id: `cashapp_${user.id}`, // specific ID for Cash App
+                    plaid_item_id: 'manual_cashapp',
+                    name: 'Cash App',
+                    mask: formattedTag.substring(1).substring(0, 4), // Use first 4 chars of tag as mask
+                    type: 'depository',
+                    subtype: 'checking', // Treat as checking
+                    institution_name: 'Cash App',
+                    current_balance: 0, // Start with 0, user can update manually later
+                    available_balance: 0
+                }, {
+                    onConflict: 'user_id,plaid_account_id'
+                });
+
+            if (accountError) console.error('Failed to create Cash App account entry:', accountError);
+
             setSuccess('✅ Cash App connected successfully!');
             setTimeout(() => {
                 setShowModal(false);

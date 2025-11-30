@@ -34,19 +34,42 @@ ORDER BY table_name;
 
 You should see all 8 tables listed.
 
-### Step 3: Add Sample Data (Optional)
+### Step 3: Add Initial 4 Business Projects
 
-To test the merchant coins feature, add some sample projects:
+Load the 4 initial turnkey business ideas with complete business plans:
 
-```sql
--- Insert sample crowdfunding projects
-INSERT INTO projects (name, slug, tagline, description, funding_goal, status, payment_cashtag, payment_paypal_url, redemption_policy, image_url)
-VALUES 
-    ('Seasonal Greetings', 'seasonal-greetings', 'Holiday Pop-Up Shop', 'A festive holiday experience with gifts, decorations, and seasonal treats', 2000.00, 'funding', '$SeasonalGreetingsDayton', 'https://paypal.me/seasonaldayton', 'Max 50% of total invoice', '🎄'),
-    ('Gemstone Trails', 'gemstone-trails', 'Guided Nature Tours', 'Discover hidden gems in nature with expert-led hiking experiences', 1500.00, 'funding', '$GemstoneTrailsDayton', 'https://paypal.me/gemstonetrails', '1 Token per visit', '💎'),
-    ('Picnic Perfect', 'picnic-perfect', 'Luxury Pop-Up Events', 'Premium picnic experiences with gourmet food and beautiful setups', 2000.00, 'funding', '$PicnicPerfectDayton', 'https://paypal.me/picnicdayton', 'Max 25% of total bill', '🧺'),
-    ('Dayton Micro-Farms', 'dayton-micro-farms', 'Superfoods in the City', 'Indoor vertical microgreens farm delivering fresh produce', 2200.00, 'funding', '$DaytonMicroGreens', 'https://paypal.me/daytonmicro', 'Redeemable for produce', '🌱');
+```bash
+# Navigate to SQL Editor in Supabase Dashboard
+# Copy contents of initial-business-projects.sql
+# Execute the script
 ```
+
+**The 4 Initial Projects:**
+
+1. **🎄 Seasonal Greetings** - Holiday Pop-Up Shop
+   - Goal: $2,000 | Equipment, inventory, POS system
+   - Timeline: 60 days fundraising
+   
+2. **💎 Gemstone Trails** - Guided Nature Tours
+   - Goal: $1,500 | Hiking equipment, insurance, permits
+   - Timeline: 45 days fundraising
+   
+3. **🧺 Picnic Perfect** - Luxury Pop-Up Events
+   - Goal: $2,000 | Picnic sets, decor, transport
+   - Timeline: 60 days fundraising
+   
+4. **🌱 Dayton Micro-Farms** - Indoor Microgreens Farm
+   - Goal: $2,200 | Vertical grow systems, seeds, licenses
+   - Timeline: 90 days fundraising
+
+**Each project includes:**
+- Complete equipment checklist with costs
+- Funding breakdown (where money goes)
+- 5-year business plan framework
+- EIN registration setup
+- PayPal donation integration
+- Merchant coin configuration (1:1 ratio)
+- Tier system (Bronze/Silver/Gold/Platinum)
 
 ## Part 2: Deploy Quantum Wallet
 
