@@ -30,18 +30,31 @@
       body {
         font-family: var(--font-body), sans-serif;
         background-color: var(--color-background);
-        color: #1f2937;
+        color: #f1f5f9;
       }
       h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-heading), serif;
       }
-      /* Default Variables (Trin's Treasures) - React will override these */
+      /* Default Variables - React will override these */
       :root {
-        --color-primary: #ec4899;
-        --color-secondary: #8b5cf6;
-        --color-background: #fdf2f8;
-        --font-heading: 'Playfair Display';
+        --color-primary: #4f46e5;
+        --color-secondary: #06b6d4;
+        --color-background: #0f172a;
+        --font-heading: 'Inter';
         --font-body: 'Inter';
+      }
+      
+      /* Dark Mode Text Colors Override */
+      .text-gray-900 { color: #f1f5f9 !important; }
+      .text-gray-800 { color: #e2e8f0 !important; }
+      .text-gray-700 { color: #cbd5e1 !important; }
+      .text-gray-600 { color: #94a3b8 !important; }
+      .text-gray-500 { color: #64748b !important; }
+      .text-gray-400 { color: #475569 !important; }
+      
+      /* Ensure all text is visible by default */
+      * {
+        color: inherit;
       }
     </style>
   <script type="importmap">
