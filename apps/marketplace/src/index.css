@@ -32,7 +32,7 @@
   input:focus,
   textarea:focus,
   select:focus {
-    @apply ring-2 ring-emerald-500/50 border-emerald-500/50;
+    @apply ring-2 ring-indigo-500/50 border-indigo-500/50;
   }
 }
 
@@ -62,16 +62,16 @@
 
   /* Premium Buttons */
   .btn-primary {
-    @apply relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-semibold rounded-xl shadow-lg shadow-emerald-900/30 transition-all duration-300;
+    @apply relative overflow-hidden bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-indigo-900/30 transition-all duration-300;
     box-shadow:
-      0 0 20px rgba(52, 211, 153, 0.3),
-      0 10px 20px -5px rgba(52, 211, 153, 0.4);
+      0 0 20px rgba(79, 70, 229, 0.3),
+      0 10px 20px -5px rgba(79, 70, 229, 0.4);
   }
 
   .btn-primary:hover {
     box-shadow:
-      0 0 30px rgba(52, 211, 153, 0.5),
-      0 15px 30px -5px rgba(52, 211, 153, 0.5);
+      0 0 30px rgba(79, 70, 229, 0.5),
+      0 15px 30px -5px rgba(79, 70, 229, 0.5);
     transform: translateY(-2px);
   }
 
@@ -113,7 +113,7 @@
   .product-card::before {
     content: '';
     @apply absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500;
-    background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(52, 211, 153, 0.1), transparent 40%);
+    background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(79, 70, 229, 0.1), transparent 40%);
   }
 
   .product-card:hover::before {
@@ -124,7 +124,7 @@
     @apply border-slate-700/80;
     transform: translateY(-4px) scale(1.02);
     box-shadow:
-      0 0 40px rgba(52, 211, 153, 0.15),
+      0 0 40px rgba(79, 70, 229, 0.15),
       0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 
@@ -149,13 +149,13 @@
 
   /* Gradient Text Effects */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-400;
     background-size: 200% auto;
     animation: gradient-shift 3s ease infinite;
   }
 
   .gradient-text-emerald {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-indigo-300;
   }
 
   .gradient-text-cyan {
@@ -163,7 +163,7 @@
   }
 
   .gradient-text-purple {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-300;
   }
 
   .gradient-text-indigo {
@@ -171,16 +171,16 @@
   }
 
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400;
   }
 
   /* Background Gradients */
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   }
 
   .bg-gradient-primary-hover {
-    background: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+    background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
   }
 
   /* Animated Gradient Backgrounds */
@@ -193,9 +193,9 @@
   /* Glow Effects */
   .glow-emerald {
     box-shadow:
-      0 0 20px rgba(52, 211, 153, 0.3),
-      0 0 40px rgba(52, 211, 153, 0.2),
-      0 0 60px rgba(52, 211, 153, 0.1);
+      0 0 20px rgba(79, 70, 229, 0.3),
+      0 0 40px rgba(79, 70, 229, 0.2),
+      0 0 60px rgba(79, 70, 229, 0.1);
   }
 
   .glow-cyan {
@@ -230,13 +230,13 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-emerald-500/50 to-cyan-500/50 rounded-full;
+    @apply bg-gradient-to-b from-indigo-500/50 to-cyan-500/50 rounded-full;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply from-emerald-500/70 to-cyan-500/70;
+    @apply from-indigo-500/70 to-cyan-500/70;
   }
 
   /* Backdrop Blur Utilities */
@@ -264,7 +264,7 @@
 
   /* Badge Styles */
   .badge-success {
-    @apply bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold border border-emerald-500/30;
+    @apply bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30;
   }
 
   .badge-warning {

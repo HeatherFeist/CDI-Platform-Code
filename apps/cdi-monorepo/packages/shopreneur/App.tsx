@@ -19,7 +19,7 @@ const SIM_PROFILES: UserProfile[] = [
     id: 'u1',
     name: "Your_name",
     handle: "My_Business_Name",
-    bio: "Aspiring Entrepreneur! 💖",
+    bio: "Entrepreneur | Business Owner",
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Trin",
     role: 'Owner'
   },
@@ -27,21 +27,21 @@ const SIM_PROFILES: UserProfile[] = [
     id: 'u2',
     name: "Heather",
     handle: "CDInc.",
-    bio: "Supporting the hustle! 👑",
+    bio: "Platform Support | Business Development",
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
-    role: 'Mother'
+    role: 'Support'
   }
 ];
 
 const INITIAL_SETTINGS: ShopSettings = {
   storeName: "Shop'reneur",
   tagline: "Powered by Constructive Designs Inc.",
-  heroHeadline: "Launch Your Shop!",
-  heroSubtext: "Curate your favorite items, build your brand, and turn your wishlist into a business.",
-  primaryColor: "#ec4899", 
-  secondaryColor: "#8b5cf6", 
-  backgroundColor: "#fdf2f8", 
-  fontHeading: 'Playfair Display',
+  heroHeadline: "Enterprise Access",
+  heroSubtext: "Strategic management hub for entrepreneurs and business owners. Build your brand, manage inventory, and grow your business.",
+  primaryColor: "#4f46e5", 
+  secondaryColor: "#06b6d4", 
+  backgroundColor: "#0f172a", 
+  fontHeading: 'Inter',
   fontBody: 'Inter',
   amazonAffiliateTag: 'HeatherFeist1-20'
 };

@@ -35,7 +35,7 @@ export const Auth: React.FC = () => {
             {/* Animated Background */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl float"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-3xl float" style={{ animationDelay: '2s' }}></div>
+                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/20 rounded-full blur-3xl float" style={{ animationDelay: '2s' }}></div>
             </div>
 
             <div className="relative z-10 w-full max-w-md">
