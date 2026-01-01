@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop'reneur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: 'var(--color-primary)', 
+              secondary: 'var(--color-secondary)',
+              accent: '#14b8a6', 
+              background: 'var(--color-background)',
+              surface: '#ffffff',
+            },
+            fontFamily: {
+              sans: ['var(--font-body)', 'sans-serif'],
+              display: ['var(--font-heading)', 'serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Loading a versatile range of popular Google Fonts for customization -->
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bebas+Neue&family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&family=Lato:wght@400;700&family=Lobster&family=Merriweather:wght@300;400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&family=Oswald:wght@500&family=Playfair+Display:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: var(--font-body), sans-serif;
+        background-color: var(--color-background);
+        color: #1f2937;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading), serif;
+      }
+      /* Default Variables (Trin's Treasures) - React will override these */
+      :root {
+        --color-primary: #ec4899;
+        --color-secondary: #8b5cf6;
+        --color-background: #fdf2f8;
+        --font-heading: 'Playfair Display';
+        --font-body: 'Inter';
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

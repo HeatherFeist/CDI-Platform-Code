@@ -1,0 +1,8 @@
+{
+  "name": "Shop'reneur",
+  "description": "The ultimate platform for teen entrepreneurs to build their empire, curate products, and grow their brand.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
