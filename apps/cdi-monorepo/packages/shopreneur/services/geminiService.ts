@@ -11,21 +11,34 @@ const getApiKey = () => {
 
 let ai: GoogleGenAI | null = null;
 const initializeAI = () => {
-  const apiKey = getApiKey();
-  if (apiKey && !ai) {
-    ai = new GoogleGenAI({ apiKey });
+  try {
+    const apiKey = getApiKey();
+    if (apiKey && !ai) {
+      ai = new GoogleGenAI({ apiKey });
+    }
+    return ai;
+  } catch (error) {
+    console.warn('Failed to initialize Gemini AI:', error);
+    return null;
   }
-  return ai;
 };
 
-// Initialize on import
-initializeAI();
+// Initialize on import - wrapped in try-catch for safety
+try {
+  initializeAI();
+} catch (error) {
+  console.warn('Gemini AI initialization skipped:', error);
+}
 
 // Function to update API key and reinitialize
 export const setUserApiKey = (apiKey: string) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('gemini_api_key', apiKey);
-    ai = new GoogleGenAI({ apiKey });
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gemini_api_key', apiKey);
+      ai = new GoogleGenAI({ apiKey });
+    }
+  } catch (error) {
+    console.error('Failed to set API key:', error);
   }
 };
 
@@ -230,18 +243,90 @@ export const getBusinessMentorChat = () => {
 
 export const scanTrendsAndGenerateChallenges = async () => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, returning default challenges');
+      return [
+        {
+          title: "Product Showcase Video",
+          description: "Create a 30-60 second video highlighting your best-selling product. Show it in action and explain why customers love it.",
+          platform: "TikTok",
+          type: "video",
+          difficulty: "Easy",
+          xpReward: 150,
+          coinReward: 25,
+          tips: ["Use trending audio", "Keep it under 60 seconds", "Show product benefits", "Add captions"],
+          trendSource: "Product showcase videos consistently perform well"
+        },
+        {
+          title: "Behind the Scenes Story",
+          description: "Post an Instagram Story showing your packaging process, workspace, or how you pick products.",
+          platform: "Instagram",
+          type: "story",
+          difficulty: "Easy",
+          xpReward: 100,
+          coinReward: 15,
+          tips: ["Be authentic", "Use stickers and polls", "Show your face", "Keep it casual"],
+          trendSource: "Authentic behind-the-scenes content builds trust"
+        },
+        {
+          title: "Customer Testimonial Post",
+          description: "Share a customer review with a product photo. Create a carousel post with before/after or multiple angles.",
+          platform: "Instagram",
+          type: "post",
+          difficulty: "Easy",
+          xpReward: 120,
+          coinReward: 20,
+          tips: ["Use customer quotes", "Include product image", "Tag customer (if permitted)", "Add relevant hashtags"],
+          trendSource: "Social proof increases conversion rates"
+        },
+        {
+          title: "Facebook Live Q&A",
+          description: "Go live on Facebook to answer questions about your products, share tips, or showcase new arrivals.",
+          platform: "Facebook",
+          type: "live",
+          difficulty: "Medium",
+          xpReward: 300,
+          coinReward: 50,
+          tips: ["Announce ahead of time", "Prepare talking points", "Engage with comments", "Save replay"],
+          trendSource: "Live video gets 6x more engagement"
+        },
+        {
+          title: "YouTube Short Tutorial",
+          description: "Create a 30-second YouTube Short showing how to style or use one of your products.",
+          platform: "YouTube",
+          type: "video",
+          difficulty: "Medium",
+          xpReward: 200,
+          coinReward: 35,
+          tips: ["Keep it vertical", "Hook viewers in first 3 seconds", "Show value quickly", "Clear call-to-action"],
+          trendSource: "YouTube Shorts reaching billions of views daily"
+        }
+      ];
+    }
+    
     const prompt = `
-      Step 1: Use Google Search to find the top 3 current viral trends on TikTok and Instagram for teenagers (fashion, beauty, or lifestyle) RIGHT NOW.
-      Step 2: Based on these trends, generate 3 specific business challenges for a shop owner to capitalize on them.
+      You are a social media trend analyst for small business entrepreneurs.
       
-      Return ONLY a JSON array of objects with this schema:
+      Step 1: Use Google Search to find the top 5-6 current viral trends across TikTok, Instagram, Facebook, and YouTube for small businesses, entrepreneurs, fashion, beauty, or lifestyle content RIGHT NOW (${new Date().toLocaleDateString()}).
+      
+      Step 2: Based on these REAL current trends, generate 5-6 specific actionable challenges for an online shop owner to create content and capitalize on these trends.
+      
+      Include a variety of content types: videos, stories, posts, reels, lives, and shorts.
+      Include a mix of platforms: TikTok, Instagram, Facebook, and YouTube.
+      Make challenges specific to the actual trends you found.
+      
+      Return ONLY a JSON array with this exact schema:
       [
         {
-          "title": "Short catchy title",
-          "description": "Specific instruction on what content to create based on the trend",
-          "platform": "TikTok" | "Instagram" | "YouTube",
+          "title": "Short catchy title (max 6 words)",
+          "description": "Specific detailed instruction (2-3 sentences) on what content to create based on the trend",
+          "platform": "TikTok" | "Instagram" | "Facebook" | "YouTube",
+          "type": "video" | "story" | "post" | "reel" | "live" | "short",
           "difficulty": "Easy" | "Medium" | "Hard",
-          "xpReward": number (between 100-500)
+          "xpReward": number (100-500 based on difficulty),
+          "coinReward": number (15-75 based on difficulty),
+          "tips": [array of 3-4 specific actionable tips],
+          "trendSource": "Brief description of the trending topic this is based on"
         }
       ]
     `;

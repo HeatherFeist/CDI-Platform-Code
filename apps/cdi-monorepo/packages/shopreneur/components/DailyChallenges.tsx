@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Challenge, ChallengeSubmission, UserProfile } from '../types';
-import { Trophy, Calendar, Target, Zap, TrendingUp, Award, ChevronRight, Clock, Users } from 'lucide-react';
+import { Trophy, Calendar, Target, Zap, TrendingUp, Award, ChevronRight, Clock, Users, RefreshCw, Loader2, Sparkles } from 'lucide-react';
+import { scanTrendsAndGenerateChallenges } from '../services/geminiService';
 
 interface DailyChallengesProps {
   currentUser: UserProfile;
@@ -17,6 +18,44 @@ const DailyChallenges: React.FC<DailyChallengesProps> = ({
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [userStreak, setUserStreak] = useState(0);
   const [todaysCompletion, setTodaysCompletion] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [lastScanDate, setLastScanDate] = useState<string | null>(null);
+
+  const handleScanTrends = async () => {
+    setIsScanning(true);
+    try {
+      const trendChallenges = await scanTrendsAndGenerateChallenges();
+      
+      // Convert to Challenge format
+      const formattedChallenges: Challenge[] = trendChallenges.map((tc: any, index: number) => ({
+        id: `trend-${Date.now()}-${index}`,
+        title: tc.title,
+        description: tc.description,
+        type: tc.type || 'post',
+        category: 'trending',
+        difficulty: tc.difficulty?.toLowerCase() || 'beginner',
+        xpReward: tc.xpReward || 100,
+        coinReward: tc.coinReward || 20,
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        isActive: true,
+        prompt: tc.description,
+        tips: tc.tips || [],
+        requiredPlatforms: [tc.platform?.toLowerCase()],
+        trendSource: tc.trendSource,
+        sources: tc.sources || []
+      }));
+      
+      setActiveChallenges(formattedChallenges);
+      setLastScanDate(new Date().toISOString());
+      localStorage.setItem('lastTrendScan', new Date().toISOString());
+      localStorage.setItem('trendChallenges', JSON.stringify(formattedChallenges));
+    } catch (error) {
+      console.error('Error scanning trends:', error);
+    } finally {
+      setIsScanning(false);
+    }
+  };
 
   // Sample challenges - will be loaded from database
   const sampleChallenges: Challenge[] = [
@@ -86,7 +125,22 @@ const DailyChallenges: React.FC<DailyChallengesProps> = ({
   ];
 
   useEffect(() => {
-    // Load active challenges
+    // Check for saved trend challenges
+    const saved = localStorage.getItem('trendChallenges');
+    const lastScan = localStorage.getItem('lastTrendScan');
+    
+    if (saved && lastScan) {
+      const scanDate = new Date(lastScan);
+      const now = new Date();
+      // If scanned today, use saved challenges
+      if (scanDate.toDateString() === now.toDateString()) {
+        setActiveChallenges(JSON.parse(saved));
+        setLastScanDate(lastScan);
+        return;
+      }
+    }
+    
+    // Otherwise load sample challenges
     setActiveChallenges(sampleChallenges);
     // TODO: Load from database
     // const challenges = await challengeService.getActiveChallenges();
@@ -139,11 +193,32 @@ const DailyChallenges: React.FC<DailyChallengesProps> = ({
             </p>
           </div>
           
-          {/* Streak Counter */}
-          <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Zap className="w-8 h-8 text-yellow-300" />
-              <span className="text-5xl font-bold">{userStreak}</span>
+          {/* Streak Counter & Scan Button */}
+          <div className="flex items-center gap-4">
+            {/* Trend Scan Button */}
+            <button
+              onClick={handleScanTrends}
+              disabled={isScanning}
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl px-6 py-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 group"
+            >
+              {isScanning ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="font-semibold">Scanning Trends...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+                  <span className="font-semibold">Scan Today's Trends</span>
+                </>
+              )}
+            </button>
+            
+            {/* Streak Counter */}
+            <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Zap className="w-8 h-8 text-yellow-300" />
+                <span className="text-5xl font-bold">{userStreak}</span>
             </div>
             <p className="text-sm uppercase tracking-wide">Day Streak</p>
             {todaysCompletion ? (
@@ -192,6 +267,30 @@ const DailyChallenges: React.FC<DailyChallengesProps> = ({
 
               {/* Challenge Body */}
               <div className="p-4">
+                {/* Platform Badges */}
+                {challenge.requiredPlatforms && challenge.requiredPlatforms.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {challenge.requiredPlatforms.map((platform) => (
+                      <span 
+                        key={platform}
+                        className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg capitalize"
+                      >
+                        {platform}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Trend Source */}
+                {challenge.trendSource && (
+                  <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-xs text-amber-800 flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" />
+                      <span className="font-semibold">Trending:</span> {challenge.trendSource}
+                    </p>
+                  </div>
+                )}
+                
                 <div className="mb-4">
                   <p className="text-sm text-gray-700 line-clamp-2 mb-3">
                     {challenge.prompt}
