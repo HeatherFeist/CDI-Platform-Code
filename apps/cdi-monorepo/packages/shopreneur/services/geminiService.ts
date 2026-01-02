@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = process.env.API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const generateProductDescription = async (
   productName: string,
@@ -9,6 +10,11 @@ export const generateProductDescription = async (
   keywords: string
 ): Promise<string> => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, using fallback description');
+      return `Check out this amazing ${productName}! Perfect for ${category.toLowerCase()} lovers.`;
+    }
+    
     // Updated to gemini-3-flash-preview for basic text generation tasks
     const modelName = 'gemini-3-flash-preview';
     const prompt = `
@@ -37,6 +43,11 @@ export const generateProductImage = async (
   description: string
 ): Promise<string | null> => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, cannot generate images');
+      return null;
+    }
+    
     const prompt = `Professional product photography of ${productName}. 
     Category: ${category}. 
     Description: ${description}. 
@@ -70,6 +81,11 @@ export const generateTryOnImage = async (
   productDescription: string
 ): Promise<string | null> => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, cannot generate try-on images');
+      return null;
+    }
+    
     // Clean base64 string if it contains the data URL prefix
     const cleanBase64 = userImageBase64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
 
@@ -118,6 +134,11 @@ export const generateTryOnImage = async (
 
 export const searchTrendingProducts = async (query: string): Promise<any[]> => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, returning empty product list');
+      return [];
+    }
+    
     const prompt = `
       You are a product scout for a teen dropshipping business.
       Generate a list of 4 trending/viral product ideas based on the search term: "${query}".
@@ -186,6 +207,33 @@ export const getBusinessMentorChat = () => {
 
 export const scanTrendsAndGenerateChallenges = async () => {
   try {
+    if (!ai) {
+      console.warn('Gemini API not configured, returning default challenges');
+      return [
+        {
+          title: "Showcase Your Top Product",
+          description: "Create a 30-second video highlighting your best-selling product and why customers love it.",
+          platform: "TikTok",
+          difficulty: "Easy",
+          xpReward: 150
+        },
+        {
+          title: "Behind the Scenes",
+          description: "Share your packaging process or how you select products for your shop.",
+          platform: "Instagram",
+          difficulty: "Easy",
+          xpReward: 100
+        },
+        {
+          title: "Customer Testimonial",
+          description: "Get a customer review or create a testimonial reel about your shop.",
+          platform: "Instagram",
+          difficulty: "Medium",
+          xpReward: 250
+        }
+      ];
+    }
+    
     const prompt = `
       Step 1: Use Google Search to find the top 3 current viral trends on TikTok and Instagram for teenagers (fashion, beauty, or lifestyle) RIGHT NOW.
       Step 2: Based on these trends, generate 3 specific business challenges for a shop owner to capitalize on them.
