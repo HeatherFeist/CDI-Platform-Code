@@ -73,7 +73,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'shop' | 'tryon' | 'admin' | 'community' | 'messages' | 'profile'>('shop');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [platformFilter, setPlatformFilter] = useState<'All' | 'Amazon' | 'Shein' | 'eBay'>('All');
+  const [platformFilter, setPlatformFilter] = useState<'All' | 'Amazon' | 'Shein' | 'eBay' | 'Temu'>('All');
   const [showApiKeySettings, setShowApiKeySettings] = useState(false);
 
   const isConfigured = !supabaseUrl.includes("your-project-id");
@@ -426,7 +426,7 @@ const App: React.FC = () => {
                </div>
             </div>
             <div className="space-y-12">
-               <div className="flex flex-col md:flex-row justify-between items-end gap-6"><div><h3 className="text-4xl font-display font-bold text-white mb-2">Curated Assets</h3><p className="text-slate-500 text-sm font-light">Explore validated products by category.</p></div><div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10">{['All', 'Amazon', 'eBay', 'Shein'].map((p) => (<button key={p} onClick={() => setPlatformFilter(p as any)} className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${platformFilter === p ? 'bg-white text-black shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>{p}</button>))}</div></div>
+               <div className="flex flex-col md:flex-row justify-between items-end gap-6"><div><h3 className="text-4xl font-display font-bold text-white mb-2">Curated Assets</h3><p className="text-slate-500 text-sm font-light">Explore validated products by category.</p></div><div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10">{['All', 'Amazon', 'Temu', 'eBay', 'Shein'].map((p) => (<button key={p} onClick={() => setPlatformFilter(p as any)} className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${platformFilter === p ? 'bg-white text-black shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>{p}</button>))}</div></div>
                {categorizedProducts.length > 0 ? categorizedProducts.map((group) => (<section key={group.category} className="space-y-8 pb-12"><div className="flex items-center gap-4"><div className="h-px flex-1 bg-white/5"></div><h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">{group.category}</h4><div className="h-px flex-1 bg-white/5"></div></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">{group.items.map(p => (<ProductCard key={p.id} product={p} userRole={isOwner ? 'admin' : 'shopper'} onDelete={handleDeleteProduct} onAddToCart={(p, type) => { setCart([...cart, { ...p, quantity: 1, orderType: type }]); setIsCartOpen(true); }} onUploadReview={handleAttachVideo} />))}</div></section>)) : (<div className="py-20 text-center space-y-4 opacity-30"><Monitor size={48} className="mx-auto" /><p className="font-display text-2xl text-slate-600">Boutique Inventory Pending...</p></div>)}
             </div>
           </div>

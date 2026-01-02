@@ -113,6 +113,86 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, onUpdateProfile 
             </div>
           </div>
 
+          {/* Shipping Address Section */}
+          <div className="space-y-8">
+            <div className="flex justify-between items-center border-b border-white/5 pb-4">
+              <h3 className="text-2xl font-display font-bold text-white flex items-center gap-3">
+                <Truck className="text-cyan-400" size={24} /> Shipping Address
+              </h3>
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+                <MapPin size={12} /> Logistics Hub
+              </span>
+            </div>
+
+            <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-2xl p-6 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Street Address</label>
+                <input
+                  type="text"
+                  value={formData.shippingAddress?.street || ''}
+                  onChange={(e) => handleAddressChange('street', e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-500 text-white"
+                  placeholder="123 Main Street"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">City</label>
+                  <input
+                    type="text"
+                    value={formData.shippingAddress?.city || ''}
+                    onChange={(e) => handleAddressChange('city', e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-500 text-white"
+                    placeholder="City"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">State</label>
+                  <input
+                    type="text"
+                    value={formData.shippingAddress?.state || ''}
+                    onChange={(e) => handleAddressChange('state', e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-500 text-white"
+                    placeholder="State"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">ZIP Code</label>
+                  <input
+                    type="text"
+                    value={formData.shippingAddress?.zipCode || ''}
+                    onChange={(e) => handleAddressChange('zipCode', e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-500 text-white"
+                    placeholder="12345"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Country</label>
+                  <input
+                    type="text"
+                    value={formData.shippingAddress?.country || 'USA'}
+                    onChange={(e) => handleAddressChange('country', e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-cyan-500 text-white"
+                    placeholder="USA"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 flex gap-3">
+                <Truck size={16} className="text-cyan-400 shrink-0 mt-0.5" />
+                <p className="text-[10px] text-cyan-300 leading-relaxed">
+                  This address will be auto-filled during checkout for your inventory purchases. Customers entering your store will use their own shipping address.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <button type="submit" className="w-full bg-white text-black py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-3">
             <Save size={20} /> Synchronize Hub Identity
           </button>

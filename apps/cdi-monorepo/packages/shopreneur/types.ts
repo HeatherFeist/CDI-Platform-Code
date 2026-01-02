@@ -19,7 +19,7 @@ export interface Product {
   videoUrl?: string; // Link to the user's review video
   videoReviewCompleted?: boolean; // Requirement 1
   affiliateLink: string; 
-  platform: 'Amazon' | 'Shein' | 'eBay'; 
+  platform: 'Amazon' | 'Shein' | 'eBay' | 'Temu'; 
   isWishlist: boolean; 
   isReceived?: boolean; 
   stockCount: number; // Requirement 2: Must be >= 2 (1 personal + 1 inventory)

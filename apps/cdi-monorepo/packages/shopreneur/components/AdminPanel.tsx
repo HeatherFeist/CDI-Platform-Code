@@ -10,7 +10,7 @@ import {
   Rocket, Palette, ArrowUpCircle, Globe, CheckCircle, Boxes, 
   Database, ShieldCheck, Tag, LayoutGrid, Info, Layers, 
   Filter, CheckCircle2, Trash2, TrendingUp, DollarSign, 
-  Monitor, UserCircle, Video, Home, Lock, Unlock, AlertCircle
+  Monitor, UserCircle, Video, Home, Lock, Unlock, AlertCircle, Edit2, X
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -48,6 +48,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const [isMentorOpen, setIsMentorOpen] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   useEffect(() => { setSettingsForm(shopSettings); }, [shopSettings]);
 
@@ -73,23 +74,70 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddProduct({
-      id: Date.now().toString(),
-      name: formData.name,
-      price: parseFloat(formData.price) || 0,
-      costPrice: parseFloat(formData.costPrice) || 0,
-      category: formData.category as ProductCategory,
-      description: formData.description,
-      imageUrl: formData.imageUrl || `https://picsum.photos/seed/${formData.name}/400/500`,
-      affiliateLink: formData.affiliateLink,
-      platform: formData.platform,
-      isWishlist: true,
-      isReceived: false,
-      videoReviewCompleted: false,
-      stockCount: 0,
-      asin: formData.platform === 'Amazon' ? formData.marketplaceId : undefined,
-      marketplaceId: formData.marketplaceId
+    
+    if (editingProduct) {
+      // Update existing product
+      onUpdateProduct({
+        ...editingProduct,
+        name: formData.name,
+        price: parseFloat(formData.price) || 0,
+        costPrice: parseFloat(formData.costPrice) || 0,
+        category: formData.category as ProductCategory,
+        description: formData.description,
+        imageUrl: formData.imageUrl || editingProduct.imageUrl,
+        affiliateLink: formData.affiliateLink,
+        platform: formData.platform,
+        asin: formData.platform === 'Amazon' ? formData.marketplaceId : undefined,
+        marketplaceId: formData.marketplaceId
+      });
+      setEditingProduct(null);
+    } else {
+      // Create new product
+      onAddProduct({
+        id: Date.now().toString(),
+        name: formData.name,
+        price: parseFloat(formData.price) || 0,
+        costPrice: parseFloat(formData.costPrice) || 0,
+        category: formData.category as ProductCategory,
+        description: formData.description,
+        imageUrl: formData.imageUrl || `https://picsum.photos/seed/${formData.name}/400/500`,
+        affiliateLink: formData.affiliateLink,
+        platform: formData.platform,
+        isWishlist: true,
+        isReceived: false,
+        videoReviewCompleted: false,
+        stockCount: 0,
+        asin: formData.platform === 'Amazon' ? formData.marketplaceId : undefined,
+        marketplaceId: formData.marketplaceId
+      });
+    }
+    
+    setFormData({ name: '', price: '', costPrice: '', category: ProductCategory.FASHION, keywords: '', affiliateLink: '', platform: 'Amazon', description: '', imageUrl: '', additionalImages: [], videoUrl: '', isReceived: false, marketplaceId: '' });
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      price: product.price.toString(),
+      costPrice: (product.costPrice || 0).toString(),
+      category: product.category,
+      keywords: '',
+      affiliateLink: product.affiliateLink || '',
+      platform: product.platform || 'Amazon',
+      description: product.description || '',
+      imageUrl: product.imageUrl || '',
+      additionalImages: product.additionalImages || [],
+      videoUrl: product.videoUrl || '',
+      isReceived: product.isReceived || false,
+      marketplaceId: product.marketplaceId || product.asin || ''
     });
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
     setFormData({ name: '', price: '', costPrice: '', category: ProductCategory.FASHION, keywords: '', affiliateLink: '', platform: 'Amazon', description: '', imageUrl: '', additionalImages: [], videoUrl: '', isReceived: false, marketplaceId: '' });
   };
 
@@ -153,10 +201,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           <form onSubmit={handleSubmit} className="space-y-12">
             <div className="flex justify-between items-center">
               <div className="space-y-1">
-                <h3 className="text-4xl font-display font-bold text-white tracking-tight">Asset Onboarding</h3>
-                <p className="text-slate-500 text-sm">Define strategic inventory across verified global marketplaces.</p>
+                <h3 className="text-4xl font-display font-bold text-white tracking-tight">
+                  {editingProduct ? 'Edit Asset' : 'Asset Onboarding'}
+                </h3>
+                <p className="text-slate-500 text-sm">
+                  {editingProduct ? 'Update product information and marketplace details.' : 'Define strategic inventory across verified global marketplaces.'}
+                </p>
               </div>
-              <BusinessTip title="The 2-Unit Rule" content="New assets start as 'Incubator' items. To unlock full sales, you must provide 1 Review Video and have at least 1 unit in stock for customers (2 units total purchased)." />
+              {editingProduct && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                >
+                  <X size={16} />
+                  Cancel
+                </button>
+              )}
+              {!editingProduct && (
+                <BusinessTip title="The 2-Unit Rule" content="New assets start as 'Incubator' items. To unlock full sales, you must provide 1 Review Video and have at least 1 unit in stock for customers (2 units total purchased)." />
+              )}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -170,6 +234,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           className={selectStyles}
                         >
                           <option value="Amazon" className="bg-slate-900 text-white">Amazon</option>
+                          <option value="Temu" className="bg-slate-900 text-white">Temu</option>
                           <option value="Shein" className="bg-slate-900 text-white">Shein</option>
                           <option value="eBay" className="bg-slate-900 text-white">eBay</option>
                         </select>
@@ -241,7 +306,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             <button type="submit" className="w-full bg-white text-black py-6 rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-4 group">
-              <Database size={24} className="text-indigo-600" /> Commit to Ledger
+              <Database size={24} className="text-indigo-600" />
+              {editingProduct ? 'Update Asset' : 'Commit to Ledger'}
             </button>
           </form>
 
@@ -326,6 +392,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                           <Video size={14} />
                                        </button>
                                      )}
+                                     <button onClick={() => handleEditProduct(product)} className="p-2.5 text-slate-600 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all" title="Edit Asset">
+                                        <Edit2 size={14} />
+                                     </button>
                                      <button onClick={() => onDeleteProduct(product.id)} className="p-2.5 text-slate-600 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all" title="Retire Asset">
                                         <Trash2 size={14} />
                                      </button>

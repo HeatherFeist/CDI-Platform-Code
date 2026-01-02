@@ -30,7 +30,14 @@ const mapProfile = (p: any): UserProfile => ({
   bio: p.bio,
   avatarUrl: p.avatar_url,
   role: p.role,
-  password: p.password
+  password: p.password,
+  shippingAddress: p.shipping_address ? {
+    street: p.shipping_address.street || '',
+    city: p.shipping_address.city || '',
+    state: p.shipping_address.state || '',
+    zipCode: p.shipping_address.zipCode || p.shipping_address.zip_code || '',
+    country: p.shipping_address.country || 'USA'
+  } : undefined
 });
 
 export const dbService = {
@@ -77,7 +84,14 @@ export const dbService = {
       bio: profile.bio,
       avatar_url: profile.avatarUrl,
       role: profile.role,
-      password: profile.password
+      password: profile.password,
+      shipping_address: profile.shippingAddress ? {
+        street: profile.shippingAddress.street,
+        city: profile.shippingAddress.city,
+        state: profile.shippingAddress.state,
+        zip_code: profile.shippingAddress.zipCode,
+        country: profile.shippingAddress.country
+      } : null
     };
     
     try {
@@ -106,7 +120,8 @@ export const dbService = {
         bio: profile.bio || '',
         avatarUrl: profile.avatarUrl || '',
         role: profile.role || 'Owner',
-        password: profile.password || ''
+        password: profile.password || '',
+        shippingAddress: profile.shippingAddress
       } as UserProfile;
       
       const local = localStorage.getItem('local_profiles');
@@ -133,6 +148,7 @@ export const dbService = {
 
   saveProduct: async (product: Partial<Product>) => {
     const dbPayload: any = {
+      id: product.id,
       name: product.name,
       price: product.price,
       cost_price: product.costPrice,
@@ -152,10 +168,21 @@ export const dbService = {
       marketplace_id: product.marketplaceId,
       updated_at: new Date()
     };
-    const { error } = product.id 
-      ? await supabase.from('products').update(dbPayload).eq('id', product.id)
-      : await supabase.from('products').insert([dbPayload]);
-    if (error) console.error("Product Save Error:", error);
+    
+    // Use upsert to handle both insert and update
+    const { error } = await supabase
+      .from('products')
+      .upsert(dbPayload, { onConflict: 'id' });
+    
+    if (error) {
+      console.error("Product Save Error:", error);
+      // Fallback to localStorage for offline mode
+      const localProducts = localStorage.getItem('local_products');
+      const products = localProducts ? JSON.parse(localProducts) : [];
+      const updatedProducts = products.filter((p: any) => p.id !== product.id);
+      updatedProducts.push({ ...product, ...dbPayload });
+      localStorage.setItem('local_products', JSON.stringify(updatedProducts));
+    }
   },
 
   deleteProduct: async (productId: string) => {

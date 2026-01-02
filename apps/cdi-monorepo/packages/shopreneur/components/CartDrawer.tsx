@@ -18,10 +18,20 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   onClose, 
   cartItems, 
   onRemoveItem, 
-  shopSettings, 
+  shopSettings,
+  userProfile,
   onPurchaseComplete 
 }) => {
   const [view, setView] = useState<'cart' | 'transferring' | 'confirm' | 'success'>('cart');
+  const [shippingAddress, setShippingAddress] = useState({
+    street: userProfile?.shippingAddress?.street || '',
+    city: userProfile?.shippingAddress?.city || '',
+    state: userProfile?.shippingAddress?.state || '',
+    zipCode: userProfile?.shippingAddress?.zipCode || '',
+    country: userProfile?.shippingAddress?.country || 'USA'
+  });
+  
+  const isOwner = userProfile?.role === 'Owner';
   
   const amazonItems = cartItems.filter(i => i.platform === 'Amazon');
   const otherItems = cartItems.filter(i => i.platform !== 'Amazon');
@@ -177,10 +187,66 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
                    Amazon checkout will open in a new tab. After purchase, return here to verify assets for inventory sync.
                  </p>
               </div>
+
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Shipping Address</h3>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Street Address"
+                    value={shippingAddress.street}
+                    onChange={(e) => setShippingAddress({...shippingAddress, street: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white text-sm placeholder-slate-600"
+                    required
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={shippingAddress.city}
+                      onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})}
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white text-sm placeholder-slate-600"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="State"
+                      value={shippingAddress.state}
+                      onChange={(e) => setShippingAddress({...shippingAddress, state: e.target.value})}
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white text-sm placeholder-slate-600"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      placeholder="ZIP Code"
+                      value={shippingAddress.zipCode}
+                      onChange={(e) => setShippingAddress({...shippingAddress, zipCode: e.target.value})}
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white text-sm placeholder-slate-600"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Country"
+                      value={shippingAddress.country}
+                      onChange={(e) => setShippingAddress({...shippingAddress, country: e.target.value})}
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white text-sm placeholder-slate-600"
+                      required
+                    />
+                  </div>
+                  {isOwner && (
+                    <p className="text-[9px] text-emerald-400 flex items-center gap-1">
+                      <CheckCircle size={10} /> Owner address auto-filled for your inventory
+                    </p>
+                  )}
+                </div>
+              </div>
               
               <button 
                 onClick={handleCheckout}
-                className="w-full bg-white text-black font-black uppercase tracking-widest py-5 rounded-2xl shadow-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-3 active:scale-95 group"
+                disabled={!shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zipCode}
+                className="w-full bg-white text-black font-black uppercase tracking-widest py-5 rounded-2xl shadow-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-3 active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>Synchronize & Checkout</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
