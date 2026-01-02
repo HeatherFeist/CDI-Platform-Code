@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ProductCategory, Product, CreatorStats, ShopSettings, UserProfile } from '../types';
 import { generateProductDescription, generateProductImage } from '../services/geminiService';
+import { canPublishToMarketplace, publishToMarketplace, unpublishFromMarketplace } from '../services/marketplaceSync';
 import BusinessTip from './BusinessTip';
 import BusinessMentor from './BusinessMentor';
 import ProfileEditor from './ProfileEditor';
@@ -10,7 +11,7 @@ import {
   Rocket, Palette, ArrowUpCircle, Globe, CheckCircle, Boxes, 
   Database, ShieldCheck, Tag, LayoutGrid, Info, Layers, 
   Filter, CheckCircle2, Trash2, TrendingUp, DollarSign, 
-  Monitor, UserCircle, Video, Home, Lock, Unlock, AlertCircle, Edit2, X
+  Monitor, UserCircle, Video, Home, Lock, Unlock, AlertCircle, Edit2, X, ExternalLink
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -49,6 +50,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [syncingProducts, setSyncingProducts] = useState<Set<string>>(new Set());
 
   useEffect(() => { setSettingsForm(shopSettings); }, [shopSettings]);
 
@@ -156,6 +158,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       if (product) {
         onUpdateProduct({ ...product, videoUrl: url, videoReviewCompleted: true });
       }
+    }
+  };
+
+  const handleSyncToMarketplace = async (product: Product) => {
+    setSyncingProducts(prev => new Set(prev).add(product.id));
+    
+    try {
+      const result = await publishToMarketplace(product);
+      if (result.success) {
+        alert(`✅ "${product.name}" is now listed on the Marketplace!`);
+        // Update product to mark it as synced
+        onUpdateProduct({ ...product, isMarketplaceSynced: true });
+      } else {
+        alert(`❌ Failed to sync: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      alert('❌ Failed to sync to marketplace');
+    } finally {
+      setSyncingProducts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(product.id);
+        return newSet;
+      });
     }
   };
 
@@ -330,6 +356,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Cost</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Retail</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Margin</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Marketplace</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Actions</th>
                          </tr>
                       </thead>
@@ -379,6 +406,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                   <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${margin >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
                                      ${margin.toFixed(2)}
                                   </div>
+                               </td>
+                               <td className="px-8 py-6 text-center">
+                                  {canPublishToMarketplace(product) ? (
+                                    <button 
+                                      onClick={() => handleSyncToMarketplace(product)}
+                                      disabled={syncingProducts.has(product.id)}
+                                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                        product.isMarketplaceSynced 
+                                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                                          : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30'
+                                      }`}
+                                      title={product.isMarketplaceSynced ? 'Listed on Marketplace' : 'Publish to Marketplace'}
+                                    >
+                                      {syncingProducts.has(product.id) ? (
+                                        <Loader2 size={10} className="animate-spin" />
+                                      ) : (
+                                        <ExternalLink size={10} />
+                                      )}
+                                      {product.isMarketplaceSynced ? 'Synced' : 'Publish'}
+                                    </button>
+                                  ) : (
+                                    <div className="text-[9px] text-slate-600 font-medium" title="Needs video review + 2 stock">
+                                      Not Eligible
+                                    </div>
+                                  )}
                                </td>
                                <td className="px-8 py-6 text-center">
                                   <div className="flex items-center justify-center gap-2">
