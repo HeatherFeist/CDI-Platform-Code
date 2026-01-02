@@ -1,8 +1,44 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const apiKey = process.env.API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+// Get API key from environment or localStorage (user's own key)
+const getApiKey = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY;
+  }
+  return process.env.API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+};
+
+let ai: GoogleGenAI | null = null;
+const initializeAI = () => {
+  const apiKey = getApiKey();
+  if (apiKey && !ai) {
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+};
+
+// Initialize on import
+initializeAI();
+
+// Function to update API key and reinitialize
+export const setUserApiKey = (apiKey: string) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('gemini_api_key', apiKey);
+    ai = new GoogleGenAI({ apiKey });
+  }
+};
+
+export const clearUserApiKey = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('gemini_api_key');
+    ai = null;
+  }
+};
+
+export const hasApiKey = () => {
+  return !!getApiKey();
+};
 
 export const generateProductDescription = async (
   productName: string,
@@ -15,7 +51,7 @@ export const generateProductDescription = async (
       return `Check out this amazing ${productName}! Perfect for ${category.toLowerCase()} lovers.`;
     }
     
-    // Updated to gemini-3-flash-preview for basic text generation tasks
+    // gemini-3-flash-preview for basic text tasks
     const modelName = 'gemini-3-flash-preview';
     const prompt = `
       You are a trendy, Gen Z savvy copywriter for a teenage girl's online boutique on the "Shop'reneur" platform.
@@ -43,18 +79,13 @@ export const generateProductImage = async (
   description: string
 ): Promise<string | null> => {
   try {
-    if (!ai) {
-      console.warn('Gemini API not configured, cannot generate images');
-      return null;
-    }
-    
     const prompt = `Professional product photography of ${productName}. 
     Category: ${category}. 
     Description: ${description}. 
     Style: High-end e-commerce, clean white or pastel background, studio lighting, 4k, detailed. 
     Ensure the item is the main focus and fully visible. No text overlays.`;
 
-    // gemini-2.5-flash-image is correct for general image generation
+    // gemini-2.5-flash-image for image generation
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
@@ -81,15 +112,10 @@ export const generateTryOnImage = async (
   productDescription: string
 ): Promise<string | null> => {
   try {
-    if (!ai) {
-      console.warn('Gemini API not configured, cannot generate try-on images');
-      return null;
-    }
-    
     // Clean base64 string if it contains the data URL prefix
     const cleanBase64 = userImageBase64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
 
-    // gemini-2.5-flash-image is used for image editing tasks
+    // gemini-2.5-flash-image for image editing
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
@@ -118,7 +144,7 @@ export const generateTryOnImage = async (
       },
     });
 
-    // Extract image from response
+    // Extract image from response parts
     for (const part of response.candidates?.[0]?.content?.parts || []) {
       if (part.inlineData) {
         return `data:image/png;base64,${part.inlineData.data}`;
@@ -134,11 +160,6 @@ export const generateTryOnImage = async (
 
 export const searchTrendingProducts = async (query: string): Promise<any[]> => {
   try {
-    if (!ai) {
-      console.warn('Gemini API not configured, returning empty product list');
-      return [];
-    }
-    
     const prompt = `
       You are a product scout for a teen dropshipping business.
       Generate a list of 4 trending/viral product ideas based on the search term: "${query}".
@@ -155,7 +176,7 @@ export const searchTrendingProducts = async (query: string): Promise<any[]> => {
       ]
     `;
 
-    // gemini-3-flash-preview for structured text tasks
+    // gemini-3-flash-preview for structured JSON output
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
@@ -171,7 +192,9 @@ export const searchTrendingProducts = async (query: string): Promise<any[]> => {
               category: { type: Type.STRING },
               description: { type: Type.STRING },
               keywords: { type: Type.STRING },
-            }
+            },
+            required: ["name", "price", "category", "description", "keywords"],
+            propertyOrdering: ["name", "price", "category", "description", "keywords"]
           }
         }
       }
@@ -189,7 +212,7 @@ export const searchTrendingProducts = async (query: string): Promise<any[]> => {
 // --- Business Mentor Functions ---
 
 export const getBusinessMentorChat = () => {
-  // gemini-3-flash-preview for interactive chat
+  // gemini-3-flash-preview for conversational AI
   return ai.chats.create({
     model: 'gemini-3-flash-preview',
     config: {
@@ -207,33 +230,6 @@ export const getBusinessMentorChat = () => {
 
 export const scanTrendsAndGenerateChallenges = async () => {
   try {
-    if (!ai) {
-      console.warn('Gemini API not configured, returning default challenges');
-      return [
-        {
-          title: "Showcase Your Top Product",
-          description: "Create a 30-second video highlighting your best-selling product and why customers love it.",
-          platform: "TikTok",
-          difficulty: "Easy",
-          xpReward: 150
-        },
-        {
-          title: "Behind the Scenes",
-          description: "Share your packaging process or how you select products for your shop.",
-          platform: "Instagram",
-          difficulty: "Easy",
-          xpReward: 100
-        },
-        {
-          title: "Customer Testimonial",
-          description: "Get a customer review or create a testimonial reel about your shop.",
-          platform: "Instagram",
-          difficulty: "Medium",
-          xpReward: 250
-        }
-      ];
-    }
-    
     const prompt = `
       Step 1: Use Google Search to find the top 3 current viral trends on TikTok and Instagram for teenagers (fashion, beauty, or lifestyle) RIGHT NOW.
       Step 2: Based on these trends, generate 3 specific business challenges for a shop owner to capitalize on them.
@@ -250,50 +246,55 @@ export const scanTrendsAndGenerateChallenges = async () => {
       ]
     `;
 
-    // gemini-3-pro-preview for complex reasoning task with search grounding
+    // gemini-3-pro-preview for tasks requiring search grounding.
+    // Rule: We MUST extract URLs from groundingChunks and list them. 
+    // Rule: Output text may not be pure JSON when using search grounding, so we remove responseMimeType and handle parsing manually.
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
       contents: prompt,
       config: {
         tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              title: { type: Type.STRING },
-              description: { type: Type.STRING },
-              platform: { type: Type.STRING },
-              difficulty: { type: Type.STRING },
-              xpReward: { type: Type.NUMBER },
-            }
-          }
-        }
       }
     });
+
+    // Extract grounding URLs as required by guidelines
+    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+    const sources = groundingChunks?.map((chunk: any) => chunk.web?.uri).filter(Boolean) || [];
 
     const text = response.text;
     if (!text) return [];
     
-    return JSON.parse(text);
+    try {
+      // Find JSON block within the response text as search grounding can include extra text
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const jsonStr = jsonMatch ? jsonMatch[0] : text;
+      const challenges = JSON.parse(jsonStr);
+      
+      // Inject source URLs into the challenges for the UI to display
+      return challenges.map((c: any) => ({ ...c, sources }));
+    } catch (e) {
+      console.warn("Could not parse JSON from search grounding response:", text);
+      return [];
+    }
   } catch (error) {
     console.error("Error scanning trends:", error);
-    // Fallback data if search fails or hits limits
+    // Fallback static data
     return [
       {
         title: "GRWM: School Fit",
         description: "Get Ready With Me videos are trending. Show a outfit combo from your shop!",
         platform: "TikTok",
         difficulty: "Easy",
-        xpReward: 150
+        xpReward: 150,
+        sources: []
       },
       {
         title: "ASMR Unboxing",
         description: "Satisfying unboxing videos are viral. Film a silent unboxing of your best seller.",
         platform: "Instagram",
         difficulty: "Medium",
-        xpReward: 300
+        xpReward: 300,
+        sources: []
       }
     ];
   }

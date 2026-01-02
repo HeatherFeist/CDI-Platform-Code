@@ -1,6 +1,7 @@
+
 import React, { useRef, useState } from 'react';
 import { UserProfile } from '../types';
-import { Camera, Save, User, AtSign, FileText, MapPin, Truck } from 'lucide-react';
+import { Camera, Save, User, AtSign, FileText, MapPin, Truck, ShieldCheck } from 'lucide-react';
 
 interface ProfileEditorProps {
   profile: UserProfile;
@@ -40,150 +41,80 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ profile, onUpdateProfile 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdateProfile(formData);
-    alert("Profile & Shipping details updated successfully! 💅");
+    alert("Executive Identity Synchronized! 💅");
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-purple-100">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-500 h-32 relative">
-        <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
+    <div className="max-w-4xl mx-auto glass-card rounded-[3rem] overflow-hidden border border-white/5 shadow-3xl bg-white/[0.01]">
+      <div className="bg-gradient-to-r from-indigo-600/20 to-violet-600/20 h-48 relative">
+        <div className="absolute -bottom-16 left-12">
           <div className="relative group">
-            <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 overflow-hidden shadow-md">
+            <div className="w-32 h-32 rounded-[2rem] border-4 border-[#020617] bg-slate-800 overflow-hidden shadow-2xl">
               <img src={formData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
             </div>
             <button 
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-0 right-0 bg-black text-white p-1.5 rounded-full hover:bg-gray-800 transition-colors shadow-sm"
+              className="absolute bottom-2 right-2 bg-indigo-600 text-white p-2.5 rounded-xl hover:bg-indigo-500 transition-colors shadow-xl"
             >
-              <Camera size={14} />
+              <Camera size={18} />
             </button>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleImageUpload} 
-              accept="image/*" 
-              className="hidden" 
-            />
+            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
           </div>
         </div>
       </div>
 
-      <div className="pt-16 pb-8 px-8">
-        <h2 className="text-2xl font-display font-bold text-center text-gray-900 mb-6">Edit Your Profile</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="pt-24 pb-12 px-12">
+        <form onSubmit={handleSubmit} className="space-y-12">
           {/* Public Info */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4 flex items-center gap-2">
-              <User size={18} /> Public Info
-            </h3>
+          <div className="space-y-8">
+            <div className="flex justify-between items-center border-b border-white/5 pb-4">
+              <h3 className="text-2xl font-display font-bold text-white flex items-center gap-3">
+                <User className="text-indigo-400" size={24} /> Executive Credentials
+              </h3>
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5"><ShieldCheck size={12} /> Verified Identity</span>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Display Name</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Display Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white font-bold"
                   placeholder="e.g. Trin"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Handle</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Identity Handle</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-2 text-gray-400 font-bold">@</span>
+                  <span className="absolute left-6 top-4 text-slate-600 font-bold">@</span>
                   <input
                     type="text"
                     value={formData.handle}
                     onChange={(e) => setFormData({...formData, handle: e.target.value})}
-                    className="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    className="w-full pl-10 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 text-white"
                     placeholder="trinstreasures"
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Bio</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Executive Bio</label>
               <textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                rows={3}
-                className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                placeholder="Tell the community about you and your shop..."
+                rows={4}
+                className="w-full bg-white/5 border border-white/10 rounded-3xl px-8 py-6 outline-none focus:border-indigo-500 text-slate-300 font-light leading-relaxed"
+                placeholder="Tell the community about your strategic vision..."
               />
             </div>
           </div>
 
-          {/* Shipping Info */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2 mb-4">
-               <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                 <Truck size={18} /> Shipping Address
-               </h3>
-               <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                 <MapPin size={10} /> Private
-               </span>
-            </div>
-            
-            <div className="bg-yellow-50 p-3 rounded-lg text-xs text-yellow-800 mb-4">
-               <strong>Important:</strong> This is where Gifted items from your wishlist will be sent. 
-               We do not share your exact street address publicly, but donors will need it to ship items to you via Amazon.
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Street Address</label>
-              <input
-                type="text"
-                value={formData.shippingAddress?.street || ''}
-                onChange={(e) => handleAddressChange('street', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                placeholder="123 Entrepreneur Way"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">City</label>
-                <input
-                  type="text"
-                  value={formData.shippingAddress?.city || ''}
-                  onChange={(e) => handleAddressChange('city', e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                  placeholder="Los Angeles"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">State</label>
-                <input
-                  type="text"
-                  value={formData.shippingAddress?.state || ''}
-                  onChange={(e) => handleAddressChange('state', e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                  placeholder="CA"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Zip Code</label>
-                <input
-                  type="text"
-                  value={formData.shippingAddress?.zipCode || ''}
-                  onChange={(e) => handleAddressChange('zipCode', e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                  placeholder="90210"
-                />
-              </div>
-            </div>
-          </div>
-
-          <button 
-            type="submit"
-            className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-900 transition-colors flex items-center justify-center gap-2 shadow-lg mt-4"
-          >
-            <Save size={18} />
-            Save Profile & Settings
+          <button type="submit" className="w-full bg-white text-black py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-3">
+            <Save size={20} /> Synchronize Hub Identity
           </button>
         </form>
       </div>

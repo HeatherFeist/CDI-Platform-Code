@@ -1,199 +1,64 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ProductCategory, Product, DailyContent, CreatorStats, ContentPrompt, ShopSettings, SaleRecord, SocialPlatform } from '../types';
-import { generateProductDescription, generateProductImage, searchTrendingProducts } from '../services/geminiService';
+
+import React, { useState, useEffect } from 'react';
+import { ProductCategory, Product, CreatorStats, ShopSettings, UserProfile } from '../types';
+import { generateProductDescription, generateProductImage } from '../services/geminiService';
 import BusinessTip from './BusinessTip';
 import BusinessMentor from './BusinessMentor';
-import MerchantCoinConfigurator from './MerchantCoinConfigurator';
-import { Sparkles, Plus, Loader2, Link as LinkIcon, Upload, Image as ImageIcon, Wand2, Save, X, Lightbulb, ChevronDown, ChevronUp, Megaphone, ShieldCheck, TrendingUp, Video, Tv, Edit2, Trophy, Target, Zap, Palette, Type, Layout, Instagram, Facebook, Smartphone, CheckCircle, DollarSign, Crown, Code, AtSign, Share2, ExternalLink, Check, Calendar, Flame, ShoppingBag, Bot, Lock, Package, ArrowUpCircle, Rocket, FileText, PieChart, Youtube, Link2, BarChart2, Search as SearchIcon, Send, RefreshCcw } from 'lucide-react';
+import ProfileEditor from './ProfileEditor';
+import { 
+  Sparkles, Loader2, Image as ImageIcon, Save, Bot, Cloud, 
+  Rocket, Palette, ArrowUpCircle, Globe, CheckCircle, Boxes, 
+  Database, ShieldCheck, Tag, LayoutGrid, Info, Layers, 
+  Filter, CheckCircle2, Trash2, TrendingUp, DollarSign, 
+  Monitor, UserCircle, Video, Home, Lock, Unlock, AlertCircle
+} from 'lucide-react';
 
 interface AdminPanelProps {
   onAddProduct: (product: Product | Product[]) => void;
-  productToEdit?: Product | null;
-  onUpdateProduct?: (product: Product) => void;
-  onCancelEdit?: () => void;
-  dailyContent?: DailyContent | null;
-  onUpdateDailyContent?: (content: DailyContent) => void;
+  onDeleteProduct: (id: string) => void;
+  onUpdateProduct: (product: Product) => void;
   creatorStats: CreatorStats;
   onCompleteChallenge: (points: number) => void;
   shopSettings: ShopSettings;
   onUpdateShopSettings: (settings: ShopSettings) => void;
-  onUpgradeTier?: () => void;
   products: Product[];
-  onRecordSale?: (productName: string, price: number) => void;
-  onSellProduct?: (productId: string, price: number) => void;
-  salesHistory?: SaleRecord[];
+  currentUser: UserProfile;
+  onUpdateProfile: (profile: UserProfile) => void;
+  dbConnected?: boolean;
+  onBackToStore: () => void;
 }
-
-const INITIAL_CHALLENGES: ContentPrompt[] = [
-  { 
-    id: '1', 
-    type: 'Daily',
-    title: 'Welcome Vlog', 
-    description: 'Create your channel and post a "Welcome to my Shop" intro video. Link your wishlist in the description!', 
-    difficulty: 'Easy', 
-    xpReward: 150, 
-    platform: 'YouTube',
-    expiresIn: '24h'
-  }
-];
-
-const THEME_PRESETS = [
-  {
-    name: 'Coquette Dream',
-    primary: '#ec4899',
-    secondary: '#fbcfe8',
-    bg: '#fff1f2',
-    heading: 'Playfair Display',
-    body: 'Quicksand'
-  },
-  {
-    name: 'Y2K Cyber',
-    primary: '#d946ef',
-    secondary: '#06b6d4',
-    bg: '#0f172a',
-    heading: 'Orbitron', 
-    body: 'Inter'
-  },
-  {
-    name: 'Clean Girl',
-    primary: '#78716c',
-    secondary: '#a8a29e',
-    bg: '#fafaf9',
-    heading: 'Montserrat',
-    body: 'Lato'
-  },
-  {
-    name: 'Dark Academia',
-    primary: '#713f12',
-    secondary: '#a16207',
-    bg: '#fffbeb',
-    heading: 'Merriweather',
-    body: 'Open Sans'
-  }
-];
-
-const PlatformIcon = ({ platform, className = "" }: { platform: string, className?: string }) => {
-  switch (platform) {
-    case 'TikTok': return <Smartphone size={16} className={className} />;
-    case 'Instagram': return <Instagram size={16} className={className} />;
-    case 'Facebook': return <Facebook size={16} className={className} />;
-    case 'YouTube': return <Youtube size={16} className={className} />;
-    default: return <Video size={16} className={className} />;
-  }
-};
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ 
   onAddProduct, 
-  productToEdit, 
-  onUpdateProduct, 
-  onCancelEdit,
-  dailyContent,
-  onUpdateDailyContent,
+  onDeleteProduct,
+  onUpdateProduct,
   creatorStats,
-  onCompleteChallenge,
   shopSettings,
   onUpdateShopSettings,
-  onUpgradeTier,
   products,
-  onRecordSale,
-  onSellProduct,
-  salesHistory = []
+  currentUser,
+  onUpdateProfile,
+  dbConnected = false,
+  onBackToStore
 }) => {
-  const [activeAdminTab, setActiveAdminTab] = useState<'inventory' | 'brand' | 'finance' | 'merchant-coins'>('inventory');
-  
-  // Settings Form State - Ensure it updates if props change
+  const [activeAdminTab, setActiveAdminTab] = useState<'inventory' | 'brand' | 'marketplace' | 'identity'>('inventory');
   const [settingsForm, setSettingsForm] = useState<ShopSettings>(shopSettings);
-  
-  useEffect(() => {
-    setSettingsForm(shopSettings);
-  }, [shopSettings]);
-
-  // Existing States
   const [loading, setLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
-  const [isScouting, setIsScouting] = useState(false);
-  const [scoutQuery, setScoutQuery] = useState('');
-  const [scoutResults, setScoutResults] = useState<any[]>([]);
-  const [scoutLoading, setScoutLoading] = useState(false);
   const [isMentorOpen, setIsMentorOpen] = useState(false);
-  const [proofLink, setProofLink] = useState('');
-  const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
-  const [selectedChallenge, setSelectedChallenge] = useState<ContentPrompt>(INITIAL_CHALLENGES[0]);
-  const [selectedPlatformFilter, setSelectedPlatformFilter] = useState<SocialPlatform | 'All'>('All');
-  
-  const [connectedAccounts, setConnectedAccounts] = useState({
-    YouTube: false,
-    Instagram: false,
-    TikTok: false,
-    Facebook: false
-  });
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
-  const dailyVideoInputRef = useRef<HTMLInputElement>(null);
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const bgInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => { setSettingsForm(shopSettings); }, [shopSettings]);
 
-  // Product Form State
   const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    costPrice: '',
-    category: ProductCategory.FASHION,
-    keywords: '',
-    affiliateLink: 'https://amazon.com',
-    platform: 'Amazon' as 'Amazon' | 'Shein',
-    description: '',
-    imageUrl: '',
-    additionalImages: [] as string[],
-    videoUrl: '',
-    isReceived: false
+    name: '', price: '', costPrice: '', category: ProductCategory.FASHION, keywords: '', affiliateLink: '', platform: 'Amazon' as 'Amazon' | 'Shein' | 'eBay', description: '', imageUrl: '', additionalImages: [] as string[], videoUrl: '', isReceived: false, marketplaceId: ''
   });
-
-  const [dailyData, setDailyData] = useState<DailyContent>({
-    videoUrl: '',
-    title: '',
-    message: '',
-    taggedUsers: []
-  });
-
-  const receivedCount = products.filter(p => (p.stockCount || 0) > 0).length;
-  const reviewCount = products.filter(p => (p.stockCount || 0) > 0 && p.videoUrl).length;
-  const canUpgrade = creatorStats.tier === 'Starter' && receivedCount >= 1 && reviewCount >= 1;
-
-  const totalRevenue = salesHistory.reduce((acc, sale) => acc + sale.salePrice, 0);
-  const totalRestockCost = salesHistory.reduce((acc, sale) => acc + (sale.restockCost || 0), 0);
-  const totalNetProfit = salesHistory.reduce((acc, sale) => acc + (sale.profit || sale.salePrice), 0);
-
-  useEffect(() => {
-    if (dailyContent) setDailyData(dailyContent);
-  }, [dailyContent]);
-
-  useEffect(() => {
-    if (productToEdit) {
-      setActiveAdminTab('inventory');
-      setFormData({
-        name: productToEdit.name,
-        price: productToEdit.price.toString(),
-        costPrice: productToEdit.costPrice?.toString() || '',
-        category: productToEdit.category,
-        keywords: '', 
-        affiliateLink: productToEdit.affiliateLink,
-        platform: productToEdit.platform,
-        description: productToEdit.description,
-        imageUrl: productToEdit.imageUrl,
-        additionalImages: productToEdit.additionalImages || [],
-        videoUrl: productToEdit.videoUrl || '',
-        isReceived: productToEdit.isReceived || false
-      });
-    }
-  }, [productToEdit]);
 
   const handleMagicWrite = async () => {
     if (!formData.name) return;
     setLoading(true);
-    const desc = await generateProductDescription(formData.name, formData.category, formData.keywords || 'trendy');
+    const desc = await generateProductDescription(formData.name, formData.category, formData.keywords || 'professional high-end');
     setFormData(prev => ({ ...prev, description: desc }));
     setLoading(false);
   };
@@ -201,284 +66,343 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const handleGenerateImage = async () => {
     if (!formData.name) return;
     setImageLoading(true);
-    const img = await generateProductImage(formData.name, formData.category, formData.description || 'Product');
+    const img = await generateProductImage(formData.name, formData.category, formData.description || 'Professional Product');
     if (img) setFormData(prev => ({ ...prev, imageUrl: img }));
     setImageLoading(false);
   };
 
-  const handleScoutSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!scoutQuery.trim()) return;
-    setScoutLoading(true);
-    const results = await searchTrendingProducts(scoutQuery);
-    setScoutResults(results);
-    setScoutLoading(false);
-  };
-
-  const handleAddScoutedItem = (item: any) => {
-    const costEstimate = item.price * 0.7;
-    const newItem: Product = {
-      id: Date.now().toString(),
-      name: item.name,
-      price: item.price,
-      costPrice: parseFloat(costEstimate.toFixed(2)),
-      category: item.category as ProductCategory || ProductCategory.FASHION,
-      description: item.description,
-      imageUrl: `https://picsum.photos/seed/${item.name.replace(/\s/g, '')}/400/500`,
-      affiliateLink: `https://amazon.com/s?k=${encodeURIComponent(item.name)}`,
-      platform: 'Amazon',
-      isWishlist: true,
-      stockCount: 0
-    };
-    onAddProduct(newItem);
-  };
-
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => setSettingsForm(prev => ({ ...prev, logoUrl: e.target?.result as string }));
-    reader.readAsDataURL(file);
-  };
-
-  const applyTheme = (theme: typeof THEME_PRESETS[0]) => {
-    setSettingsForm(prev => ({
-        ...prev,
-        primaryColor: theme.primary,
-        secondaryColor: theme.secondary,
-        backgroundColor: theme.bg,
-        fontHeading: theme.heading as any,
-        fontBody: theme.body as any,
-    }));
-  };
-
-  const handleSaveSettings = (e: React.FormEvent) => {
-    e.preventDefault();
-    onUpdateShopSettings(settingsForm);
-    alert("Settings saved to your empire! ✨");
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (productToEdit && onUpdateProduct) {
-      onUpdateProduct({
-        ...productToEdit,
-        name: formData.name,
-        price: parseFloat(formData.price) || 0,
-        costPrice: parseFloat(formData.costPrice) || 0,
-        category: formData.category as ProductCategory,
-        description: formData.description,
-        imageUrl: formData.imageUrl,
-        additionalImages: formData.additionalImages,
-        videoUrl: formData.videoUrl,
-        affiliateLink: formData.affiliateLink,
-        platform: formData.platform,
-        isReceived: formData.isReceived
-      });
-      onCancelEdit?.();
-    } else {
-      onAddProduct({
-        id: Date.now().toString(),
-        name: formData.name,
-        price: parseFloat(formData.price) || 0,
-        costPrice: parseFloat(formData.costPrice) || 0,
-        category: formData.category as ProductCategory,
-        description: formData.description,
-        imageUrl: formData.imageUrl || `https://picsum.photos/seed/${formData.name}/400/500`,
-        additionalImages: formData.additionalImages,
-        videoUrl: formData.videoUrl,
-        affiliateLink: formData.affiliateLink,
-        platform: formData.platform,
-        isWishlist: true,
-        isReceived: false
-      });
-    }
-    setFormData({ name: '', price: '', costPrice: '', category: ProductCategory.FASHION, keywords: '', affiliateLink: 'https://amazon.com', platform: 'Amazon', description: '', imageUrl: '', additionalImages: [], videoUrl: '', isReceived: false });
+    onAddProduct({
+      id: Date.now().toString(),
+      name: formData.name,
+      price: parseFloat(formData.price) || 0,
+      costPrice: parseFloat(formData.costPrice) || 0,
+      category: formData.category as ProductCategory,
+      description: formData.description,
+      imageUrl: formData.imageUrl || `https://picsum.photos/seed/${formData.name}/400/500`,
+      affiliateLink: formData.affiliateLink,
+      platform: formData.platform,
+      isWishlist: true,
+      isReceived: false,
+      videoReviewCompleted: false,
+      stockCount: 0,
+      asin: formData.platform === 'Amazon' ? formData.marketplaceId : undefined,
+      marketplaceId: formData.marketplaceId
+    });
+    setFormData({ name: '', price: '', costPrice: '', category: ProductCategory.FASHION, keywords: '', affiliateLink: '', platform: 'Amazon', description: '', imageUrl: '', additionalImages: [], videoUrl: '', isReceived: false, marketplaceId: '' });
   };
 
+  const handleUpdateSettings = async () => {
+    setIsSavingSettings(true);
+    await onUpdateShopSettings(settingsForm);
+    setIsSavingSettings(false);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 2000);
+  };
+
+  const handleAttachVideo = (productId: string) => {
+    const url = prompt("Paste your TikTok/Reels review link for this product:");
+    if (url) {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        onUpdateProduct({ ...product, videoUrl: url, videoReviewCompleted: true });
+      }
+    }
+  };
+
+  const getMarketplaceLabel = () => {
+    switch(formData.platform) {
+      case 'Amazon': return 'Amazon ASIN';
+      case 'eBay': return 'eBay Item ID';
+      case 'Shein': return 'Shein Product Code';
+      default: return 'Product ID';
+    }
+  };
+
+  const selectStyles = "w-full bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white appearance-none cursor-pointer";
+
   return (
-    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-purple-100 relative">
+    <div className="glass-card p-10 rounded-[3rem] border border-white/5 relative bg-white/[0.01]">
       <BusinessMentor isOpen={isMentorOpen} onClose={() => setIsMentorOpen(false)} onAddChallenge={() => {}} />
       
-      <button onClick={() => setIsMentorOpen(true)} className="fixed bottom-6 right-6 z-40 bg-black text-white p-3 rounded-full shadow-lg flex items-center gap-2 group">
-        <Bot size={20} className="text-green-400" />
-        <span className="hidden group-hover:inline pr-2 text-sm font-bold">Ask Mentor</span>
+      <button onClick={() => setIsMentorOpen(true)} className="fixed bottom-10 right-10 z-50 bg-white text-black p-5 rounded-3xl shadow-2xl flex items-center gap-3 hover:scale-105 transition-transform group border border-white/10">
+        <Bot size={24} className="text-indigo-600" />
+        <span className="text-xs font-black uppercase tracking-widest pr-2">Executive Advisor</span>
       </button>
 
-      <div className="flex gap-4 mb-6 border-b border-gray-100 pb-1 overflow-x-auto no-scrollbar">
-        <button onClick={() => setActiveAdminTab('inventory')} className={`pb-3 px-2 font-bold text-sm ${activeAdminTab === 'inventory' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>Inventory</button>
-        <button onClick={() => setActiveAdminTab('finance')} className={`pb-3 px-2 font-bold text-sm ${activeAdminTab === 'finance' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>Finance</button>
-        <button onClick={() => setActiveAdminTab('brand')} className={`pb-3 px-2 font-bold text-sm ${activeAdminTab === 'brand' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>Brand Design</button>
-        <button onClick={() => setActiveAdminTab('merchant-coins')} className={`pb-3 px-2 font-bold text-sm ${activeAdminTab === 'merchant-coins' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>Merchant Coins</button>
+      <div className="flex justify-between items-center mb-12 border-b border-white/5 pb-6 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-10 min-w-max">
+          <button onClick={onBackToStore} className="p-3 bg-white/5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+             <Home size={20} />
+          </button>
+          <button onClick={() => setActiveAdminTab('inventory')} className={`pb-6 px-2 font-black text-xs uppercase tracking-[0.2em] transition-all ${activeAdminTab === 'inventory' ? 'text-indigo-400 border-b-2 border-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Inventory Ops</button>
+          <button onClick={() => setActiveAdminTab('marketplace')} className={`pb-6 px-2 font-black text-xs uppercase tracking-[0.2em] transition-all ${activeAdminTab === 'marketplace' ? 'text-indigo-400 border-b-2 border-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Marketplace Sync</button>
+          <button onClick={() => setActiveAdminTab('identity')} className={`pb-6 px-2 font-black text-xs uppercase tracking-[0.2em] transition-all ${activeAdminTab === 'identity' ? 'text-indigo-400 border-b-2 border-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Identity Ops</button>
+          <button onClick={() => setActiveAdminTab('brand')} className={`pb-6 px-2 font-black text-xs uppercase tracking-[0.2em] transition-all ${activeAdminTab === 'brand' ? 'text-indigo-400 border-b-2 border-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Org Settings</button>
+        </div>
+        
+        <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest ${dbConnected ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+           <Cloud size={12} className={dbConnected ? 'animate-pulse' : ''} />
+           {dbConnected ? 'System Online' : 'Cloud Offline'}
+        </div>
       </div>
 
-      {activeAdminTab === 'finance' && (
-        <div className="animate-fadeIn space-y-8">
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                <h4 className="text-gray-500 font-bold text-xs uppercase mb-1">Total Revenue</h4>
-                <p className="text-3xl font-display font-bold text-gray-900">${totalRevenue.toFixed(2)}</p>
+      {activeAdminTab === 'inventory' && (
+        <div className="animate-fadeIn space-y-16">
+          <form onSubmit={handleSubmit} className="space-y-12">
+            <div className="flex justify-between items-center">
+              <div className="space-y-1">
+                <h3 className="text-4xl font-display font-bold text-white tracking-tight">Asset Onboarding</h3>
+                <p className="text-slate-500 text-sm">Define strategic inventory across verified global marketplaces.</p>
               </div>
-              <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                <h4 className="text-orange-800 font-bold text-xs uppercase mb-1">Restock Fund</h4>
-                <p className="text-3xl font-display font-bold text-orange-900">${totalRestockCost.toFixed(2)}</p>
-              </div>
-              <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-                <h4 className="text-green-800 font-bold text-xs uppercase mb-1">My Profit</h4>
-                <p className="text-3xl font-display font-bold text-green-900">${totalNetProfit.toFixed(2)}</p>
-              </div>
-           </div>
+              <BusinessTip title="The 2-Unit Rule" content="New assets start as 'Incubator' items. To unlock full sales, you must provide 1 Review Video and have at least 1 unit in stock for customers (2 units total purchased)." />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Marketplace</label>
+                      <div className="relative">
+                        <select 
+                          value={formData.platform} 
+                          onChange={e => setFormData({...formData, platform: e.target.value as any})}
+                          className={selectStyles}
+                        >
+                          <option value="Amazon" className="bg-slate-900 text-white">Amazon</option>
+                          <option value="Shein" className="bg-slate-900 text-white">Shein</option>
+                          <option value="eBay" className="bg-slate-900 text-white">eBay</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Department</label>
+                      <div className="relative">
+                        <select 
+                          value={formData.category} 
+                          onChange={e => setFormData({...formData, category: e.target.value as any})}
+                          className={selectStyles}
+                        >
+                          {Object.values(ProductCategory).map(cat => (
+                            <option key={cat} value={cat} className="bg-slate-900 text-white">{cat}</option>
+                          ))}
+                        </select>
+                      </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Asset Name</label>
+                      <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Product Title" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white font-medium" />
+                  </div>
+                </div>
+            </div>
 
-           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
-                  <tr>
-                    <th className="px-6 py-3">Product</th>
-                    <th className="px-6 py-3">Inventory</th>
-                    <th className="px-6 py-3">Cost</th>
-                    <th className="px-6 py-3">Price</th>
-                    <th className="px-6 py-3">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {products.map(p => (
-                    <tr key={p.id}>
-                      <td className="px-6 py-4 font-bold">{p.name}</td>
-                      <td className="px-6 py-4">{p.stockCount || 0}</td>
-                      <td className="px-6 py-4">${(p.costPrice || 0).toFixed(2)}</td>
-                      <td className="px-6 py-4">${p.price.toFixed(2)}</td>
-                      <td className="px-6 py-4">
-                        {(p.stockCount || 0) > 1 && (
-                          <button onClick={() => onSellProduct?.(p.id, p.price)} className="bg-green-500 text-white px-3 py-1 rounded text-xs">Sell</button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-           </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Retail Target ($)</label>
+                  <input required type="number" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Cost Price ($)</label>
+                  <input type="number" step="0.01" value={formData.costPrice} onChange={e => setFormData({...formData, costPrice: e.target.value})} placeholder="Your price" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-emerald-400" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">{getMarketplaceLabel()}</label>
+                  <input type="text" value={formData.marketplaceId} onChange={e => setFormData({...formData, marketplaceId: e.target.value})} placeholder="ID / SKU" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white font-mono" />
+                </div>
+            </div>
+
+            <div className="space-y-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Affiliate Landing URL</label>
+                  <input type="url" value={formData.affiliateLink} onChange={e => setFormData({...formData, affiliateLink: e.target.value})} placeholder="Paste your affiliate link here..." className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-indigo-400 text-sm" />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Market Positioning (Bio)</label>
+                  <div className="relative">
+                      <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-[2rem] px-8 py-6 outline-none focus:border-indigo-500 h-40 text-slate-300 font-light leading-relaxed" placeholder="Detailed marketing copy..." />
+                      <button type="button" onClick={handleMagicWrite} className="absolute bottom-4 right-4 bg-indigo-600 text-white px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-colors flex items-center gap-2 shadow-xl">
+                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />} AI Generate Pitch
+                      </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Asset Imagery</label>
+                  <div className="flex gap-4">
+                      <input type="url" value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="Image Source URL" className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white" />
+                      <button type="button" onClick={handleGenerateImage} className="bg-white/10 text-white px-6 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
+                        {imageLoading ? <Loader2 size={24} className="animate-spin" /> : <ImageIcon size={24} />}
+                      </button>
+                  </div>
+                </div>
+            </div>
+
+            <button type="submit" className="w-full bg-white text-black py-6 rounded-[2.5rem] font-black uppercase tracking-[0.2em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-4 group">
+              <Database size={24} className="text-indigo-600" /> Commit to Ledger
+            </button>
+          </form>
+
+          {/* ACTIVE INVENTORY LEDGER */}
+          <div className="pt-16 border-t border-white/5 space-y-8">
+             <div className="flex justify-between items-center">
+                <h3 className="text-3xl font-display font-bold text-white flex items-center gap-4">
+                   <Boxes className="text-indigo-400" /> Lifecycle Ledger
+                </h3>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{products.length} Items Indexed</span>
+             </div>
+
+             {products.length > 0 ? (
+                <div className="overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.02]">
+                   <table className="w-full text-left">
+                      <thead>
+                         <tr className="border-b border-white/5 bg-white/[0.03]">
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500">Asset</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Lifecycle</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Cost</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Retail</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Margin</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Actions</th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         {products.map(product => {
+                           const margin = product.price - (product.costPrice || 0);
+                           const stockCount = product.stockCount || 0;
+                           const hasReview = product.videoReviewCompleted;
+                           const isUnlocked = hasReview && stockCount >= 2;
+                           
+                           return (
+                            <tr key={product.id} className={`border-b border-white/5 hover:bg-white/[0.04] transition-colors group ${isUnlocked ? 'bg-indigo-500/[0.02]' : ''}`}>
+                               <td className="px-8 py-6">
+                                  <div className="flex items-center gap-4">
+                                     <img src={product.imageUrl} className="w-12 h-12 rounded-xl object-cover border border-white/10" alt="" />
+                                     <div>
+                                        <p className="font-bold text-white text-sm">{product.name}</p>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{product.category}</p>
+                                     </div>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6">
+                                  <div className="flex flex-col items-center gap-2">
+                                     <div className="flex gap-1.5">
+                                        <div title="Review Video" className={`p-1.5 rounded-md ${hasReview ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                           <Video size={12} />
+                                        </div>
+                                        <div title={`Stock: ${stockCount}/2`} className={`p-1.5 rounded-md ${stockCount >= 2 ? 'bg-emerald-500/20 text-emerald-400' : stockCount >= 1 ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-slate-700'}`}>
+                                           <Boxes size={12} />
+                                        </div>
+                                     </div>
+                                     <span className={`text-[8px] font-black uppercase tracking-widest ${isUnlocked ? 'text-indigo-400' : 'text-slate-600'}`}>
+                                        {isUnlocked ? 'Enterprise Grade' : hasReview ? 'Personal Stock Only' : 'Incubator Phase'}
+                                     </span>
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 text-right font-mono text-slate-400 text-sm">
+                                  ${(product.costPrice || 0).toFixed(2)}
+                                </td>
+                               <td className={`px-8 py-6 text-right font-mono text-sm ${isUnlocked ? 'text-white font-bold' : 'text-slate-600'}`}>
+                                  <div className="flex items-center justify-end gap-2">
+                                     {!isUnlocked && <Lock size={10} />}
+                                     ${product.price.toFixed(2)}
+                                  </div>
+                                </td>
+                               <td className="px-8 py-6 text-right">
+                                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${margin >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                                     ${margin.toFixed(2)}
+                                  </div>
+                               </td>
+                               <td className="px-8 py-6 text-center">
+                                  <div className="flex items-center justify-center gap-2">
+                                     {!hasReview && stockCount >= 1 && (
+                                       <button onClick={() => handleAttachVideo(product.id)} className="p-2.5 text-white bg-rose-600 rounded-xl transition-all shadow-lg animate-pulse" title="Immediate Action: Review Video">
+                                          <AlertCircle size={14} />
+                                       </button>
+                                     )}
+                                     {!hasReview && stockCount === 0 && (
+                                       <button onClick={() => handleAttachVideo(product.id)} className="p-2.5 text-indigo-400 hover:bg-indigo-500 hover:text-white rounded-xl transition-all" title="Upload Review Video">
+                                          <Video size={14} />
+                                       </button>
+                                     )}
+                                     <button onClick={() => onDeleteProduct(product.id)} className="p-2.5 text-slate-600 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all" title="Retire Asset">
+                                        <Trash2 size={14} />
+                                     </button>
+                                  </div>
+                               </td>
+                            </tr>
+                           );
+                         })}
+                      </tbody>
+                   </table>
+                </div>
+             ) : (
+                <div className="p-20 text-center space-y-4 border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+                   <Monitor size={48} className="mx-auto text-slate-800" />
+                   <p className="text-xl font-display font-bold text-slate-600">No active inventory found in the ledger.</p>
+                </div>
+             )}
+          </div>
+        </div>
+      )}
+
+      {activeAdminTab === 'identity' && (
+        <div className="animate-fadeIn py-8 space-y-8">
+           <button onClick={onBackToStore} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
+              <Home size={12} /> Back to Hub
+           </button>
+           <ProfileEditor profile={currentUser} onUpdateProfile={onUpdateProfile} />
         </div>
       )}
 
       {activeAdminTab === 'brand' && (
-        <form onSubmit={handleSaveSettings} className="animate-fadeIn space-y-8">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 p-6 rounded-2xl space-y-4">
-                 <h3 className="font-bold text-gray-800 flex items-center gap-2"><Palette size={18} /> Visual Identity</h3>
-                 <div>
-                    <label className="text-xs font-bold text-gray-500 block mb-1 uppercase">Store Name</label>
-                    <input type="text" value={settingsForm.storeName} onChange={e => setSettingsForm({...settingsForm, storeName: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-gray-900" />
-                 </div>
-                 <div>
-                    <label className="text-xs font-bold text-gray-500 block mb-1 uppercase">Tagline</label>
-                    <input type="text" value={settingsForm.tagline} onChange={e => setSettingsForm({...settingsForm, tagline: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-gray-900" />
-                 </div>
-                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full border bg-white flex items-center justify-center overflow-hidden">
-                       {settingsForm.logoUrl ? <img src={settingsForm.logoUrl} className="w-full h-full object-cover" /> : <Upload size={20} className="text-gray-300" />}
-                    </div>
-                    <button type="button" onClick={() => logoInputRef.current?.click()} className="text-sm font-bold text-primary">Upload Logo</button>
-                    <input type="file" ref={logoInputRef} onChange={handleLogoUpload} className="hidden" />
-                 </div>
+        <div className="animate-fadeIn space-y-12">
+           <div className="glass-card p-12 rounded-[3rem] border border-white/10 space-y-10">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-display font-bold text-white flex items-center gap-4 mb-2"><Layers className="text-indigo-400" /> Global Integration Hub</h3>
+                  <p className="text-slate-500 text-sm">Configure your family organization's affiliate signatures and aesthetics.</p>
+                </div>
               </div>
 
-              <div className="bg-gray-50 p-6 rounded-2xl space-y-4">
-                 <h3 className="font-bold text-gray-800 flex items-center gap-2"><Sparkles size={18} /> Quick Themes</h3>
-                 <div className="grid grid-cols-2 gap-2">
-                    {THEME_PRESETS.map(theme => (
-                      <button key={theme.name} type="button" onClick={() => applyTheme(theme)} className="p-3 border rounded-xl bg-white hover:border-primary text-xs font-bold text-gray-700 transition-all">{theme.name}</button>
-                    ))}
-                 </div>
-                 <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Primary</label>
-                      <input type="color" value={settingsForm.primaryColor} onChange={e => setSettingsForm({...settingsForm, primaryColor: e.target.value})} className="w-full h-8 rounded border-none cursor-pointer" />
-                    </div>
-                    <div className="flex-1">
-                      <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Secondary</label>
-                      <input type="color" value={settingsForm.secondaryColor} onChange={e => setSettingsForm({...settingsForm, secondaryColor: e.target.value})} className="w-full h-8 rounded border-none cursor-pointer" />
-                    </div>
-                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Enterprise Title</label>
+                   <input type="text" value={settingsForm.storeName} onChange={e => setSettingsForm({...settingsForm, storeName: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white font-bold" />
+                </div>
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Brand Tagline</label>
+                   <input type="text" value={settingsForm.tagline} onChange={e => setSettingsForm({...settingsForm, tagline: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-slate-400" />
+                </div>
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Logo URL</label>
+                   <input type="text" value={settingsForm.logoUrl || ''} onChange={e => setSettingsForm({...settingsForm, logoUrl: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white" placeholder="https://..." />
+                </div>
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Amazon Associate Tag</label>
+                   <input type="text" value={settingsForm.amazonAffiliateTag || ''} onChange={e => setSettingsForm({...settingsForm, amazonAffiliateTag: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-indigo-400 font-mono" />
+                </div>
               </div>
+
+              <div className="space-y-4">
+                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Hero Headline</label>
+                 <input type="text" value={settingsForm.heroHeadline} onChange={e => setSettingsForm({...settingsForm, heroHeadline: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-indigo-500 text-white" />
+              </div>
+
+              <button onClick={handleUpdateSettings} disabled={isSavingSettings} className={`w-full py-6 rounded-[2.5rem] font-black uppercase tracking-widest shadow-3xl transition-all flex items-center justify-center gap-4 ${saveSuccess ? 'bg-emerald-500 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-500'}`}>
+                {isSavingSettings ? <><Loader2 size={24} className="animate-spin" /> Syncing Logistics...</> : saveSuccess ? <><CheckCircle2 size={24} /> Updates Synchronized</> : <><Save size={24} /> Deploy Enterprise Updates</>}
+              </button>
            </div>
-           <button type="submit" className="w-full bg-black text-white py-4 rounded-2xl font-bold shadow-xl hover:bg-gray-900 transition-all flex items-center justify-center gap-2"><Save size={20} /> Save Brand Settings</button>
-        </form>
-      )}
-
-      {activeAdminTab === 'merchant-coins' && (
-        <div className="animate-fadeIn">
-          <MerchantCoinConfigurator
-            config={settingsForm.merchantCoinConfig}
-            onChange={(config) => setSettingsForm({ ...settingsForm, merchantCoinConfig: config })}
-            onSave={() => {
-              onUpdateShopSettings(settingsForm);
-              alert('Merchant Coin settings saved! 🪙✨');
-            }}
-          />
         </div>
       )}
 
-      {activeAdminTab === 'inventory' && (
-        <form onSubmit={handleSubmit} className="animate-fadeIn space-y-6">
-           <div className="flex justify-between items-center">
-             <h3 className="text-lg font-bold text-gray-800">{productToEdit ? 'Edit Item' : 'Add to Wishlist'}</h3>
-             <button type="button" onClick={() => setIsScouting(!isScouting)} className="text-xs font-bold text-primary flex items-center gap-1"><SearchIcon size={14} /> AI Product Scout</button>
-           </div>
-           
-           {isScouting && (
-             <div className="bg-indigo-50 p-4 rounded-2xl space-y-4">
-               <div className="flex gap-2">
-                 <input type="text" value={scoutQuery} onChange={e => setScoutQuery(e.target.value)} placeholder="Search trending products..." className="flex-1 px-4 py-2 rounded-xl border-none focus:ring-2 focus:ring-indigo-500 text-gray-900" />
-                 <button type="button" onClick={handleScoutSearch} className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold">{scoutLoading ? '...' : 'Search'}</button>
-               </div>
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                 {scoutResults.map((r, i) => (
-                   <button key={i} type="button" onClick={() => handleAddScoutedItem(r)} className="bg-white p-2 rounded-lg text-[10px] border border-indigo-100 font-bold hover:bg-indigo-100">{r.name}</button>
-                 ))}
-               </div>
-             </div>
-           )}
-
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Product Name" className="px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" />
-              <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value as ProductCategory})} className="px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900 font-medium">
-                <option value="">Select Category</option>
-                <option value={ProductCategory.BEAUTY}>Beauty & Skincare</option>
-                <option value={ProductCategory.FASHION}>Fashion & Apparel</option>
-                <option value={ProductCategory.ACCESSORIES}>Accessories</option>
-                <option value={ProductCategory.HAIR}>Hair Care</option>
-                <option value={ProductCategory.TECH}>Tech & Gadgets</option>
-                <option value={ProductCategory.SHEIN}>Shein Finds</option>
-              </select>
-              <div className="flex gap-2">
-                 <input required type="number" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Sell Price" className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" />
-                 <input type="number" step="0.01" value={formData.costPrice} onChange={e => setFormData({...formData, costPrice: e.target.value})} placeholder="Amazon Cost" className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" />
-              </div>
-              <select required value={formData.platform} onChange={e => setFormData({...formData, platform: e.target.value as 'Amazon' | 'Shein' | 'Temu'})} className="px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900 font-medium">
-                <option value="Amazon">Amazon</option>
-                <option value="Shein">Shein</option>
-                <option value="Temu">Temu</option>
-              </select>
-           </div>
-
-           <div className="space-y-2">
-              <div className="flex gap-2">
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" placeholder="Description..." rows={3} />
-                <button type="button" onClick={handleMagicWrite} className="bg-purple-100 text-purple-700 px-4 rounded-xl font-bold">{loading ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}</button>
-              </div>
-              <input type="url" value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="Image URL" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" />
-              <div className="flex gap-2">
-                <input type="url" value={formData.affiliateLink} onChange={e => setFormData({...formData, affiliateLink: e.target.value})} placeholder="Amazon Link" className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none text-gray-900" />
-                <button type="button" onClick={handleGenerateImage} className="bg-blue-100 text-blue-700 px-4 rounded-xl font-bold">{imageLoading ? <Loader2 size={20} className="animate-spin" /> : <ImageIcon size={20} />}</button>
-              </div>
-           </div>
-
-           <button type="submit" className="w-full bg-black text-white py-4 rounded-2xl font-bold shadow-xl flex items-center justify-center gap-2">
-             {productToEdit ? <Save size={20} /> : <Plus size={20} />}
-             {productToEdit ? 'Update Item' : 'Add to Wishlist'}
-           </button>
-           {productToEdit && <button type="button" onClick={onCancelEdit} className="w-full py-2 text-gray-400 font-bold">Cancel Edit</button>}
-        </form>
+      {activeAdminTab === 'marketplace' && (
+        <div className="animate-fadeIn space-y-12 text-center py-20">
+           <Rocket size={64} className="mx-auto text-slate-700 mb-6" />
+           <h3 className="text-3xl font-display font-bold text-white">Marketplace Promotion</h3>
+           <p className="text-slate-500 max-w-xl mx-auto">Promote fulfilled incubator assets to the public storefront to generate external revenue.</p>
+        </div>
       )}
     </div>
   );

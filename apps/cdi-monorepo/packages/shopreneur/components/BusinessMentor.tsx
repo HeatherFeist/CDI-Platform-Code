@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
 import { MessageCircle, Send, X, TrendingUp, Loader2, Bot, Mic, MicOff, Volume2 } from 'lucide-react';
@@ -19,6 +20,7 @@ const decode = (base64: string) => {
   return bytes;
 };
 
+// Custom manual decoding for PCM audio stream as per guidelines
 async function decodeAudioData(data: Uint8Array, ctx: AudioContext, sampleRate: number, numChannels: number): Promise<AudioBuffer> {
   const dataInt16 = new Int16Array(data.buffer);
   const frameCount = dataInt16.length / numChannels;
@@ -38,11 +40,11 @@ const BusinessMentor: React.FC<BusinessMentorProps> = ({ onAddChallenge, isOpen,
   ]);
   const [isLive, setIsLive] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [isListening, setIsListening] = useState(false);
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef(0);
-  const sessionRef = useRef<any>(null);
+  // Store the promise instead of the resolved session to avoid stale closures and follow guidelines.
+  const sessionPromiseRef = useRef<Promise<any> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const BusinessMentor: React.FC<BusinessMentorProps> = ({ onAddChallenge, isOpen,
             setMessages(prev => [...prev, { sender: 'mentor', text: "I'm connected! How can I help you grow today? 🚀" }]);
           },
           onmessage: async (message: LiveServerMessage) => {
-            // Handle Audio
+            // Handle Audio output stream
             const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (base64Audio && audioContextRef.current) {
               const audioData = decode(base64Audio);
@@ -88,7 +90,10 @@ const BusinessMentor: React.FC<BusinessMentorProps> = ({ onAddChallenge, isOpen,
             }
           },
           onerror: (e) => console.error("Live API Error", e),
-          onclose: () => setIsLive(false)
+          onclose: () => {
+            setIsLive(false);
+            sessionPromiseRef.current = null;
+          }
         },
         config: {
           responseModalities: [Modality.AUDIO],
@@ -98,7 +103,8 @@ const BusinessMentor: React.FC<BusinessMentorProps> = ({ onAddChallenge, isOpen,
         }
       });
 
-      sessionRef.current = await sessionPromise;
+      sessionPromiseRef.current = sessionPromise;
+      await sessionPromise;
     } catch (err) {
       console.error("Failed to start Live session", err);
     }
@@ -109,8 +115,11 @@ const BusinessMentor: React.FC<BusinessMentorProps> = ({ onAddChallenge, isOpen,
     if (!inputText.trim()) return;
     
     setMessages(prev => [...prev, { sender: 'user', text: inputText }]);
-    if (sessionRef.current) {
-      sessionRef.current.sendRealtimeInput({ text: inputText });
+    // Fix: Rely on sessionPromise resolves to call sendRealtimeInput, preventing race conditions and stale closures.
+    if (sessionPromiseRef.current) {
+      sessionPromiseRef.current.then((session) => {
+        session.sendRealtimeInput({ text: inputText });
+      });
     }
     setInputText('');
   };

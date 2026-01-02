@@ -1,236 +1,147 @@
+
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { ShoppingCart, Gift, Trash2, Video, X, Edit2, Share2, Facebook, Twitter, Link, ChevronLeft, ChevronRight, Lock, Package } from 'lucide-react';
+import { 
+  ShoppingBag, 
+  Lock, 
+  Play, 
+  Video, 
+  Package, 
+  ShieldCheck, 
+  ArrowRight, 
+  Trash2, 
+  AlertCircle 
+} from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
   userRole: 'shopper' | 'admin';
-  tier?: 'Starter' | 'Entrepreneur' | 'Empire'; // Pass current tier
   onDelete?: (id: string) => void;
-  onEdit?: (product: Product) => void;
   onAddToCart: (product: Product, orderType: 'purchase' | 'gift') => void;
+  onUploadReview?: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, userRole, tier = 'Starter', onDelete, onEdit, onAddToCart }) => {
-  const [showVideo, setShowVideo] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const allImages = [product.imageUrl, ...(product.additionalImages || [])];
+const ProductCard: React.FC<ProductCardProps> = ({ 
+  product, 
+  userRole, 
+  onDelete, 
+  onAddToCart,
+  onUploadReview 
+}) => {
+  const stockCount = product.stockCount || 0;
+  const hasReview = !!product.videoUrl || product.videoReviewCompleted;
   
-  // Logic: 
-  // 1. First item is always Demo Unit (Not sellable).
-  // 2. Sellable Stock = Total Count - 1.
-  // 3. To Sell: Need sellable stock (>0) AND a review video.
-  const totalStock = product.stockCount || 0;
-  const sellableStock = Math.max(0, totalStock - 1);
-  const hasReviewVideo = !!product.videoUrl;
-  
-  // A shopper can BUY FROM TEEN if: There is sellable stock AND video exists.
-  const canBuyFromTeen = sellableStock > 0 && hasReviewVideo;
+  // LOGIC: 1st unit is personal/review. 2nd+ unit is inventory.
+  // Must have review AND at least 2 units total (1 personal + 1 for sale)
+  const isUnlocked = hasReview && stockCount >= 2;
+  const needsReview = stockCount >= 1 && !hasReview;
+  const needsStock = hasReview && stockCount < 2;
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
-
-  const prevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
-  };
-
-  const handleShare = (platform: string) => {
-    const productUrl = encodeURIComponent(`https://shopreneur.app/product/${product.id}`);
-    const text = encodeURIComponent(`Check out ${product.name}!`);
-    
-    if (platform === 'facebook') {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${productUrl}`, '_blank');
-    } else if (platform === 'twitter') {
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${productUrl}`, '_blank');
-    } else {
-      alert(`Link copied to clipboard: https://shopreneur.app/product/${product.id}`);
+  const getPlatformBadge = () => {
+    switch(product.platform) {
+      case 'Amazon': return <span className="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest">Amazon</span>;
+      case 'Shein': return <span className="bg-white/20 text-white border border-white/30 px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest">Shein</span>;
+      case 'eBay': return <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest">eBay</span>;
+      default: return null;
     }
-    setShowShareMenu(false);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-pink-100 group relative">
-      <div className="relative h-64 overflow-hidden bg-gray-100 group">
-        {showVideo && product.videoUrl ? (
-          <div className="absolute inset-0 z-20 bg-black flex flex-col">
-            <button 
-              onClick={() => setShowVideo(false)}
-              className="absolute top-2 right-2 z-30 bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
-            >
-              <X size={16} />
-            </button>
-            <video 
-              src={product.videoUrl} 
-              controls 
-              autoPlay 
-              className="w-full h-full object-contain"
-            />
-          </div>
-        ) : (
-          <>
-             <img 
-              src={allImages[currentImageIndex]} 
-              alt={product.name} 
-              className={`w-full h-full object-cover transform transition-transform duration-500 ${!canBuyFromTeen ? 'grayscale-[10%]' : ''}`}
-            />
-            
-            {/* Gallery Navigation */}
-            {allImages.length > 1 && (
-              <>
-                <button 
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button 
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                >
-                  <ChevronRight size={16} />
-                </button>
-                {/* Dots Indicator */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-                  {allImages.map((_, idx) => (
-                    <div key={idx} className={`w-1.5 h-1.5 rounded-full shadow-sm transition-colors ${idx === currentImageIndex ? 'bg-white' : 'bg-white/50'}`} />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {hasReviewVideo && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowVideo(true);
-                }}
-                className="absolute bottom-3 right-3 bg-white/90 text-black p-2 rounded-full shadow-md hover:scale-110 transition-transform flex items-center gap-1.5 text-xs font-bold px-3 border border-gray-200 z-10"
-              >
-                <Video size={14} className="text-purple-600" />
-                Watch Review
-              </button>
-            )}
-          </>
-        )}
-       
-        <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-gray-700 pointer-events-none z-10">
-          {product.category}
+    <div className={`glass-card rounded-[2.5rem] overflow-hidden group border transition-all duration-500 flex flex-col h-full bg-[#ffffff]/[0.02] ${isUnlocked ? 'border-indigo-500/30 ring-1 ring-indigo-500/10' : 'border-white/5 hover:border-white/20'}`}>
+      <div className="relative h-72 overflow-hidden bg-slate-900">
+        <img 
+          src={product.imageUrl} 
+          alt={product.name} 
+          className={`w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 ${!isUnlocked ? 'grayscale-[0.5]' : ''}`}
+        />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        
+        <div className="absolute top-4 right-4 z-10">
+          {getPlatformBadge()}
         </div>
 
-        {/* Stock Status Badge for Admin/User */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-           {totalStock === 0 && (
-             <span className="bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded text-[10px] font-bold">Wishlist Only</span>
-           )}
-           {totalStock === 1 && (
-             <span className="bg-purple-500/90 text-white px-2 py-1 rounded text-[10px] font-bold">Demo Unit Only</span>
-           )}
-           {sellableStock > 0 && (
-             <span className="bg-green-500/90 text-white px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1">
-               <Package size={10} /> {sellableStock} In Stock
+        {/* Status Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+           {needsReview ? (
+             <span className="bg-rose-500/80 backdrop-blur-md text-white border border-rose-400 px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
+               <AlertCircle size={10} /> Action Required: Review
+             </span>
+           ) : needsStock ? (
+             <span className="bg-amber-500/20 backdrop-blur-md text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5">
+               <Package size={10} /> Stock Required (1/2)
+             </span>
+           ) : isUnlocked ? (
+             <span className="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5">
+               <ShieldCheck size={10} /> Enterprise Grade
+             </span>
+           ) : (
+             <span className="bg-slate-500/20 backdrop-blur-md text-slate-400 border border-slate-500/30 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5">
+               <Lock size={10} /> Incubator Phase
              </span>
            )}
         </div>
+
+        {product.videoUrl && (
+           <a href={product.videoUrl} target="_blank" className="absolute bottom-4 left-4 z-10 p-3 bg-white/10 backdrop-blur-lg rounded-full border border-white/20 text-white hover:bg-indigo-600 transition-all shadow-xl">
+              <Play size={16} fill="currentColor" />
+           </a>
+        )}
       </div>
       
-      <div className="p-5 flex-1 flex flex-col">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-bold text-gray-800 leading-tight">{product.name}</h3>
-          <span className="text-lg font-semibold text-primary">${product.price.toFixed(2)}</span>
+      <div className="p-8 flex-1 flex flex-col space-y-4">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400">{product.category}</p>
+            <h3 className="text-xl font-display font-bold text-white tracking-tight leading-tight">{product.name}</h3>
+          </div>
+          <span className="text-xl font-display font-bold text-white">${product.price.toFixed(2)}</span>
         </div>
         
-        <p className="text-gray-600 text-sm mb-4 flex-1">{product.description}</p>
+        <p className="text-slate-400 text-sm font-light leading-relaxed line-clamp-2">{product.description}</p>
         
-        <div className="mt-auto space-y-2">
-          {/* Action Buttons based on Inventory Logic */}
-          
-          <div className="flex gap-2">
-            {canBuyFromTeen ? (
-              // SURPLUS MODE: User buys from Teen's Inventory (Profit)
-              <button 
-                onClick={() => onAddToCart(product, 'purchase')}
-                className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors active:scale-95 transform duration-100"
-              >
-                <ShoppingCart size={16} />
-                <span>Buy Now</span>
-              </button>
-            ) : (
-              // WISHLIST/DEMO MODE: User buys FOR Teen (Gift)
-              <button 
-                onClick={() => onAddToCart(product, 'gift')}
-                className="flex-1 flex items-center justify-center gap-2 bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors active:scale-95 transform duration-100 shadow-md shadow-pink-200"
-              >
-                <Gift size={16} />
-                <span>
-                  {totalStock === 0 ? 'Gift First One' : 'Gift to Stock Up'}
-                </span>
-              </button>
-            )}
-
-            {/* Share Button with Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => setShowShareMenu(!showShareMenu)}
-                className="bg-gray-100 text-gray-700 p-2.5 rounded-lg hover:bg-gray-200 transition-colors"
-                title="Share with friends"
-              >
-                <Share2 size={18} />
-              </button>
-              
-              {showShareMenu && (
-                <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-50 animate-fadeIn">
-                   <p className="text-xs font-bold text-gray-500 px-2 py-1">Share to...</p>
-                   <button onClick={() => handleShare('facebook')} className="w-full flex items-center gap-2 px-2 py-2 hover:bg-blue-50 rounded-lg text-sm text-gray-700">
-                     <Facebook size={16} className="text-blue-600" /> Facebook
-                   </button>
-                   <button onClick={() => handleShare('twitter')} className="w-full flex items-center gap-2 px-2 py-2 hover:bg-blue-50 rounded-lg text-sm text-gray-700">
-                     <Twitter size={16} className="text-blue-400" /> X / Twitter
-                   </button>
-                   <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-2 px-2 py-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700">
-                     <Link size={16} className="text-gray-400" /> Copy Link
-                   </button>
-                </div>
+        <div className="pt-4 mt-auto space-y-3">
+          {needsReview && userRole === 'admin' ? (
+            <button 
+              onClick={() => onUploadReview?.(product.id)}
+              className="w-full bg-rose-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-500 transition-all flex items-center justify-center gap-2 shadow-lg"
+            >
+              <Video size={14} /> Upload Video Review
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              {isUnlocked ? (
+                <button 
+                  onClick={() => onAddToCart(product, 'purchase')}
+                  className="flex-1 bg-white text-black py-3 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-2 group/btn shadow-xl"
+                >
+                  Direct Acquire <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+              ) : (
+                <button 
+                  onClick={() => onAddToCart(product, 'gift')}
+                  className="flex-1 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
+                >
+                  {stockCount === 0 ? <><ShoppingBag size={12} /> Acquire Personal</> : <><Package size={12} /> Acquire Inventory</>}
+                </button>
               )}
             </div>
-          </div>
+          )}
 
-          {/* Helper Text for Shoppers */}
-          <div className="text-center text-[10px] text-gray-400 font-medium pt-1">
-            {!canBuyFromTeen ? (
-               totalStock === 0 
-                 ? "Help launch this product by gifting the demo unit!" 
-                 : "Out of stock! Gift one to help them restock."
-            ) : (
-               "In Stock! 100% of profit goes to the teen creator."
-            )}
-          </div>
+          {!isUnlocked && (
+            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center leading-relaxed">
+                 {!hasReview ? "Step 1: Admin Video Review Required" : `Step 2: Purchase Customer Stock (${stockCount}/2)`}
+              </p>
+            </div>
+          )}
 
-          {/* Admin Edit & Delete */}
           {userRole === 'admin' && (
-             <div className="flex gap-2 mt-2">
-                {onEdit && (
-                  <button 
-                    onClick={() => onEdit(product)}
-                    className="flex-1 flex items-center justify-center gap-1 text-blue-600 text-xs bg-blue-50 border border-blue-100 rounded-lg py-1.5 hover:bg-blue-100 transition-colors"
-                  >
-                    <Edit2 size={12} />
-                    Edit
-                  </button>
-                )}
-                {onDelete && (
-                  <button 
-                    onClick={() => onDelete(product.id)}
-                    className="flex-1 flex items-center justify-center gap-1 text-red-500 text-xs bg-red-50 border border-red-100 rounded-lg py-1.5 hover:bg-red-100 transition-colors"
-                  >
-                    <Trash2 size={12} />
-                    Remove
-                  </button>
-                )}
+             <div className="flex gap-2 pt-2 border-t border-white/5">
+                <button onClick={() => onDelete?.(product.id)} className="p-2.5 text-slate-600 hover:text-red-400 transition-all" title="Retire Asset"><Trash2 size={14} /></button>
+                <div className="flex-1 text-[8px] font-black uppercase text-slate-700 tracking-widest flex items-center justify-end gap-2">
+                   Asset ID: {product.marketplaceId || 'Pending'}
+                </div>
              </div>
           )}
         </div>
