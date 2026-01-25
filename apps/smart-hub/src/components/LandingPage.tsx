@@ -1,4 +1,4 @@
-import { Building2, Camera, Image, Power, ShoppingBag, Wallet, Wifi } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 
