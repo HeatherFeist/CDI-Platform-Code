@@ -10,7 +10,7 @@ import DirectMessages from './components/DirectMessages';
 import ProfileEditor from './components/ProfileEditor';
 import ApiKeySettings from './components/ApiKeySettings';
 import { dbService } from './services/dbService';
-import { supabaseUrl } from './services/supabaseClient';
+import { supabase, isConfigured } from './services/supabaseClient';
 import { 
   ShoppingBag, 
   LayoutGrid, 
@@ -66,8 +66,10 @@ const App: React.FC = () => {
   const [foundProfile, setFoundProfile] = useState<UserProfile | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isRegLoading, setIsRegLoading] = useState(false);
-  const [regData, setRegData] = useState({ name: '', key: '' });
+  const [regData, setRegData] = useState({ name: '', email: '', key: '' });
   const [regSuccess, setRegSuccess] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
 
   // General UI State
   const [activeTab, setActiveTab] = useState<'shop' | 'tryon' | 'admin' | 'community' | 'messages' | 'profile'>('shop');
@@ -75,8 +77,6 @@ const App: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [platformFilter, setPlatformFilter] = useState<'All' | 'Amazon' | 'Shein' | 'eBay' | 'Temu'>('All');
   const [showApiKeySettings, setShowApiKeySettings] = useState(false);
-
-  const isConfigured = !supabaseUrl.includes("your-project-id");
 
   useEffect(() => {
     if (!isConfigured) {
@@ -106,6 +106,21 @@ const App: React.FC = () => {
     };
   }, [isConfigured]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fullName = params.get('fullName') || '';
+    const email = params.get('email') || '';
+    if (fullName || email) {
+      setRegData(prev => ({
+        ...prev,
+        name: fullName || prev.name,
+        email: email || prev.email
+      }));
+      setIsRegistering(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   // Real-time Store Search Engine
   useEffect(() => {
     const query = searchStoreName.trim().toLowerCase();
@@ -130,20 +145,40 @@ const App: React.FC = () => {
     document.title = `${shopSettings.storeName}`;
   }, [shopSettings]);
 
-  const handleAccessHub = () => {
+  const handleAccessHub = async () => {
     if (!foundProfile) {
       alert("Verification Pending: You must find a valid store identity before entering.");
       return;
     }
 
     if (selectedRole === 'Owner') {
+      setAuthError('');
+      const email = prompt(`Owner email for ${foundProfile.name}:`);
+      if (!email) return;
       const pass = prompt(`Management Access Key for ${foundProfile.name}:`);
-      if (pass === foundProfile.password) {
-        setCurrentUser(foundProfile);
-        setActiveTab('admin'); 
-      } else if (pass !== null) {
-        alert("Authentication Failed: The Management Key entered is incorrect.");
+      if (!pass) return;
+      if (!isConfigured) {
+        alert("Authentication is not configured. Please set Supabase environment variables.");
+        return;
       }
+      setAuthLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password: pass
+      });
+      if (error || !data.user) {
+        setAuthLoading(false);
+        alert("Authentication Failed: The credentials entered are incorrect.");
+        return;
+      }
+      const profile = await dbService.getProfileById(data.user.id);
+      if (profile) {
+        setCurrentUser(profile);
+        setActiveTab('admin');
+      } else {
+        alert("Profile not found for this account.");
+      }
+      setAuthLoading(false);
     } else {
       setCurrentUser({ 
         ...foundProfile, 
@@ -157,30 +192,51 @@ const App: React.FC = () => {
 
   const handleFinalizeRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regData.name.trim()) return;
+    if (!regData.name.trim() || !regData.email.trim() || !regData.key.trim()) return;
     
     setIsRegLoading(true);
+    setAuthError('');
     
-    const uniqueId = `owner_${Date.now()}`;
     const handle = regData.name.toLowerCase().replace(/\s/g, '_') + Math.floor(Math.random() * 100);
     
-    const newProfile: UserProfile = {
-      id: uniqueId,
-      name: regData.name,
-      handle,
-      role: 'Owner',
-      password: regData.key,
-      bio: `Executive boutique hub for ${regData.name}. Strategic inventory management active.`,
-      avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${regData.name}`
-    };
-
     try {
+      if (!isConfigured) {
+        const localProfile: UserProfile = {
+          id: `owner_${Date.now()}`,
+          name: regData.name,
+          handle,
+          role: 'Owner',
+          email: regData.email,
+          bio: `Executive boutique hub for ${regData.name}. Strategic inventory management active.`,
+          avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${regData.name}`
+        };
+        const saved = await dbService.upsertProfile(localProfile);
+        setProfiles(prev => [...prev, saved]);
+        completeRegistration(saved);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email: regData.email,
+        password: regData.key
+      });
+      if (error || !data.user) throw error || new Error('Sign up failed');
+
+      const newProfile: UserProfile = {
+        id: data.user.id,
+        name: regData.name,
+        handle,
+        role: 'Owner',
+        email: regData.email,
+        bio: `Executive boutique hub for ${regData.name}. Strategic inventory management active.`,
+        avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${regData.name}`
+      };
       const saved = await dbService.upsertProfile(newProfile);
       setProfiles(prev => [...prev, saved]);
       completeRegistration(saved);
     } catch (err: any) {
-      setProfiles(prev => [...prev, newProfile]);
-      completeRegistration(newProfile);
+      setAuthError(err?.message || 'Registration failed. Please try again.');
+      setIsRegLoading(false);
     }
   };
 
@@ -192,7 +248,7 @@ const App: React.FC = () => {
       setIsRegistering(false);
       setIsRegLoading(false);
       setRegSuccess(false);
-      setRegData({ name: '', key: '' });
+      setRegData({ name: '', email: '', key: '' });
     }, 1000);
   };
 
@@ -316,10 +372,19 @@ const App: React.FC = () => {
                     <input required disabled={isRegLoading} type="text" value={regData.name} onChange={e => setRegData({...regData, name: e.target.value})} placeholder="e.g. Heather Feist" className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-indigo-500 text-white text-lg font-medium disabled:opacity-50" />
                   </div>
                   <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Owner Email</label>
+                    <input required disabled={isRegLoading} type="email" value={regData.email} onChange={e => setRegData({...regData, email: e.target.value})} placeholder="you@domain.com" className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-indigo-500 text-white text-lg font-medium disabled:opacity-50" />
+                  </div>
+                  <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">Access Key (For Login)</label>
                     <input required disabled={isRegLoading} type="password" value={regData.key} onChange={e => setRegData({...regData, key: e.target.value})} placeholder="Set a secret code..." className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-indigo-500 text-white text-lg font-mono disabled:opacity-50" />
                   </div>
-                  <button type="submit" disabled={isRegLoading || !regData.name} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-4 group disabled:opacity-50">
+                  {authError && (
+                    <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl px-4 py-3">
+                      {authError}
+                    </div>
+                  )}
+                  <button type="submit" disabled={isRegLoading || !regData.name || !regData.email || !regData.key} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-4 group disabled:opacity-50">
                     {isRegLoading ? <>Validating Registry... <Loader2 size={24} className="animate-spin text-indigo-600" /></> : <>Launch Enterprise <Rocket size={24} className="group-hover:translate-y-[-4px] group-hover:translate-x-[4px] transition-transform" /></>}
                   </button>
                 </form>

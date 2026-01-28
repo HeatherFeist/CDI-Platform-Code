@@ -44,7 +44,7 @@ export interface UserProfile {
   bio: string;
   avatarUrl: string;
   role: 'Owner' | 'Shopper' | 'Partner';
-  password?: string; // For Owner access
+  email?: string;
   storeOwnerId?: string; // Links a shopper to a specific admin's store
   shippingAddress?: ShippingAddress;
 }

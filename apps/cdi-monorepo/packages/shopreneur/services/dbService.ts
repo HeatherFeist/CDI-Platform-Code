@@ -30,7 +30,7 @@ const mapProfile = (p: any): UserProfile => ({
   bio: p.bio,
   avatarUrl: p.avatar_url,
   role: p.role,
-  password: p.password,
+  email: p.email,
   shippingAddress: p.shipping_address ? {
     street: p.shipping_address.street || '',
     city: p.shipping_address.city || '',
@@ -84,7 +84,7 @@ export const dbService = {
       bio: profile.bio,
       avatar_url: profile.avatarUrl,
       role: profile.role,
-      password: profile.password,
+      email: profile.email,
       shipping_address: profile.shippingAddress ? {
         street: profile.shippingAddress.street,
         city: profile.shippingAddress.city,
@@ -120,7 +120,7 @@ export const dbService = {
         bio: profile.bio || '',
         avatarUrl: profile.avatarUrl || '',
         role: profile.role || 'Owner',
-        password: profile.password || '',
+        email: profile.email,
         shippingAddress: profile.shippingAddress
       } as UserProfile;
       
@@ -131,6 +131,19 @@ export const dbService = {
       localStorage.setItem('local_profiles', JSON.stringify(updated));
       
       return mapped;
+    }
+  },
+
+  getProfileById: async (id: string): Promise<UserProfile | null> => {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', id).single();
+      if (error) throw error;
+      return data ? mapProfile(data) : null;
+    } catch (e) {
+      const local = localStorage.getItem('local_profiles');
+      const profiles = local ? JSON.parse(local) : [];
+      const match = profiles.find((p: any) => p.id === id);
+      return match ? mapProfile(match) : null;
     }
   },
 

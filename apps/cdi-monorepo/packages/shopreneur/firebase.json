@@ -1,6 +1,7 @@
 
 {
   "hosting": {
+    "site": "shopreneur-cdi",
     "public": "dist",
     "ignore": [
       "firebase.json",
