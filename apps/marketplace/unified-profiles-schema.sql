@@ -49,9 +49,7 @@ $$ LANGUAGE plpgsql;
 
 -- 5. Attach the trigger
 DROP TRIGGER IF EXISTS sync_names_trigger ON profiles;
-CREATE TRIGGER sync_names_trigger
-    BEFORE INSERT OR UPDATE ON profiles
-    FOR EACH ROW
+CREATE TRIGGER sync_names_trigger 
     EXECUTE FUNCTION sync_profile_names();
 
 -- 6. Update RLS Policies to allow public read of basic profile info (needed for Marketplace listings)

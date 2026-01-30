@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "site": "wallet-cdi",
+        "site": "cdi-wallet",
         "public": "dist",
             "ignore": [
                 "firebase.json",

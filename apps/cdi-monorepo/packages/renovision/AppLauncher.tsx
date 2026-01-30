@@ -18,36 +18,36 @@ const apps: App[] = [
     name: 'RenovVision',
     description: 'AI-powered estimates, project management, and job costing',
     url: 'https://renovision.web.app',
-    icon: '📊',
     color: 'from-blue-500 to-blue-700',
     requiresVerification: false,
+    icon: ''
   },
   {
     id: 'marketplace',
     name: 'Materials Marketplace',
     description: 'Buy and sell new/used materials, auctions, local pickup',
     url: 'https://marketplace-cd.web.app',
-    icon: '🏪',
     color: 'from-green-500 to-green-700',
     requiresVerification: false,
+    icon: ''
   },
   {
     id: 'wallet',
     name: 'Quantum Wallet',
     description: 'Manage USD, crypto, and time tracking in one place',
     url: 'https://wallet-cd.web.app',
-    icon: '💰',
     color: 'from-purple-500 to-purple-700',
     requiresVerification: false,
+    icon: ''
   },
   {
     id: 'portal',
     name: 'Member Portal',
     description: 'Connect with verified contractors, team management',
     url: 'https://portal-cd.web.app',
-    icon: '👥',
     color: 'from-indigo-500 to-indigo-700',
     requiresVerification: true,
+    icon: ''
   },
 ];
 
@@ -93,7 +93,7 @@ export default function AppLauncher() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">🏗️</span>
+                <span className="text-2xl"></span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Constructive Designs Inc.</h1>
@@ -238,7 +238,7 @@ export default function AppLauncher() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">💯</span>
+                <span className="text-3xl"></span>
               </div>
               <h4 className="text-xl font-semibold text-white mb-2">100% Free</h4>
               <p className="text-blue-200">
@@ -258,7 +258,7 @@ export default function AppLauncher() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🤝</span>
+                <span className="text-3xl"></span>
               </div>
               <h4 className="text-xl font-semibold text-white mb-2">Trusted Network</h4>
               <p className="text-blue-200">
@@ -272,7 +272,7 @@ export default function AppLauncher() {
         {user && profile && !profile.is_verified_member && (
           <div className="mt-12 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg rounded-2xl p-8 border border-yellow-500/30">
             <div className="flex items-start space-x-4">
-              <div className="text-4xl">🔒</div>
+              <div className="text-4xl"></div>
               <div className="flex-1">
                 <h4 className="text-2xl font-bold text-white mb-2">
                   Unlock Full Access
