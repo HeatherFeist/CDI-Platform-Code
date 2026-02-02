@@ -5,6 +5,18 @@ export const MembershipComparisonModal: React.FC<{ onClose: () => void }> = ({ o
   const [selectedPlan, setSelectedPlan] = useState<'member' | 'non-member' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const ensureBusinessProfile = async (profileId: string, businessName?: string) => {
+    try {
+      const { error } = await supabase.rpc('ensure_business_profile', {
+        profile_id: profileId,
+        business_name: businessName || null
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.warn('Business provisioning skipped:', error);
+    }
+  };
+
   const handleSelectMember = async () => {
     setIsProcessing(true);
     try {
@@ -17,9 +29,12 @@ export const MembershipComparisonModal: React.FC<{ onClose: () => void }> = ({ o
           .from('profiles')
           .update({ 
             is_organization_member: true,
+            membership_joined_at: new Date().toISOString(),
             platform_donation_percentage: 15.00 
           })
           .eq('id', user.id);
+
+        await ensureBusinessProfile(user.id, user.user_metadata?.full_name || user.email);
       }
       
       alert('Welcome as an organization member! You now have access to all member benefits with $0 monthly fees.');

@@ -14,6 +14,7 @@ interface UserProfile {
     phone?: string;
     role: UserRole;
     business_id: string;
+    is_organization_member?: boolean;
     username?: string;
     display_name?: string;
     bio?: string;
@@ -131,6 +132,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
     }, []);
 
+    const ensureBusinessProfileIfNeeded = async (profile: UserProfile) => {
+        if (!profile?.is_organization_member || profile.business_id) {
+            return profile;
+        }
+
+        try {
+            const businessName = `${profile.first_name} ${profile.last_name}`.trim() || profile.email;
+            const { data, error } = await supabase.rpc('ensure_business_profile', {
+                profile_id: profile.id,
+                business_name: businessName
+            });
+
+            if (error) {
+                console.warn('Business provisioning skipped:', error);
+                return profile;
+            }
+
+            if (data) {
+                return { ...profile, business_id: data };
+            }
+        } catch (error) {
+            console.warn('Business provisioning failed:', error);
+        }
+
+        return profile;
+    };
+
     const fetchUserProfile = async (userId: string) => {
         try {
             console.log('Fetching user profile for:', userId);
@@ -165,7 +193,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             console.log('User profile fetched:', data);
-            setUserProfile(data);
+            const provisionedProfile = await ensureBusinessProfileIfNeeded(data);
+            setUserProfile(provisionedProfile);
             
             // Fetch available contexts for this user
             await fetchAvailableContexts(userId);

@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "marketplace-cdi",
+    "site": "marketplace-7bfa7",
     "public": "dist",
     "ignore": [
       "firebase.json",

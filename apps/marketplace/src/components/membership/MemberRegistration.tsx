@@ -135,6 +135,18 @@ export default function MemberRegistration() {
     agreeToMentorship: false
   });
 
+  const ensureBusinessProfile = async (profileId: string, businessName?: string) => {
+    try {
+      const { error } = await supabase.rpc('ensure_business_profile', {
+        profile_id: profileId,
+        business_name: businessName || null
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.warn('Business provisioning skipped:', error);
+    }
+  };
+
   const handleInputChange = (field: keyof MemberRegistrationData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -214,6 +226,8 @@ export default function MemberRegistration() {
         .from('profiles')
         .update({
           is_nonprofit_member: true,
+          is_organization_member: true,
+          membership_joined_at: new Date().toISOString(),
           member_tier: formData.tierRequested,
           city: formData.city,
           state: formData.state
@@ -221,6 +235,8 @@ export default function MemberRegistration() {
         .eq('id', user!.id);
 
       if (profileError) throw profileError;
+
+      await ensureBusinessProfile(user!.id, formData.storeName || `${formData.firstName} ${formData.lastName}`);
 
       // Update application status
       await supabase

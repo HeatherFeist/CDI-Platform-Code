@@ -39,12 +39,14 @@ BEGIN
         -- Create new business
         INSERT INTO businesses (
             id,
+            name,
             company_name,
             created_at,
             updated_at
         ) VALUES (
             gen_random_uuid(),
             'Constructive Design LLC', -- Change this to your company name
+            'Constructive Design LLC', -- Keep in sync with name
             NOW(),
             NOW()
         ) RETURNING id INTO v_business_id;
@@ -83,6 +85,7 @@ WHERE p.email = 'heatherfeist0@gmail.com';
 WITH new_business AS (
     INSERT INTO businesses (
         id,
+        name,
         company_name,
         phone,
         address,
@@ -94,6 +97,7 @@ WITH new_business AS (
     ) VALUES (
         gen_random_uuid(),
         'Your Company Name',    -- Change this
+        'Your Company Name',    -- Keep in sync with name
         '555-1234',            -- Change this
         '123 Main St',         -- Change this
         'Your City',           -- Change this
@@ -141,6 +145,11 @@ WHERE b.id = (
     SELECT business_id FROM profiles WHERE email = 'YOUR_EMAIL_HERE'
 );
 
+-- If businesses.name is NULL in existing rows, backfill from company_name
+UPDATE businesses
+SET name = COALESCE(name, company_name)
+WHERE name IS NULL;
+
 -- ============================================
 -- QUICK FIX FOR MISSING TABLES
 -- ============================================
@@ -148,6 +157,7 @@ WHERE b.id = (
 -- If businesses table doesn't exist, create it
 CREATE TABLE IF NOT EXISTS businesses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
     company_name TEXT,
     phone TEXT,
     address TEXT,
