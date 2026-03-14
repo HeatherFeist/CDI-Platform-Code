@@ -639,7 +639,7 @@ export const generateAIResponse = async (
     
     const ai = new GoogleGenAI({ apiKey });
     const model = ai.models.generateContent({
-        model: 'gemini-pro',
+        model: 'gemini-2.5-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 

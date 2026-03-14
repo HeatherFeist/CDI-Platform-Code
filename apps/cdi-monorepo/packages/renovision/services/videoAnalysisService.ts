@@ -28,7 +28,7 @@ Format the response in a clear, structured way that can be parsed into sections.
 
     try {
         const result = await ai.models.generateContent({
-            model: 'gemini-pro',
+            model: 'gemini-2.5-flash',
             contents: [{ role: 'user', parts: [{ text: context }] }],
         });
 

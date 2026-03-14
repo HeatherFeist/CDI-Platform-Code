@@ -219,16 +219,16 @@ Please analyze this renovation project request and provide:
 
 Format the response in a clear, structured way that can be parsed into sections.`;
 
-      // Cast to any due to type mismatch in @google/generative-ai
-      const model = (ai as any).getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = model.startChat();
-      const result = await prompt.sendMessage(context);
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: context }] }]
+      });
 
       if (!result || result instanceof Error) {
         throw new Error("Failed to get response from Gemini API");
       }
 
-      const aiResponse = await result.text();
+      const aiResponse = result.text;
 
       // Parse the response into structured sections
       const sections = aiResponse.split('\n\n');

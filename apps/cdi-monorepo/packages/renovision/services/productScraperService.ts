@@ -259,12 +259,11 @@ Return as JSON:
         // Two common patterns: ai.models.generateContent(...) or ai.generate(...)
         if (ai.models && typeof ai.models.generateContent === 'function') {
             const response = await ai.models.generateContent({
-                model: 'gemini-2.0-flash-exp',
-                contents: [{ role: 'user', parts: [{ text: prompt }] }]
+                model: 'gemini-2.5-flash',
             });
             result = (response as any).text?.trim() || JSON.stringify(response);
         } else if (typeof ai.generate === 'function') {
-            const response = await ai.generate({ model: 'gemini-2.0-flash-exp', prompt });
+            const response = await ai.generate({ model: 'gemini-2.5-flash', prompt });
             result = (response as any).text?.trim() || JSON.stringify(response);
         } else {
             throw new Error('Unsupported Google Generative AI client shape.');

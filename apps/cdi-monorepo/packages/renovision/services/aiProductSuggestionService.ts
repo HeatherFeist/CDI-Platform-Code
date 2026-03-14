@@ -135,9 +135,9 @@ IMPORTANT:
 - Prioritize in-stock, readily available products
 `;
 
-            // Call Gemini API (using v1beta with gemini-pro - most compatible)
+            // Call Gemini API
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
