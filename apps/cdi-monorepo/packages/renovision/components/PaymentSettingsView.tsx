@@ -348,13 +348,6 @@ export const PaymentSettingsView: React.FC = () => {
                                     revitalization initiatives</strong>. When you use this platform, you're directly contributing to positive change in your community. 
                                     Together, we're building better neighborhoods!
                                 </p>
-                                <a
-                                    href="/business/programs"
-                                    className="inline-flex items-center gap-2 text-sm font-semibold text-green-700 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-2 rounded transition-colors"
-                                >
-                                    <span className="material-icons text-sm">info</span>
-                                    See how OUR programs benefit YOUR business
-                                </a>
                             </div>
                         </div>
                     </div>

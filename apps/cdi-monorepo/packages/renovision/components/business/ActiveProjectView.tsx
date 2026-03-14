@@ -68,6 +68,7 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
     const [showAIDesigns, setShowAIDesigns] = useState(false);
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<any[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchProjectData();
@@ -100,6 +101,7 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
 
     const fetchProjectData = async () => {
         try {
+            setError(null);
             // Fetch project details
             const { data: projectData, error: projectError } = await supabase
                 .from('projects')
@@ -138,6 +140,7 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
             setTeamMembers(teamData || []);
         } catch (error) {
             console.error('Error fetching project data:', error);
+            setError(error instanceof Error ? error.message : 'Failed to load project');
         } finally {
             setLoading(false);
         }
@@ -269,7 +272,11 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
     }
 
     if (!project) {
-        return <div className="text-center py-12 text-gray-500">Project not found</div>;
+        return (
+            <div className="text-center py-12 text-gray-500">
+                {error ? `Project could not be opened: ${error}` : 'Project not found'}
+            </div>
+        );
     }
 
     const progress = calculateProgress();
@@ -283,15 +290,15 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
                 <div className="flex items-start justify-between">
                     <div>
                         <h1 className="text-2xl font-bold mb-2">{project.name}</h1>
-                        <p className="text-blue-100 mb-3">{project.description}</p>
+                        <p className="text-blue-100 mb-3">{project.description || 'No project description provided yet.'}</p>
                         <div className="flex flex-wrap gap-4 text-sm">
                             <div className="flex items-center">
                                 <span className="material-icons text-sm mr-2">business</span>
-                                {project.business.name}
+                                {project.business?.name || 'Business not linked'}
                             </div>
                             <div className="flex items-center">
                                 <span className="material-icons text-sm mr-2">person</span>
-                                {project.customer.first_name} {project.customer.last_name}
+                                {project.customer ? `${project.customer.first_name} ${project.customer.last_name}` : 'Customer not linked'}
                             </div>
                             {project.start_date && (
                                 <div className="flex items-center">
@@ -306,7 +313,7 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
                         project.status === 'in_progress' ? 'bg-blue-500' :
                         'bg-yellow-500'
                     }`}>
-                        {project.status.replace('_', ' ').toUpperCase()}
+                        {(project.status || 'unknown').replace('_', ' ').toUpperCase()}
                     </span>
                 </div>
             </div>
@@ -387,22 +394,22 @@ export default function ActiveProjectView({ projectId, viewMode }: ActiveProject
                                 </div>
                                 <div>
                                     <p className="font-semibold text-gray-900">
-                                        {member.team_member.first_name} {member.team_member.last_name}
+                                        {member.team_member?.first_name || 'Unknown'} {member.team_member?.last_name || 'Member'}
                                     </p>
-                                    <p className="text-sm text-gray-600">{member.team_member.role}</p>
+                                    <p className="text-sm text-gray-600">{member.team_member?.role || 'Team member'}</p>
                                 </div>
                             </div>
                             <div className="text-sm text-gray-600">
                                 <p className="font-medium mb-1">Tasks:</p>
                                 <ul className="space-y-1">
-                                    {member.tasks.slice(0, 2).map((task, idx) => (
+                                    {(member.tasks || []).slice(0, 2).map((task, idx) => (
                                         <li key={idx} className="flex items-start">
                                             <span className="material-icons text-xs mr-1 mt-0.5">check</span>
                                             {task}
                                         </li>
                                     ))}
-                                    {member.tasks.length > 2 && (
-                                        <li className="text-blue-600">+{member.tasks.length - 2} more</li>
+                                    {(member.tasks || []).length > 2 && (
+                                        <li className="text-blue-600">+{(member.tasks || []).length - 2} more</li>
                                     )}
                                 </ul>
                             </div>

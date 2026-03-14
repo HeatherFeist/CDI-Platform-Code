@@ -6,6 +6,7 @@ interface TaskAssignment {
     id: string;
     estimate_id: string;
     line_item_description: string;
+    line_item_cost?: number;
     assigned_cost: number;
     status: string;
     completed: boolean;
@@ -118,13 +119,14 @@ export default function TeamInvitationView() {
             setResponding(true);
 
             const newStatus = accepted ? 'accepted' : 'declined';
+            const respondedAt = new Date().toISOString();
 
             // Update invitation status
             const { error: updateError } = await supabase
                 .from('batched_invitations')
                 .update({
                     status: newStatus,
-                    responded_at: new Date().toISOString()
+                    responded_at: respondedAt
                 })
                 .eq('id', invitation.id);
 
@@ -133,7 +135,10 @@ export default function TeamInvitationView() {
             // Update all task assignments
             const { error: tasksError } = await supabase
                 .from('task_assignments')
-                .update({ status: newStatus })
+                .update({
+                    status: newStatus,
+                    responded_at: respondedAt
+                })
                 .eq('batch_invitation_id', invitation.id);
 
             if (tasksError) throw tasksError;
@@ -336,6 +341,9 @@ export default function TeamInvitationView() {
                                         <div className="text-sm text-gray-600">
                                             <p>Estimate: {task.estimate.estimate_number} - {task.estimate.title}</p>
                                             <p>Customer: {task.estimate.customer.name}</p>
+                                            {typeof task.line_item_cost === 'number' && (
+                                                <p>Original line item total: ${task.line_item_cost.toFixed(2)}</p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

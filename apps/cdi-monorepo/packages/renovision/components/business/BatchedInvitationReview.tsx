@@ -15,6 +15,7 @@ export const BatchedInvitationReview: React.FC<BatchedInvitationReviewProps> = (
     const [batches, setBatches] = useState<BatchedInvitation[]>([]);
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
+    const [sendingBatchId, setSendingBatchId] = useState<string | null>(null);
     const [expandedBatches, setExpandedBatches] = useState<Set<string>>(new Set());
 
     useEffect(() => {
@@ -53,6 +54,34 @@ export const BatchedInvitationReview: React.FC<BatchedInvitationReviewProps> = (
             alert('❌ Failed to send invitations. Please try again.');
         } finally {
             setSending(false);
+        }
+    };
+
+    const handleSendOne = async (batchId: string) => {
+        setSendingBatchId(batchId);
+        try {
+            const result = await batchedInvitationService.sendBatchedInvitation(batchId);
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to send offer');
+            }
+            await loadPendingBatches();
+            alert('Mini estimate sent.');
+        } catch (error: any) {
+            console.error('Error sending batch:', error);
+            alert(error.message || 'Failed to send mini estimate.');
+        } finally {
+            setSendingBatchId(null);
+        }
+    };
+
+    const handleCopyLink = async (token: string) => {
+        const invitationUrl = `${window.location.origin}/invitation/${token}`;
+        try {
+            await navigator.clipboard.writeText(invitationUrl);
+            alert('Invitation link copied.');
+        } catch (error) {
+            console.error('Error copying invitation link:', error);
+            alert(invitationUrl);
         }
     };
 
@@ -218,6 +247,21 @@ export const BatchedInvitationReview: React.FC<BatchedInvitationReviewProps> = (
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
+                                    <div className="mt-4 flex flex-wrap gap-3">
+                                        <button
+                                            onClick={() => handleCopyLink(batch.invitation_token)}
+                                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                        >
+                                            Copy Offer Link
+                                        </button>
+                                        <button
+                                            onClick={() => handleSendOne(batch.batch_id)}
+                                            disabled={sendingBatchId === batch.batch_id}
+                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                                        >
+                                            {sendingBatchId === batch.batch_id ? 'Sending...' : 'Send This Offer'}
+                                        </button>
                                     </div>
                                 </div>
                             )}

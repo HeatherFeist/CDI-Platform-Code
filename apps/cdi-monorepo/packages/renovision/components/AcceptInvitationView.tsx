@@ -212,14 +212,16 @@ export default function AcceptInvitationView() {
         setError('');
 
         try {
-            const { error: signupError } = await signUp(
+            await signUp(
                 signupForm.email,
                 signupForm.password,
-                signupForm.firstName,
-                signupForm.lastName
+                {
+                    first_name: signupForm.firstName,
+                    last_name: signupForm.lastName,
+                    role: invitation.role as any,
+                    business_id: invitation.business_id
+                }
             );
-
-            if (signupError) throw signupError;
 
             // After signup, user should be logged in, trigger acceptance
             // (handled by useEffect watching user state)

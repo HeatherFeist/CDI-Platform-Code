@@ -53,7 +53,7 @@ interface AuthContextType {
     availableContexts: UserContextInfo[];
     switchContext: (context: UserContext, contextId?: string) => void;
     signIn: (email: string, password: string) => Promise<void>;
-    signUp: (email: string, password: string, profile: { first_name: string; last_name: string; role: UserRole; business_id?: string }) => Promise<void>;
+    signUp: (email: string, password: string, profile: { first_name: string; last_name: string; role: UserRole; business_id?: string; phone?: string }) => Promise<void>;
     signOut: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     updateUserRole: (newRole: UserRole) => Promise<void>;
@@ -323,7 +323,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signUp = async (
         email: string, 
         password: string, 
-        profile: { first_name: string; last_name: string; role: UserRole; business_id?: string }
+        profile: { first_name: string; last_name: string; role: UserRole; business_id?: string; phone?: string }
     ) => {
         if (!supabase) {
             throw new Error('Supabase not configured');
@@ -364,6 +364,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             console.log('✅ Supabase Auth account created');
+
+            let businessId = profile.business_id;
+
+            if (!businessId) {
+                const businessName = `${profile.first_name} ${profile.last_name}`.trim() || email;
+                const { data: businessData, error: businessError } = await supabase
+                    .from('businesses')
+                    .insert({
+                        name: businessName,
+                        description: 'Created during signup'
+                    })
+                    .select('id')
+                    .single();
+
+                if (businessError) {
+                    console.error('❌ Business creation error:', businessError);
+                    throw businessError;
+                }
+
+                businessId = businessData.id;
+            }
+
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .upsert({
+                    id: authData.user.id,
+                    email,
+                    first_name: profile.first_name,
+                    last_name: profile.last_name,
+                    phone: profile.phone || null,
+                    role: profile.role,
+                    business_id: businessId,
+                    username,
+                    display_name: `${profile.first_name} ${profile.last_name}`,
+                    public_profile: true,
+                    is_available_for_work: true
+                });
+
+            if (profileError) {
+                console.error('❌ Profile creation error:', profileError);
+                throw profileError;
+            }
 
             // STEP 2: Provision Google Workspace account
             // TEMPORARILY DISABLED - googleapis can't run in browser, needs server-side implementation

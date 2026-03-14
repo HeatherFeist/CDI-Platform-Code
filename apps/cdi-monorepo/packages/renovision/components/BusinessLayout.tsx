@@ -247,17 +247,6 @@ export const BusinessLayout: React.FC = () => {
                                 Schedule
                             </Link>
                             <Link
-                                to="/business/programs"
-                                className={`flex items-center px-4 py-2 text-gray-700 ${
-                                    isActive('/business/programs')
-                                        ? 'bg-blue-50 text-blue-700 border-r-4 border-blue-700'
-                                        : 'hover:bg-gray-50'
-                                }`}
-                            >
-                                <span className="material-icons-outlined mr-2">volunteer_activism</span>
-                                Programs & Benefits
-                            </Link>
-                            <Link
                                 to="/business/team"
                                 className={`flex items-center px-4 py-2 text-gray-700 ${
                                     isActive('/business/team')

@@ -7,6 +7,8 @@ import { supabaseBusinessService } from '../services/supabaseBusinessService';
 import AIEstimateCreator from './business/AIEstimateCreator';
 import EnhancedCalculator from './business/EnhancedCalculator';
 import TeamMemberTagger from './business/TeamMemberTagger';
+import BatchedInvitationReview from './business/BatchedInvitationReview';
+import EstimateTaskAssignments from './business/EstimateTaskAssignments';
 import DirectMessaging from './business/DirectMessaging';
 import SimpleProductSearch from './estimates/SimpleProductSearch';
 import AIProductSuggestions from './AIProductSuggestions';
@@ -28,6 +30,7 @@ export const EstimatesView: React.FC = () => {
     const [showEnhancedCalculator, setShowEnhancedCalculator] = useState(false);
     const [showTaskAssignment, setShowTaskAssignment] = useState(false);
     const [showMessaging, setShowMessaging] = useState(false);
+    const [showInvitationReview, setShowInvitationReview] = useState(false);
     const [selectedEstimateForTasks, setSelectedEstimateForTasks] = useState<string | null>(null);
     const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -371,6 +374,12 @@ export const EstimatesView: React.FC = () => {
                             {/* Save/Close Button */}
                             <div className="mt-6 flex justify-end gap-3">
                                 <button
+                                    onClick={() => setShowInvitationReview(true)}
+                                    className="px-6 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50"
+                                >
+                                    Review & Send Offers
+                                </button>
+                                <button
                                     onClick={() => {
                                         setShowTaskAssignment(false);
                                         setSelectedEstimateForTasks(null);
@@ -379,6 +388,10 @@ export const EstimatesView: React.FC = () => {
                                 >
                                     Done
                                 </button>
+                            </div>
+
+                            <div className="mt-8 border-t pt-6">
+                                <EstimateTaskAssignments estimateId={selectedEstimateForTasks} />
                             </div>
                         </div>
                     )}
@@ -874,6 +887,15 @@ export const EstimatesView: React.FC = () => {
                 isOpen={showMessaging}
                 onClose={() => setShowMessaging(false)}
             />
+
+            {showInvitationReview && (
+                <BatchedInvitationReview
+                    onClose={() => setShowInvitationReview(false)}
+                    onSent={() => {
+                        setShowInvitationReview(false);
+                    }}
+                />
+            )}
         </div>
         </FeatureLock>
     );
@@ -1029,7 +1051,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="e.g., Kitchen Remodel Estimate"
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
@@ -1041,7 +1063,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Brief description of the work..."
                                     rows={2}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                         </div>
@@ -1055,7 +1077,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                     required
                                     value={formData.customerId}
                                     onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="">Select a customer...</option>
                                     {customers.map(customer => (
@@ -1072,7 +1094,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                 <select
                                     value={formData.projectId}
                                     onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="">No project selected</option>
                                     {projects.map(project => (
@@ -1093,21 +1115,21 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                         placeholder="Description"
                                         value={newItem.description}
                                         onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                                        className="col-span-6 px-3 py-2 border rounded-lg"
+                                        className="col-span-6 px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500"
                                     />
                                     <input
                                         type="number"
                                         placeholder="Qty"
                                         value={newItem.quantity}
                                         onChange={(e) => setNewItem({ ...newItem, quantity: parseInt(e.target.value) || 0 })}
-                                        className="col-span-2 px-3 py-2 border rounded-lg"
+                                        className="col-span-2 px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500"
                                     />
                                     <input
                                         type="number"
                                         placeholder="Price"
                                         value={newItem.unitPrice}
                                         onChange={(e) => setNewItem({ ...newItem, unitPrice: parseFloat(e.target.value) || 0 })}
-                                        className="col-span-3 px-3 py-2 border rounded-lg"
+                                        className="col-span-3 px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500"
                                     />
                                     <button
                                         type="button"
@@ -1141,7 +1163,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                                                     type="text"
                                                                     value={item.description}
                                                                     onChange={(e) => updateItem(index, 'description', e.target.value)}
-                                                                    className="w-full px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500"
+                                                                    className="w-full px-2 py-1 border rounded bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                                                     autoFocus
                                                                 />
                                                             ) : (
@@ -1152,14 +1174,14 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                                         </td>
                                                     <td className="px-4 py-2">
                                                         {editingItemIndex === index ? (
-                                                            <input
-                                                                type="number"
-                                                                value={item.quantity}
-                                                                onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                                                                className="w-20 px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500"
-                                                                min="0"
-                                                                step="0.01"
-                                                            />
+                                                                <input
+                                                                    type="number"
+                                                                    value={item.quantity}
+                                                                    onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                                                                    className="w-20 px-2 py-1 border rounded bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
+                                                                    min="0"
+                                                                    step="0.01"
+                                                                />
                                                         ) : (
                                                             <span className="cursor-pointer" onClick={() => setEditingItemIndex(index)}>
                                                                 {item.quantity}
@@ -1174,7 +1196,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                                                     type="number"
                                                                     value={item.unitPrice}
                                                                     onChange={(e) => updateItem(index, 'unitPrice', e.target.value)}
-                                                                    className="w-24 px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500"
+                                                                    className="w-24 px-2 py-1 border rounded bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                                                     min="0"
                                                                     step="0.01"
                                                                 />
@@ -1249,7 +1271,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                                         type="number"
                                                         value={formData.taxRate * 100}
                                                         onChange={(e) => setFormData({ ...formData, taxRate: Number(e.target.value) / 100 })}
-                                                        className="w-20 px-2 py-1 border rounded text-right"
+                                                        className="w-20 px-2 py-1 border rounded bg-white text-right text-gray-900 placeholder:text-gray-500"
                                                         min="0"
                                                         max="100"
                                                         step="0.1"
@@ -1285,7 +1307,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                     placeholder="Additional notes for the customer..."
                                     rows={3}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
@@ -1297,7 +1319,7 @@ const EstimateModal: React.FC<EstimateModalProps> = ({ estimate, businessId, cus
                                     onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
                                     placeholder="Payment terms, warranty information, etc..."
                                     rows={2}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                         </div>

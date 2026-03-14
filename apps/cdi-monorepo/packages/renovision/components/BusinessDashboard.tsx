@@ -67,28 +67,6 @@ export const BusinessDashboard: React.FC = () => {
             
             <h1 className="text-2xl font-bold mb-6">Business Dashboard</h1>
 
-            {/* Programs Benefits Banner */}
-            <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg shadow-lg p-6 mb-6 mt-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <span className="material-icons text-5xl">volunteer_activism</span>
-                        <div>
-                            <h3 className="text-xl font-bold mb-1">Discover Your Benefits</h3>
-                            <p className="text-sm text-blue-100">
-                                Learn how our programs provide you with trained labor, wholesale materials, and new projects
-                            </p>
-                        </div>
-                    </div>
-                    <a
-                        href="/business/programs"
-                        className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2 whitespace-nowrap"
-                    >
-                        <span>See Programs</span>
-                        <span className="material-icons">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Quick Stats */}
                 <div className="bg-white p-4 rounded-lg shadow">

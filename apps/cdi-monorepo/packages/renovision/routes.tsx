@@ -9,7 +9,6 @@ import { PaymentSettingsView } from './components/PaymentSettingsView';
 import { TransactionsView } from './components/TransactionsView';
 import ScheduleView from './components/ScheduleView';
 import CalendarSettingsView from './components/CalendarSettingsView';
-import ProgramsBenefitsView from './components/ProgramsBenefitsView';
 import { TeamView } from './components/TeamView';
 import { AnalyticsView } from './components/AnalyticsView';
 import { LoginPage } from './components/LoginPage';
@@ -34,6 +33,7 @@ import BadgeLeaderboard from './components/BadgeLeaderboard';
 import DirectMessaging from './components/messaging/DirectMessaging';
 import TaxDashboard from './components/tax/TaxDashboard';
 import SetupWizardView from './components/setup/SetupWizardView';
+import TeamInvitationView from './components/invitations/TeamInvitationView';
 
 // Route wrappers for components that need URL params
 import {
@@ -67,6 +67,10 @@ export const router = createBrowserRouter([
     {
         path: "/pay/:invoiceId",
         element: <PublicPaymentPage />,
+    },
+    {
+        path: "/invitation/:token",
+        element: <TeamInvitationView />,
     },
     {
         path: "/business",
@@ -147,10 +151,6 @@ export const router = createBrowserRouter([
             {
                 path: "calendar-settings",
                 element: <CalendarSettingsView />,
-            },
-            {
-                path: "programs",
-                element: <ProgramsBenefitsView />,
             },
             {
                 path: "team",

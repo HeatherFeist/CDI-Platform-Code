@@ -30,6 +30,7 @@ export const LoginPage: React.FC = () => {
                     business_id: businessId || undefined,
                     first_name: firstName,
                     last_name: lastName,
+                    phone: phone || undefined
                 });
                 // Show success message
                 alert('Account created successfully! Please check your email to verify your account before signing in.');
@@ -109,13 +110,13 @@ export const LoginPage: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Email Address
                         </label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="your@email.com"
-                        />
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
+                                placeholder="your@email.com"
+                            />
                     </div>
 
                     <button
@@ -175,25 +176,25 @@ export const LoginPage: React.FC = () => {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         First Name
                                     </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    />
+                                        <input
+                                            type="text"
+                                            required
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
+                                        />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Last Name
                                     </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    />
+                                        <input
+                                            type="text"
+                                            required
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
+                                        />
                                 </div>
                             </div>
                         </>
@@ -208,7 +209,7 @@ export const LoginPage: React.FC = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -221,7 +222,7 @@ export const LoginPage: React.FC = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -235,7 +236,7 @@ export const LoginPage: React.FC = () => {
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
 
@@ -246,7 +247,7 @@ export const LoginPage: React.FC = () => {
                                 <select
                                     value={role}
                                     onChange={(e) => setRole(e.target.value as any)}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="admin">Business Owner / Admin</option>
                                     <option value="manager">Manager</option>

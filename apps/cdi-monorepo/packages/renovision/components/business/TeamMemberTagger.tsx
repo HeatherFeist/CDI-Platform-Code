@@ -14,6 +14,8 @@ interface TeamMember {
 }
 
 interface TaggedMember {
+    assignmentId: string;
+    batchId?: string | null;
     id: string;
     name: string;
     status: 'invited' | 'accepted' | 'declined';
@@ -48,6 +50,10 @@ export const TeamMemberTagger: React.FC<TeamMemberTaggerProps> = ({
     }, [userProfile?.business_id]);
 
     useEffect(() => {
+        loadTaggedMembers();
+    }, [estimateId, lineItemIndex]);
+
+    useEffect(() => {
         onMembersTagged(taggedMembers);
     }, [taggedMembers]);
 
@@ -66,28 +72,82 @@ export const TeamMemberTagger: React.FC<TeamMemberTaggerProps> = ({
         }
     };
 
+    const loadTaggedMembers = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('task_assignments')
+                .select(`
+                    id,
+                    status,
+                    batch_invitation_id,
+                    team_member_id,
+                    team_member:team_members!team_member_id (
+                        first_name,
+                        last_name
+                    )
+                `)
+                .eq('estimate_id', estimateId)
+                .eq('line_item_index', lineItemIndex)
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+
+            const mappedMembers: TaggedMember[] = (data || []).map((assignment: any) => ({
+                assignmentId: assignment.id,
+                batchId: assignment.batch_invitation_id,
+                id: assignment.team_member_id,
+                name: `${assignment.team_member.first_name} ${assignment.team_member.last_name}`,
+                status: assignment.status
+            }));
+
+            setTaggedMembers(mappedMembers);
+        } catch (error) {
+            console.error('Error loading tagged members:', error);
+        }
+    };
+
     const handleTagMember = async (member: TeamMember) => {
         try {
             const assignedCost = lineItemCost ? lineItemCost / (taggedMembers.length + 1) : 0;
 
-            // Insert task assignment
-            await supabase.from('task_assignments').insert({
-                estimate_id: estimateId,
-                line_item_index: lineItemIndex,
-                line_item_description: lineItemDescription,
-                team_member_id: member.id,
-                business_id: userProfile?.business_id,
-                assigned_cost: assignedCost,
-                status: 'invited'
-            });
+            const { data: assignment, error: insertError } = await supabase
+                .from('task_assignments')
+                .insert({
+                    estimate_id: estimateId,
+                    line_item_index: lineItemIndex,
+                    line_item_description: lineItemDescription,
+                    line_item_cost: lineItemCost || 0,
+                    team_member_id: member.id,
+                    business_id: userProfile?.business_id,
+                    assigned_cost: assignedCost,
+                    status: 'invited',
+                    responded_at: null,
+                    completed_at: null
+                })
+                .select('id')
+                .single();
 
-            // Create or update batched invitation (groups all tasks for this member)
-            await batchedInvitationService.createOrUpdateBatch(
+            if (insertError) throw insertError;
+
+            const batchResult = await batchedInvitationService.createOrUpdateBatch(
                 userProfile?.business_id!,
                 member.id
             );
 
+            if (!batchResult.success || !batchResult.batchId) {
+                throw new Error(batchResult.error || 'Failed to create invitation batch');
+            }
+
+            const { error: linkError } = await supabase
+                .from('task_assignments')
+                .update({ batch_invitation_id: batchResult.batchId })
+                .eq('id', assignment.id);
+
+            if (linkError) throw linkError;
+
             const newMember: TaggedMember = {
+                assignmentId: assignment.id,
+                batchId: batchResult.batchId,
                 id: member.id,
                 name: `${member.first_name} ${member.last_name}`,
                 status: 'invited'
@@ -102,7 +162,56 @@ export const TeamMemberTagger: React.FC<TeamMemberTaggerProps> = ({
     };
 
     const handleRemoveTag = (id: string) => {
-        setTaggedMembers(taggedMembers.filter(m => m.id !== id));
+        const tagToRemove = taggedMembers.find((member) => member.id === id);
+        if (!tagToRemove) return;
+
+        void (async () => {
+            try {
+                const { error } = await supabase
+                    .from('task_assignments')
+                    .delete()
+                    .eq('id', tagToRemove.assignmentId);
+
+                if (error) throw error;
+
+                if (tagToRemove.batchId) {
+                    const remainingAssignments = taggedMembers.filter(
+                        (member) => member.batchId === tagToRemove.batchId && member.assignmentId !== tagToRemove.assignmentId
+                    );
+
+                    const remainingIds = remainingAssignments.map((member) => member.assignmentId);
+                    let totalAmount = 0;
+
+                    if (remainingIds.length > 0) {
+                        const { data: totalsData, error: totalsError } = await supabase
+                            .from('task_assignments')
+                            .select('assigned_cost')
+                            .in('id', remainingIds);
+
+                        if (totalsError) throw totalsError;
+                        totalAmount = (totalsData || []).reduce(
+                            (sum, assignment: any) => sum + Number(assignment.assigned_cost || 0),
+                            0
+                        );
+                    }
+
+                    const { error: batchError } = await supabase
+                        .from('batched_invitations')
+                        .update({
+                            total_tasks: remainingIds.length,
+                            total_amount: totalAmount,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', tagToRemove.batchId);
+
+                    if (batchError) throw batchError;
+                }
+
+                setTaggedMembers(taggedMembers.filter((member) => member.id !== id));
+            } catch (removeError) {
+                console.error('Error removing tagged member:', removeError);
+            }
+        })();
     };
 
     const filteredMembers = availableMembers.filter(member => {
