@@ -5,7 +5,6 @@ import { SupabaseSetupGuide } from './SupabaseSetupGuide';
 import { ConfigurationStatus } from './ConfigurationStatus';
 import { SetupBanner } from './common/SetupBanner';
 import { useSetupStatus } from '../hooks/useSetupStatus';
-import { DebugProfileLoader } from './DebugProfileLoader';
 
 export const BusinessDashboard: React.FC = () => {
     const { metrics, isLoading, error } = useBusinessContext();
@@ -40,9 +39,6 @@ export const BusinessDashboard: React.FC = () => {
     // This allows users to complete setup when business_id is missing
     return (
         <div>
-            {/* DEBUG: Remove this after profile is fixed */}
-            <DebugProfileLoader />
-            
             {/* Setup Banner - Shows incomplete setup steps */}
             <SetupBanner />
             

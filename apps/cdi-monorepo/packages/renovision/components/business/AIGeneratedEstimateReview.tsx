@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GeneratedEstimate, EstimateLineItem } from '../../services/geminiService';
 import { useAuth } from '../../contexts/SupabaseAuthContext';
 import { supabase } from '../../supabase';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 interface TeamMember {
     id: string;
@@ -117,8 +117,7 @@ export const AIGeneratedEstimateReview: React.FC<AIGeneratedEstimateReviewProps>
                 throw new Error('Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment or add it in settings.');
             }
             
-            const ai = new GoogleGenerativeAI(apiKey);
-            const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+            const ai = new GoogleGenAI({ apiKey });
             
             const context = `
 Current Line Item:
@@ -142,9 +141,8 @@ Please provide specific suggestions or changes for this line item. Be concise an
 If the user wants to modify pricing, quantities, or descriptions, provide the exact values to use.
 `;
             
-            const response = await model.generateContent(context);
-            const result = await response.response;
-            const aiResponse = result.text().trim();
+            const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: context });
+            const aiResponse = response.text.trim();
             
             setItemChatHistory({
                 ...itemChatHistory,
@@ -240,8 +238,7 @@ If the user wants to modify pricing, quantities, or descriptions, provide the ex
                 throw new Error('Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment or add it in settings.');
             }
             
-            const ai = new GoogleGenerativeAI(apiKey);
-            const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+            const ai = new GoogleGenAI({ apiKey });
             
             const context = `
 Current Estimate:
@@ -255,10 +252,9 @@ User's request: ${chatMessage}
 Please provide specific changes to make to this estimate. Format your response as actionable changes.
 `;
             
-            const response = await model.generateContent(context);
+            const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: context });
             
-            const result = await response.response;
-            const aiResponse = result.text().trim();
+            const aiResponse = response.text.trim();
             setChatHistory(prev => [...prev, { role: 'assistant', message: aiResponse }]);
             setChatMessage('');
         } catch (error: any) {
@@ -284,8 +280,7 @@ Please provide specific changes to make to this estimate. Format your response a
                 throw new Error('Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment or add it in settings.');
             }
             
-            const ai = new GoogleGenerativeAI(apiKey);
-            const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+            const ai = new GoogleGenAI({ apiKey });
             
             const prompt = `
 You are a professional estimator. Based on the following edited line items, generate a clean, professional estimate description and organize the information formally.
@@ -324,9 +319,9 @@ Return as JSON:
 }
 `;
             
-            const response = await model.generateContent(prompt);
+            const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
             
-            let result = (await response.response).text().trim();
+            let result = response.text.trim();
             if (result.startsWith('```json')) {
                 result = result.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
             }

@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "renovisionpro",
+    "site": "renovision-7bfa7",
     "public": "dist",
     "ignore": [
       "firebase.json",
@@ -51,3 +51,4 @@
     "indexes": "firestore.indexes.json"
   }
 }
+
