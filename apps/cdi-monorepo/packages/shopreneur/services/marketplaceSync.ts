@@ -3,10 +3,15 @@ import { createClient } from '@supabase/supabase-js';
 
 // Marketplace Supabase configuration
 // These should match the marketplace database
-const marketplaceSupabaseUrl = import.meta.env.VITE_MARKETPLACE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
-const marketplaceSupabaseKey = import.meta.env.VITE_MARKETPLACE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
+const marketplaceSupabaseUrl = import.meta.env.VITE_MARKETPLACE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
+const marketplaceSupabaseKey = import.meta.env.VITE_MARKETPLACE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const isConfigured = marketplaceSupabaseUrl.includes('supabase.co') && marketplaceSupabaseKey.length > 0;
 
-const marketplaceClient = createClient(marketplaceSupabaseUrl, marketplaceSupabaseKey);
+// Safe placeholders prevent app boot crashes when env vars are missing.
+const safeUrl = isConfigured ? marketplaceSupabaseUrl : 'https://placeholder.supabase.co';
+const safeAnonKey = isConfigured ? marketplaceSupabaseKey : 'public-anon-key';
+
+const marketplaceClient = createClient(safeUrl, safeAnonKey);
 
 export interface MarketplaceListing {
   id: string;
