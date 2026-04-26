@@ -9,8 +9,10 @@ import CommunityLobby from './components/CommunityLobby';
 import DirectMessages from './components/DirectMessages';
 import ProfileEditor from './components/ProfileEditor';
 import ApiKeySettings from './components/ApiKeySettings';
+import ShopreneurLiveCheckout from './components/ShopreneurLiveCheckout';
 import { dbService } from './services/dbService';
 import { supabase, isConfigured } from './services/supabaseClient';
+import { sendDiscordEvent, discordInviteUrl, isDiscordInviteEnabled } from './services/discordService';
 import { 
   ShoppingBag, 
   LayoutGrid, 
@@ -33,7 +35,8 @@ import {
   Zap,
   User,
   Home,
-  Palette
+  Palette,
+  QrCode
 } from 'lucide-react';
 
 const INITIAL_SETTINGS: ShopSettings = {
@@ -72,7 +75,7 @@ const App: React.FC = () => {
   const [authLoading, setAuthLoading] = useState(false);
 
   // General UI State
-  const [activeTab, setActiveTab] = useState<'shop' | 'tryon' | 'admin' | 'community' | 'messages' | 'profile'>('shop');
+  const [activeTab, setActiveTab] = useState<'shop' | 'checkout' | 'tryon' | 'admin' | 'community' | 'messages' | 'profile'>('shop');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [platformFilter, setPlatformFilter] = useState<'All' | 'Amazon' | 'Shein' | 'eBay' | 'Temu'>('All');
@@ -146,6 +149,20 @@ const App: React.FC = () => {
   }, [shopSettings]);
 
   const handleAccessHub = async () => {
+    if (selectedRole === 'Shopper' && !foundProfile) {
+      setCurrentUser({
+        id: 'customer_' + Date.now(),
+        name: searchStoreName.trim() || 'Guest Customer',
+        handle: 'guest_shopper',
+        role: 'Shopper',
+        email: '',
+        bio: 'Guest shopper session',
+        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest-shopper'
+      });
+      setActiveTab('shop');
+      return;
+    }
+
     if (!foundProfile) {
       alert("Verification Pending: You must find a valid store identity before entering.");
       return;
@@ -280,6 +297,19 @@ const App: React.FC = () => {
     } catch (e) {
       console.error("Product DB Save Failed", e);
     }
+
+    for (const item of itemsToAdd) {
+      await sendDiscordEvent({
+        type: 'new_product_drop',
+        title: 'New Product Drop',
+        body: `${item.name} was added to ${shopSettings.storeName} (${item.platform})`,
+        metadata: {
+          productId: item.id,
+          platform: item.platform,
+          price: item.price,
+        },
+      });
+    }
   };
 
   const handleUpdateProduct = async (updated: Product) => {
@@ -335,6 +365,40 @@ const App: React.FC = () => {
         handleUpdateProduct({ ...product, videoUrl: url, videoReviewCompleted: true });
       }
     }
+  };
+
+  const handleGuestAccess = () => {
+    setCurrentUser({
+      id: 'customer_' + Date.now(),
+      name: 'Guest Customer',
+      handle: 'guest_shopper',
+      role: 'Shopper',
+      email: '',
+      bio: 'Guest shopper session',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest-shopper'
+    });
+    setActiveTab('checkout');
+  };
+
+  const handleSendDirectMessage = async (text: string, recipientId: string) => {
+    if (!currentUser) return;
+
+    await dbService.sendMessage({
+      senderId: currentUser.id,
+      recipientId,
+      text,
+      timestamp: Date.now(),
+    });
+
+    await sendDiscordEvent({
+      type: 'community_message',
+      title: 'New Community Message',
+      body: `${currentUser.name}: ${text.slice(0, 180)}`,
+      metadata: {
+        senderId: currentUser.id,
+        recipientId,
+      },
+    });
   };
 
   const filteredProducts = products.filter(p => 
@@ -434,8 +498,11 @@ const App: React.FC = () => {
                </div>
             </div>
           </div>
-          <div className="pt-16 border-t border-white/5 flex flex-col items-center gap-12">
-            <button onClick={handleAccessHub} disabled={!foundProfile || isFetching} className="w-full max-w-2xl bg-white text-black py-8 rounded-[3rem] text-xl font-black uppercase tracking-[0.3em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-6 disabled:opacity-10 group active:scale-95">Initialize Hub Session <ArrowRight size={32} className="group-hover:translate-x-3 transition-transform" /></button>
+          <div className="pt-16 border-t border-white/5 flex flex-col items-center gap-6">
+            <button onClick={handleAccessHub} disabled={(selectedRole === 'Owner' && !foundProfile) || isFetching} className="w-full max-w-2xl bg-white text-black py-8 rounded-[3rem] text-xl font-black uppercase tracking-[0.3em] shadow-3xl hover:bg-slate-200 transition-all flex items-center justify-center gap-6 disabled:opacity-10 group active:scale-95">Initialize Hub Session <ArrowRight size={32} className="group-hover:translate-x-3 transition-transform" /></button>
+            <button onClick={handleGuestAccess} className="w-full max-w-2xl bg-indigo-600/20 border border-indigo-500/40 text-indigo-200 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.25em] hover:bg-indigo-600/30 transition-all">
+              Continue As Guest To QR Checkout
+            </button>
              <div className="flex items-center gap-12"><button onClick={() => setIsRegistering(true)} className="flex items-center gap-3 text-indigo-400 hover:text-white transition-all text-xs font-black uppercase tracking-[0.3em] group relative"><UserPlus size={18} className="group-hover:scale-125 transition-transform" /> Build Your Profile<span className="absolute -bottom-1 left-0 w-0 h-px bg-indigo-400 group-hover:w-full transition-all"></span></button></div>
           </div>
         </div>
@@ -455,6 +522,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-6">
           <div className="hidden lg:flex items-center gap-10 mr-4">
             <button onClick={() => setActiveTab('shop')} className={`text-xs font-black uppercase tracking-widest transition-colors ${activeTab === 'shop' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Storefront</button>
+            <button onClick={() => setActiveTab('checkout')} className={`text-xs font-black uppercase tracking-widest transition-colors flex items-center gap-2 ${activeTab === 'checkout' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}><QrCode size={14} /> Checkout QR</button>
             <button onClick={() => setActiveTab('tryon')} className={`text-xs font-black uppercase tracking-widest transition-colors ${activeTab === 'tryon' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Studio</button>
             {isOwner && <button onClick={() => setActiveTab('community')} className={`text-xs font-black uppercase tracking-widest transition-colors ${activeTab === 'community' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Network</button>}
           </div>
@@ -474,6 +542,12 @@ const App: React.FC = () => {
           
           {isOwner && <button onClick={() => setActiveTab('admin')} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-xl ${activeTab === 'admin' ? 'bg-indigo-600 text-white shadow-indigo-600/20' : 'bg-white text-black hover:bg-slate-200 shadow-white/10'}`}>Dashboard</button>}
           
+          {isDiscordInviteEnabled && (
+            <a href={discordInviteUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-300 hover:text-white transition-colors bg-indigo-500/10 rounded-xl border border-indigo-500/30" title="Open Discord Community">
+              Discord
+            </a>
+          )}
+
           <button onClick={() => setShowApiKeySettings(true)} className="p-2.5 text-slate-500 hover:text-indigo-400 transition-colors bg-white/5 rounded-xl border border-white/5" title="AI Settings"><Settings2 size={18} /></button>
           
           <button onClick={() => { setCurrentUser(null); setSearchStoreName(''); setActiveTab('shop'); }} className="p-2.5 text-slate-600 hover:text-red-400 transition-colors bg-white/5 rounded-xl border border-white/5" title="Log Out"><LogOut size={18} /></button>
@@ -496,8 +570,17 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
+
+        {activeTab === 'checkout' && (
+          <div className="animate-fadeIn space-y-8">
+            <button onClick={() => setActiveTab('shop')} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
+              <Home size={12} /> Back to Storefront
+            </button>
+            <ShopreneurLiveCheckout />
+          </div>
+        )}
         
-        {activeTab === 'messages' && currentUser && isOwner && <DirectMessages currentUser={currentUser} allMessages={allMessages} onSendMessage={(text, recipientId) => dbService.sendMessage({ senderId: currentUser.id, recipientId, text, timestamp: Date.now() })} onDeleteMessage={dbService.deleteMessage} otherProfiles={profiles.filter(p => p.id !== currentUser.id)} />}
+        {activeTab === 'messages' && currentUser && isOwner && <DirectMessages currentUser={currentUser} allMessages={allMessages} onSendMessage={handleSendDirectMessage} onDeleteMessage={dbService.deleteMessage} otherProfiles={profiles.filter(p => p.id !== currentUser.id)} />}
         
         {activeTab === 'admin' && isOwner && currentUser && (
           <AdminPanel 
