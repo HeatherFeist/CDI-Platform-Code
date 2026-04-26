@@ -5,6 +5,7 @@ import { useUser } from '@supabase/auth-helpers-react';
 
 export default function PaymentIntegrationManager() {
   const user = useUser();
+  // user?.id is passed to PaymentIntegrationSettings to load existing Plaid credentials
   const [integrations, setIntegrations] = useState([]);
   const [message, setMessage] = useState('');
 
@@ -27,7 +28,7 @@ export default function PaymentIntegrationManager() {
 
   return (
     <div>
-      <PaymentIntegrationSettings onSave={handleSave} />
+      <PaymentIntegrationSettings onSave={handleSave} userId={user?.id} />
       {message && <div className="mt-2 text-green-600">{message}</div>}
       <h3 className="mt-6 font-bold">Your Connected Payment Integrations</h3>
       <ul className="mt-2">

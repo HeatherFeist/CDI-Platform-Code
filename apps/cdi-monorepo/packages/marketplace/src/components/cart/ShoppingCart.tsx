@@ -95,26 +95,26 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
+        className="fixed inset-0 z-40 bg-slate-950/70 transition-opacity backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Cart Sidebar */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col">
+      <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-slate-800 bg-slate-950 shadow-2xl">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 flex items-center justify-between">
+        <div className="market-hero flex items-center justify-between p-6 text-white">
           <div className="flex items-center space-x-3">
             <ShoppingBag size={24} />
             <div>
               <h2 className="text-xl font-bold">Shopping Cart</h2>
-              <p className="text-sm text-green-100">
+              <p className="text-sm text-slate-300">
                 {getCartItemCount()} {getCartItemCount() === 1 ? 'item' : 'items'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-green-800 rounded-lg transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-slate-900/40"
           >
             <X size={24} />
           </button>
@@ -123,9 +123,9 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+            <div className="flex h-full flex-col items-center justify-center text-slate-500">
               <ShoppingBag size={64} className="mb-4" />
-              <p className="text-lg font-medium">Your cart is empty</p>
+              <p className="text-lg font-medium text-slate-200">Your cart is empty</p>
               <p className="text-sm">Add store items to get started</p>
             </div>
           ) : (
@@ -133,19 +133,19 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
               {cart.map((item) => (
                 <div
                   key={item.listing.id}
-                  className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                  className="rounded-2xl border border-white/10 bg-slate-900/60 p-4"
                 >
                   <div className="flex items-start space-x-3">
                     <img
                       src={item.listing.images[0] || '/placeholder.jpg'}
                       alt={item.listing.title}
-                      className="w-20 h-20 object-cover rounded-lg"
+                      className="h-20 w-20 rounded-xl object-cover"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">
+                      <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-slate-100">
                         {item.listing.title}
                       </h3>
-                      <p className="text-lg font-bold text-green-600 mb-2">
+                      <p className="mb-2 text-lg font-bold text-emerald-300">
                         ${item.listing.starting_bid.toFixed(2)}
                       </p>
 
@@ -153,14 +153,14 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => updateQuantity(item.listing.id, item.quantity - 1)}
-                            className="p-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                            className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 transition-colors hover:bg-slate-800"
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <span className="w-8 text-center font-medium text-slate-100">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.listing.id, item.quantity + 1)}
-                            className="p-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                            className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-slate-200 transition-colors hover:bg-slate-800"
                           >
                             <Plus size={14} />
                           </button>
@@ -168,13 +168,13 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
 
                         <button
                           onClick={() => removeFromCart(item.listing.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors p-1"
+                          className="p-1 text-red-400 transition-colors hover:text-red-300"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
 
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="mt-2 text-xs text-slate-400">
                         Subtotal: ${(item.listing.starting_bid * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -185,7 +185,7 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
               {cart.length > 0 && (
                 <button
                   onClick={clearCart}
-                  className="w-full text-sm text-red-600 hover:text-red-700 font-medium py-2"
+                  className="w-full py-2 text-sm font-medium text-red-400 hover:text-red-300"
                 >
                   Clear Cart
                 </button>
@@ -196,19 +196,19 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="border-t border-gray-200 p-6 bg-gray-50">
+          <div className="border-t border-slate-800 bg-slate-900/85 p-6">
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">${getCartTotal().toFixed(2)}</span>
+                <span className="text-slate-400">Subtotal</span>
+                <span className="font-medium text-slate-100">${getCartTotal().toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">Calculated at checkout</span>
+                <span className="text-slate-400">Shipping</span>
+                <span className="font-medium text-slate-100">Calculated at checkout</span>
               </div>
-              <div className="border-t border-gray-300 pt-2 flex justify-between">
-                <span className="font-bold text-lg">Total</span>
-                <span className="font-bold text-2xl text-green-600">
+              <div className="flex justify-between border-t border-slate-700 pt-2">
+                <span className="text-lg font-bold text-white">Total</span>
+                <span className="text-2xl font-bold text-emerald-300">
                   ${getCartTotal().toFixed(2)}
                 </span>
               </div>
@@ -217,7 +217,7 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
             <button
               onClick={handleCheckout}
               disabled={processing}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="market-button-primary flex w-full items-center justify-center space-x-2 py-4 text-lg font-bold disabled:cursor-not-allowed disabled:opacity-50"
             >
               {processing ? (
                 <>
@@ -232,7 +232,7 @@ export default function ShoppingCart({ isOpen, onClose }: ShoppingCartProps) {
               )}
             </button>
 
-            <p className="text-xs text-gray-500 text-center mt-3">
+            <p className="mt-3 text-center text-xs text-slate-500">
               Secure checkout powered by Constructive Designs
             </p>
           </div>

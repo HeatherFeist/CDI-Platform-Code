@@ -90,25 +90,38 @@ export default function DeliveryOptions({
   };
 
   const getColorClasses = (color: string, enabled: boolean) => {
-    if (!enabled) return 'bg-gray-100 border-gray-300';
+    if (!enabled) return 'border-white/10 bg-slate-950/70 hover:border-cyan-400/25 hover:bg-slate-900/80';
     
     const colors: Record<string, string> = {
-      green: 'bg-green-50 border-green-500',
-      blue: 'bg-blue-50 border-blue-500',
-      purple: 'bg-purple-50 border-purple-500',
-      orange: 'bg-orange-50 border-orange-500'
+      green: 'border-emerald-400/45 bg-emerald-500/10',
+      blue: 'border-cyan-400/45 bg-cyan-500/10',
+      purple: 'border-violet-400/45 bg-violet-500/10',
+      orange: 'border-amber-400/45 bg-amber-500/10'
     };
     return colors[color] || 'bg-gray-100 border-gray-300';
+  };
+
+  const getIconClasses = (color: string, enabled: boolean) => {
+    if (!enabled) return 'text-slate-500';
+
+    const colors: Record<string, string> = {
+      green: 'text-emerald-300',
+      blue: 'text-cyan-300',
+      purple: 'text-violet-300',
+      orange: 'text-amber-300'
+    };
+
+    return colors[color] || 'text-cyan-300';
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-          <Truck className="mr-2" size={20} />
+        <h3 className="mb-2 flex items-center text-lg font-semibold text-white">
+          <Truck className="mr-2 text-cyan-300" size={20} />
           Delivery & Fulfillment Options
         </h3>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="mb-4 text-sm text-slate-300">
           Select how buyers can receive this item. You can offer multiple options.
         </p>
       </div>
@@ -124,17 +137,17 @@ export default function DeliveryOptions({
             <div key={method} className="space-y-3">
               {/* Method Card */}
               <div
-                className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${getColorClasses(color, isEnabled)}`}
+                className={`cursor-pointer rounded-3xl border p-4 transition-all backdrop-blur-sm ${getColorClasses(color, isEnabled)}`}
                 onClick={() => toggleMethod(method)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3">
-                    <Icon size={24} className={isEnabled ? `text-${color}-600` : 'text-gray-400'} />
+                    <Icon size={24} className={getIconClasses(color, isEnabled)} />
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{title}</h4>
-                      <p className="text-sm text-gray-600">{description}</p>
+                      <h4 className="font-semibold text-white">{title}</h4>
+                      <p className="text-sm text-slate-300">{description}</p>
                       {isEnabled && option && (
-                        <p className="text-sm font-medium text-gray-900 mt-2">
+                        <p className="mt-2 text-sm font-medium text-slate-100">
                           {option.fee === 0 ? 'FREE' : `$${option.fee.toFixed(2)} fee`}
                         </p>
                       )}
@@ -144,7 +157,7 @@ export default function DeliveryOptions({
                     type="checkbox"
                     checked={isEnabled}
                     onChange={() => toggleMethod(method)}
-                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    className="h-5 w-5 rounded border-white/20 bg-slate-950/80 text-cyan-400 focus:ring-2 focus:ring-cyan-400"
                     onClick={(e) => e.stopPropagation()}
                   />
                 </div>
@@ -156,7 +169,7 @@ export default function DeliveryOptions({
                       e.stopPropagation();
                       setExpandedMethod(isExpanded ? null : method);
                     }}
-                    className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    className="mt-3 text-sm font-medium text-cyan-300 hover:text-cyan-200"
                   >
                     {isExpanded ? 'Hide Details' : 'Configure Details →'}
                   </button>
@@ -165,10 +178,10 @@ export default function DeliveryOptions({
 
               {/* Expanded Configuration */}
               {isEnabled && isExpanded && option && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-4">
+                <div className="space-y-4 rounded-3xl border border-white/10 bg-slate-950/70 p-4 backdrop-blur-sm">
                   {/* Fee */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       <DollarSign size={16} className="inline mr-1" />
                       Fee Amount
                     </label>
@@ -178,17 +191,17 @@ export default function DeliveryOptions({
                       min="0"
                       value={option.fee}
                       onChange={(e) => updateOption(method, { fee: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="market-input w-full"
                       placeholder="0.00"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="mt-1 text-xs text-slate-400">
                       Set to $0 for free. This fee will be added at checkout.
                     </p>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       <Info size={16} className="inline mr-1" />
                       Description for Buyers
                     </label>
@@ -196,7 +209,7 @@ export default function DeliveryOptions({
                       value={option.description}
                       onChange={(e) => updateOption(method, { description: e.target.value })}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="market-input w-full"
                       placeholder={`e.g., "${method === 'pickup' ? 'Pick up at my workshop, Mon-Fri 9am-5pm' : method === 'shipping' ? 'USPS Priority Mail, 3-5 business days' : 'I can deliver within 10 miles of Dayton'}"`}
                     />
                   </div>
@@ -204,7 +217,7 @@ export default function DeliveryOptions({
                   {/* Method-specific fields */}
                   {method === 'local_delivery' && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="mb-2 block text-sm font-medium text-slate-200">
                         Delivery Radius (miles)
                       </label>
                       <input
@@ -212,7 +225,7 @@ export default function DeliveryOptions({
                         min="1"
                         value={option.radius_miles || 10}
                         onChange={(e) => updateOption(method, { radius_miles: parseInt(e.target.value) || 10 })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="market-input w-full"
                         placeholder="10"
                       />
                     </div>
@@ -220,7 +233,7 @@ export default function DeliveryOptions({
 
                   {method === 'pickup' && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="mb-2 block text-sm font-medium text-slate-200">
                         <Clock size={16} className="inline mr-1" />
                         Available Hours
                       </label>
@@ -228,7 +241,7 @@ export default function DeliveryOptions({
                         type="text"
                         value={option.available_hours || ''}
                         onChange={(e) => updateOption(method, { available_hours: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="market-input w-full"
                         placeholder="e.g., Mon-Fri 9am-5pm, Sat 10am-2pm"
                       />
                     </div>
@@ -237,13 +250,13 @@ export default function DeliveryOptions({
                   {method === 'shipping' && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="mb-2 block text-sm font-medium text-slate-200">
                           Carrier
                         </label>
                         <select
                           value={option.carrier || 'USPS'}
                           onChange={(e) => updateOption(method, { carrier: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          className="market-input w-full"
                         >
                           <option value="USPS">USPS</option>
                           <option value="UPS">UPS</option>
@@ -252,14 +265,14 @@ export default function DeliveryOptions({
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="mb-2 block text-sm font-medium text-slate-200">
                           Estimated Delivery Time
                         </label>
                         <input
                           type="text"
                           value={option.estimated_days || ''}
                           onChange={(e) => updateOption(method, { estimated_days: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          className="market-input w-full"
                           placeholder="e.g., 3-5 business days"
                         />
                       </div>
@@ -274,46 +287,46 @@ export default function DeliveryOptions({
 
       {/* Pickup Address (only show if pickup is enabled) */}
       {options.some(opt => opt.method === 'pickup' && opt.enabled) && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
-            <Home size={18} className="mr-2 text-yellow-600" />
+        <div className="rounded-3xl border border-amber-400/25 bg-amber-500/10 p-4 backdrop-blur-sm">
+          <h4 className="mb-2 flex items-center font-semibold text-amber-100">
+            <Home size={18} className="mr-2 text-amber-300" />
             Pickup Address
           </h4>
-          <p className="text-sm text-gray-600 mb-3">
+          <p className="mb-3 text-sm text-amber-100/85">
             This address will only be shared with buyers after they purchase. It won't be public.
           </p>
           <input
             type="text"
             value={sellerAddress || ''}
             onChange={(e) => onAddressChange?.(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 mb-3"
+            className="market-input mb-3 w-full"
             placeholder="e.g., 123 Main St, Dayton, OH 45402"
           />
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-medium text-amber-100/90">
             Pickup Instructions (Optional)
           </label>
           <textarea
             value={pickupInstructions || ''}
             onChange={(e) => onInstructionsChange?.(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
+            className="market-input w-full"
             placeholder="e.g., Ring doorbell, workshop entrance is around back"
           />
         </div>
       )}
 
       {/* Summary */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-gray-900 mb-2">Delivery Options Summary</h4>
+      <div className="rounded-3xl border border-cyan-400/25 bg-cyan-500/10 p-4 backdrop-blur-sm">
+        <h4 className="mb-2 font-semibold text-cyan-100">Delivery Options Summary</h4>
         {options.filter(opt => opt.enabled).length === 0 ? (
-          <p className="text-sm text-gray-600">
-            ⚠️ Please select at least one delivery option for buyers.
+          <p className="text-sm text-cyan-100/85">
+            Please select at least one delivery option for buyers.
           </p>
         ) : (
-          <ul className="text-sm text-gray-700 space-y-1">
+          <ul className="space-y-1 text-sm text-cyan-100/90">
             {options.filter(opt => opt.enabled).map(opt => (
               <li key={opt.method} className="flex items-center">
-                <span className="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
+                <span className="mr-2 h-2 w-2 rounded-full bg-cyan-300"></span>
                 <strong className="capitalize">{opt.method.replace('_', ' ')}:</strong>
                 <span className="ml-1">
                   {opt.fee === 0 ? 'FREE' : `$${opt.fee.toFixed(2)}`}

@@ -96,7 +96,7 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden group relative"
+      className="market-panel market-panel-hover group relative cursor-pointer overflow-hidden rounded-2xl"
     >
       {/* Delete Button (only for owner) */}
       {(showActions || isOwner) && (
@@ -120,7 +120,7 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
         </button>
       )}
       
-      <div className="relative h-48 bg-gray-200 overflow-hidden">
+      <div className="relative h-48 overflow-hidden bg-slate-800">
         <img
           src={imageUrl}
           alt={listing.title}
@@ -129,23 +129,23 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
         
         {/* Type Badge */}
         {isStore ? (
-          <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
+          <div className="absolute right-2 top-2 flex items-center rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white shadow-lg shadow-emerald-950/40">
             <ShoppingCart size={12} className="mr-1" />
             STORE
           </div>
         ) : (
           listing.buy_now_price && (
-            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute right-2 top-2 rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white shadow-lg shadow-emerald-950/40">
               BUY NOW
             </div>
           )
         )}
         
         {/* Condition Badge */}
-        <div className={`absolute top-2 left-2 text-white text-xs font-medium px-2 py-1 rounded shadow-md ${
+        <div className={`absolute left-2 top-2 rounded-full px-3 py-1 text-xs font-medium text-white shadow-md ${
           listing.condition === 'new' ? 'bg-gradient-primary' :
-          listing.condition === 'handcrafted' ? 'bg-purple-600' :
-          'bg-gray-500'
+          listing.condition === 'handcrafted' ? 'bg-indigo-500' :
+          'bg-slate-700'
         }`}>
           {listing.condition === 'new' ? '✨ New' :
            listing.condition === 'handcrafted' ? '🤲 Hand-crafted' :
@@ -153,7 +153,7 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
         </div>
         
         {/* Bottom Badge - Time Left (auction) or Stock (store) */}
-        <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded flex items-center">
+        <div className="absolute bottom-2 left-2 flex items-center rounded-full bg-slate-950/80 px-3 py-1 text-xs text-slate-100 backdrop-blur-sm">
           {isStore ? (
             <>
               <Package size={12} className="mr-1" />
@@ -169,7 +169,7 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-purple-600 transition-colors">
+        <h3 className="mb-1 line-clamp-2 font-semibold text-slate-100 transition-colors group-hover:text-indigo-300">
           {listing.title}
         </h3>
 
@@ -178,33 +178,33 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
           <div className="mb-3">
             {listing.compare_at_price && listing.compare_at_price > listing.starting_bid && (
               <div className="flex items-center space-x-2 mb-1">
-                <span className="text-sm text-gray-400 line-through">
+                <span className="text-sm text-slate-500 line-through">
                   ${listing.compare_at_price.toFixed(2)}
                 </span>
-                <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-medium">
+                <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-xs font-medium text-red-300">
                   Save ${(listing.compare_at_price - listing.starting_bid).toFixed(2)}
                 </span>
               </div>
             )}
-            <p className="text-2xl font-bold text-green-600">
+            <p className="text-2xl font-bold text-emerald-400">
               ${(listing.starting_bid || 0).toFixed(2)}
             </p>
             {listing.stock_quantity === 0 && (
-              <p className="text-xs text-red-500 font-medium mt-1">Out of Stock</p>
+              <p className="mt-1 text-xs font-medium text-red-400">Out of Stock</p>
             )}
           </div>
         ) : (
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs text-gray-500">Current Bid</p>
-              <p className="text-lg font-bold text-purple-600">
+              <p className="text-xs text-slate-400">Current Bid</p>
+              <p className="text-lg font-bold text-indigo-300">
                 ${listing.current_bid > 0 ? listing.current_bid.toFixed(2) : listing.starting_bid.toFixed(2)}
               </p>
             </div>
             {listing.buy_now_price && (
               <div className="text-right">
-                <p className="text-xs text-gray-500">Buy Now</p>
-                <p className="text-sm font-semibold text-green-600">
+                <p className="text-xs text-slate-400">Buy Now</p>
+                <p className="text-sm font-semibold text-emerald-400">
                   ${listing.buy_now_price.toFixed(2)}
                 </p>
               </div>
@@ -212,11 +212,11 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between border-t border-slate-800 pt-3 text-xs text-slate-400">
           <div className="flex items-center space-x-3">
             {listing.seller && (
               <div className="flex items-center">
-                <div className="w-5 h-5 bg-gradient-primary rounded-full flex items-center justify-center text-white text-xs mr-1 shadow-sm">
+                <div className="mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-primary text-xs text-white shadow-sm">
                   {listing.seller.username[0].toUpperCase()}
                 </div>
                 <span>{listing.seller.username}</span>

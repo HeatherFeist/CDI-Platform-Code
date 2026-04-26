@@ -106,24 +106,26 @@ export default function PhoneDonationForm() {
 
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl p-8 text-white">
+      <div className="market-hero mx-auto max-w-2xl rounded-3xl p-8 text-white shadow-2xl">
         <div className="text-center">
-          <CheckCircle className="w-20 h-20 mx-auto mb-6" />
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-slate-950 shadow-2xl shadow-emerald-950/30">
+            <CheckCircle className="h-10 w-10" />
+          </div>
           <h2 className="text-3xl font-bold mb-4">You're Entered! 🎉</h2>
           
-          <div className="bg-white/20 backdrop-blur-lg rounded-xl p-6 mb-6">
-            <p className="text-sm uppercase tracking-wide mb-2">Your Raffle Entry Number</p>
+          <div className="mb-6 rounded-2xl border border-white/10 bg-slate-950/40 p-6 backdrop-blur-lg">
+            <p className="mb-2 text-sm uppercase tracking-[0.18em] text-slate-300">Your Raffle Entry Number</p>
             <p className="text-4xl font-bold tracking-wider">{raffleEntry}</p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 text-left space-y-4">
+          <div className="space-y-4 rounded-2xl border border-white/10 bg-slate-950/40 p-6 text-left backdrop-blur-lg">
             <h3 className="font-bold text-xl mb-3">What Happens Next?</h3>
             
             <div className="flex items-start space-x-3">
               <span className="text-2xl">📱</span>
               <div>
                 <p className="font-semibold">Device Verification (1-3 days)</p>
-                <p className="text-sm text-blue-100">We'll verify your device with the carrier and check its status.</p>
+                <p className="text-sm text-slate-300">We'll verify your device with the carrier and check its status.</p>
               </div>
             </div>
 
@@ -131,7 +133,7 @@ export default function PhoneDonationForm() {
               <span className="text-2xl">🎯</span>
               <div>
                 <p className="font-semibold">Random Drawing</p>
-                <p className="text-sm text-blue-100">When a contractor needs a helper, we randomly draw an entry number!</p>
+                <p className="text-sm text-slate-300">When a contractor needs a helper, we randomly draw an entry number!</p>
               </div>
             </div>
 
@@ -139,7 +141,7 @@ export default function PhoneDonationForm() {
               <span className="text-2xl">💼</span>
               <div>
                 <p className="font-semibold">Job Opportunity Notification</p>
-                <p className="text-sm text-blue-100">If selected, you'll receive details about the work opportunity.</p>
+                <p className="text-sm text-slate-300">If selected, you'll receive details about the work opportunity.</p>
               </div>
             </div>
 
@@ -147,12 +149,12 @@ export default function PhoneDonationForm() {
               <span className="text-2xl">🏆</span>
               <div>
                 <p className="font-semibold">Win Your Prize!</p>
-                <p className="text-sm text-blue-100">Accept the job → Your donated phone activated + career training!</p>
+                <p className="text-sm text-slate-300">Accept the job → Your donated phone activated + career training!</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 bg-yellow-500/30 backdrop-blur-lg rounded-xl p-4 border border-yellow-300/50">
+          <div className="mt-6 rounded-2xl border border-amber-300/30 bg-amber-400/10 p-4 backdrop-blur-lg">
             <p className="text-sm font-semibold">
               📧 Check your email ({formData.donorEmail}) for confirmation and updates!
             </p>
@@ -160,7 +162,7 @@ export default function PhoneDonationForm() {
 
           <button
             onClick={() => window.location.reload()}
-            className="mt-6 px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-all"
+            className="market-button-primary mt-6 px-8 py-3 font-bold"
           >
             Donate Another Phone
           </button>
@@ -172,47 +174,49 @@ export default function PhoneDonationForm() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-8 text-white text-center">
-        <Gift className="w-16 h-16 mx-auto mb-4" />
+      <div className="market-hero rounded-t-3xl p-8 text-center text-white">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-xl shadow-indigo-950/40">
+          <Gift className="h-8 w-8" />
+        </div>
         <h1 className="text-3xl font-bold mb-2">Trade Your Phone, Win a Prize!</h1>
-        <p className="text-blue-100 text-lg">
+        <p className="text-lg text-slate-200">
           Donate your unlocked or locked phone for a chance to win mystery prizes
         </p>
-        <p className="text-sm text-blue-200 mt-2">
+        <p className="mt-2 text-sm text-slate-300">
           Prizes may include activated phones, service plans, accessories, cash, or job opportunities!
         </p>
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white border-x border-gray-200 p-6">
+      <div className="border-x border-slate-800/70 bg-slate-950/70 p-6 backdrop-blur-xl">
         <div className="flex justify-between items-center max-w-md mx-auto">
-          <div className={`flex items-center ${step >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-300'}`}>1</div>
+          <div className={`flex items-center ${step >= 1 ? 'text-indigo-200' : 'text-slate-500'}`}>
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 1 ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}`}>1</div>
             <span className="ml-2 text-sm font-medium">Device Info</span>
           </div>
-          <div className="flex-1 h-1 mx-4 bg-gray-300">
-            <div className={`h-full ${step >= 2 ? 'bg-blue-600' : 'bg-gray-300'}`} style={{ width: step >= 2 ? '100%' : '0%', transition: 'width 0.3s' }}></div>
+          <div className="mx-4 h-1 flex-1 bg-slate-800">
+            <div className={`h-full ${step >= 2 ? 'bg-indigo-500' : 'bg-slate-800'}`} style={{ width: step >= 2 ? '100%' : '0%', transition: 'width 0.3s' }}></div>
           </div>
-          <div className={`flex items-center ${step >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-300'}`}>2</div>
+          <div className={`flex items-center ${step >= 2 ? 'text-indigo-200' : 'text-slate-500'}`}>
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 2 ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}`}>2</div>
             <span className="ml-2 text-sm font-medium">Your Info</span>
           </div>
         </div>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-b-2xl border border-gray-200 p-8">
+      <form onSubmit={handleSubmit} className="market-panel rounded-b-3xl rounded-t-none border-t-0 p-8">
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-            <p className="text-red-800 text-sm">{error}</p>
+          <div className="mb-6 flex items-start space-x-3 rounded-xl border border-red-400/20 bg-red-500/10 p-4">
+            <AlertCircle className="mt-0.5 h-5 w-5 text-red-300" />
+            <p className="text-sm text-red-200">{error}</p>
           </div>
         )}
 
         {/* Step 1: Device Information */}
         {step === 1 && (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Tell Us About Your Device</h3>
+            <h3 className="mb-4 text-xl font-bold text-white">Tell Us About Your Device</h3>
 
             {/* IMEI */}
             <div>
@@ -227,16 +231,16 @@ export default function PhoneDonationForm() {
                 placeholder="Enter 15-digit IMEI number"
                 required
                 maxLength={15}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               />
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-slate-400">
                 💡 Dial <strong>*#06#</strong> on your phone to display IMEI, or find it in Settings → About
               </p>
             </div>
 
             {/* Device Make */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="mb-2 block font-medium text-slate-300">
                 Device Brand <span className="text-red-500">*</span>
               </label>
               <select
@@ -244,7 +248,7 @@ export default function PhoneDonationForm() {
                 value={formData.deviceMake}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               >
                 <option value="">Select brand...</option>
                 <option value="Apple">Apple (iPhone)</option>
@@ -259,7 +263,7 @@ export default function PhoneDonationForm() {
 
             {/* Device Model */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="mb-2 block font-medium text-slate-300">
                 Device Model <span className="text-red-500">*</span>
               </label>
               <input
@@ -269,18 +273,18 @@ export default function PhoneDonationForm() {
                 onChange={handleInputChange}
                 placeholder="e.g., iPhone 12, Galaxy S21, Pixel 6"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               />
             </div>
 
             {/* Storage Capacity */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Storage Capacity</label>
+              <label className="mb-2 block font-medium text-slate-300">Storage Capacity</label>
               <select
                 name="storageCapacity"
                 value={formData.storageCapacity}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               >
                 <option value="">Unknown</option>
                 <option value="64GB">64GB</option>
@@ -293,12 +297,12 @@ export default function PhoneDonationForm() {
 
             {/* Device Condition */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Device Condition</label>
+              <label className="mb-2 block font-medium text-slate-300">Device Condition</label>
               <select
                 name="deviceCondition"
                 value={formData.deviceCondition}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               >
                 <option value="excellent">Excellent (Like new)</option>
                 <option value="good">Good (Minor wear)</option>
@@ -308,33 +312,33 @@ export default function PhoneDonationForm() {
             </div>
 
             {/* Physical Damage */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 rounded-xl border border-white/10 bg-slate-950/35 px-4 py-3">
               <input
                 type="checkbox"
                 name="physicalDamage"
                 checked={formData.physicalDamage}
                 onChange={handleInputChange}
-                className="w-5 h-5 text-blue-600"
+                className="h-5 w-5 accent-indigo-500"
               />
-              <label className="text-gray-700">Device has physical damage (cracks, dents, water damage)</label>
+              <label className="text-slate-200">Device has physical damage (cracks, dents, water damage)</label>
             </div>
 
             {/* Screen Intact */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 rounded-xl border border-white/10 bg-slate-950/35 px-4 py-3">
               <input
                 type="checkbox"
                 name="screenIntact"
                 checked={formData.screenIntact}
                 onChange={handleInputChange}
-                className="w-5 h-5 text-blue-600"
+                className="h-5 w-5 accent-indigo-500"
               />
-              <label className="text-gray-700">Screen is intact and functional</label>
+              <label className="text-slate-200">Screen is intact and functional</label>
             </div>
 
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+              className="market-button-primary w-full py-3 font-semibold"
             >
               Continue to Contact Info →
             </button>
@@ -344,10 +348,10 @@ export default function PhoneDonationForm() {
         {/* Step 2: Donor Information */}
         {step === 2 && (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Your Contact Information</h3>
+            <h3 className="mb-4 text-xl font-bold text-white">Your Contact Information</h3>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-blue-800">
+            <div className="mb-6 rounded-xl border border-cyan-400/20 bg-cyan-500/10 p-4">
+              <p className="text-sm text-cyan-100">
                 <strong>Privacy Note:</strong> Your information is kept anonymous and only used to notify you 
                 about raffle results and potential job opportunities. We never share your data.
               </p>
@@ -355,7 +359,7 @@ export default function PhoneDonationForm() {
 
             {/* Name */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="mb-2 block font-medium text-slate-300">
                 Full Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -365,13 +369,13 @@ export default function PhoneDonationForm() {
                 onChange={handleInputChange}
                 placeholder="John Doe"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="mb-2 block font-medium text-slate-300">
                 Email Address <span className="text-red-500">*</span>
               </label>
               <input
@@ -381,14 +385,14 @@ export default function PhoneDonationForm() {
                 onChange={handleInputChange}
                 placeholder="john@example.com"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               />
-              <p className="mt-1 text-sm text-gray-600">We'll send your raffle entry confirmation here</p>
+              <p className="mt-1 text-sm text-slate-400">We'll send your raffle entry confirmation here</p>
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="mb-2 block font-medium text-slate-300">
                 Phone Number <span className="text-red-500">*</span>
               </label>
               <input
@@ -398,14 +402,14 @@ export default function PhoneDonationForm() {
                 onChange={handleInputChange}
                 placeholder="(555) 123-4567"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="market-input w-full px-4 py-3"
               />
-              <p className="mt-1 text-sm text-gray-600">For urgent prize notifications</p>
+              <p className="mt-1 text-sm text-slate-400">For urgent prize notifications</p>
             </div>
 
             {/* Consent Checkboxes */}
-            <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-              <h4 className="font-semibold text-gray-800">Communication Preferences</h4>
+            <div className="space-y-4 rounded-2xl border border-white/10 bg-slate-950/35 p-6">
+              <h4 className="font-semibold text-white">Communication Preferences</h4>
               
               <div className="flex items-start space-x-3">
                 <input
@@ -414,11 +418,11 @@ export default function PhoneDonationForm() {
                   checked={formData.consentedToNotifications}
                   onChange={handleInputChange}
                   required
-                  className="w-5 h-5 text-blue-600 mt-1"
+                  className="mt-1 h-5 w-5 accent-indigo-500"
                 />
-                <label className="text-gray-700 text-sm">
+                <label className="text-sm text-slate-200">
                   <strong>Yes, notify me about raffle results and prizes</strong> (Required)
-                  <p className="text-gray-600 mt-1">We'll email/text you if you're selected in a drawing</p>
+                  <p className="mt-1 text-slate-400">We'll email/text you if you're selected in a drawing</p>
                 </label>
               </div>
 
@@ -428,11 +432,11 @@ export default function PhoneDonationForm() {
                   name="consentedToJobOpportunities"
                   checked={formData.consentedToJobOpportunities}
                   onChange={handleInputChange}
-                  className="w-5 h-5 text-blue-600 mt-1"
+                  className="mt-1 h-5 w-5 accent-indigo-500"
                 />
-                <label className="text-gray-700 text-sm">
+                <label className="text-sm text-slate-200">
                   <strong>Yes, notify me about job opportunities</strong> (Optional but recommended)
-                  <p className="text-gray-600 mt-1">
+                  <p className="mt-1 text-slate-400">
                     Prize winnings may include paid work opportunities with contractors. This is how you WIN!
                   </p>
                 </label>
@@ -440,7 +444,7 @@ export default function PhoneDonationForm() {
             </div>
 
             {/* Legal Disclaimers */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-gray-700">
+            <div className="rounded-xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-slate-200">
               <p className="font-semibold mb-2">Important:</p>
               <ul className="space-y-1 list-disc list-inside">
                 <li>No purchase necessary to enter or win</li>
@@ -455,14 +459,14 @@ export default function PhoneDonationForm() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex-1 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+                className="market-button-secondary flex-1 py-3 font-semibold"
               >
                 ← Back
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                className="market-button-primary flex flex-1 items-center justify-center space-x-2 py-3 font-semibold disabled:opacity-50"
               >
                 {loading ? (
                   <>

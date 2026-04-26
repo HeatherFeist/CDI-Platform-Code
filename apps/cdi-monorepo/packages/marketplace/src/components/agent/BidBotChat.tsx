@@ -110,7 +110,7 @@ How can I help you today?`,
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full p-4 shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-300 z-50 group"
+        className="group fixed bottom-6 right-6 z-50 rounded-full bg-gradient-to-r from-indigo-600 to-cyan-500 p-4 text-white shadow-2xl shadow-indigo-950/50 transition-all duration-300 hover:scale-110 hover:shadow-indigo-500/30"
       >
         <Bot size={28} className="group-hover:rotate-12 transition-transform" />
         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
@@ -122,22 +122,22 @@ How can I help you today?`,
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-2xl z-50 p-4">
+      <div className="fixed bottom-6 right-6 z-50 rounded-2xl border border-slate-700/70 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl">
         <div className="flex items-center justify-between space-x-4">
           <div className="flex items-center space-x-2">
-            <Bot size={24} className="text-white" />
+            <Bot size={24} className="text-indigo-300" />
             <span className="text-white font-semibold">BidBot</span>
           </div>
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsMinimized(false)}
-              className="text-white hover:bg-white/20 rounded p-1 transition-colors"
+              className="rounded p-1 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
             >
               <MessageCircle size={20} />
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/20 rounded p-1 transition-colors"
+              className="rounded p-1 text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
             >
               <X size={20} />
             </button>
@@ -148,9 +148,9 @@ How can I help you today?`,
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 bg-white rounded-2xl shadow-2xl z-50 flex flex-col h-[600px] border border-purple-200">
+    <div className="fixed bottom-6 right-6 z-50 flex h-[600px] w-96 flex-col overflow-hidden rounded-[1.75rem] border border-slate-700/70 bg-slate-950/95 shadow-2xl backdrop-blur-xl">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-t-2xl">
+      <div className="border-b border-slate-800 bg-gradient-to-r from-indigo-600/90 to-cyan-500/80 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="relative">
@@ -159,20 +159,20 @@ How can I help you today?`,
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">BidBot</h3>
-              <p className="text-purple-100 text-xs">Your AI Auction Assistant</p>
+              <p className="text-slate-100 text-xs">Your AI Auction Assistant</p>
             </div>
           </div>
           <div className="flex items-center space-x-1">
             <button
               onClick={() => setIsMinimized(true)}
-              className="text-white hover:bg-white/20 rounded p-1.5 transition-colors"
+              className="rounded p-1.5 text-white transition-colors hover:bg-slate-900/40"
               title="Minimize"
             >
               <Minimize2 size={18} />
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/20 rounded p-1.5 transition-colors"
+              className="rounded p-1.5 text-white transition-colors hover:bg-slate-900/40"
               title="Close"
             >
               <X size={18} />
@@ -182,7 +182,7 @@ How can I help you today?`,
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 space-y-4 overflow-y-auto bg-slate-950/60 p-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -191,14 +191,14 @@ How can I help you today?`,
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                  : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white'
+                  : 'border border-slate-800 bg-slate-900 text-slate-100 shadow-sm'
               }`}
             >
               {message.role === 'assistant' && (
                 <div className="flex items-center space-x-2 mb-2">
-                  <Bot size={16} className="text-purple-600" />
-                  <span className="text-xs font-semibold text-purple-600">BidBot</span>
+                  <Bot size={16} className="text-indigo-300" />
+                  <span className="text-xs font-semibold text-indigo-300">BidBot</span>
                 </div>
               )}
               <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
@@ -211,13 +211,13 @@ How can I help you today?`,
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Bot size={16} className="text-purple-600" />
+                <Bot size={16} className="text-indigo-300" />
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-indigo-300" style={{ animationDelay: '0ms' }}></div>
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-indigo-300" style={{ animationDelay: '150ms' }}></div>
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-indigo-300" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             </div>
@@ -229,8 +229,8 @@ How can I help you today?`,
 
       {/* Quick Suggestions */}
       {messages.length <= 1 && (
-        <div className="px-4 py-3 border-t bg-white">
-          <p className="text-xs text-gray-500 mb-2 flex items-center">
+        <div className="border-t border-slate-800 bg-slate-950/80 px-4 py-3">
+          <p className="mb-2 flex items-center text-xs text-slate-400">
             <Sparkles size={12} className="mr-1" />
             Quick suggestions:
           </p>
@@ -239,7 +239,7 @@ How can I help you today?`,
               <button
                 key={idx}
                 onClick={() => handleQuickQuestion(suggestion)}
-                className="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg px-3 py-2 text-left transition-colors border border-purple-200"
+                className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-3 py-2 text-left text-xs text-indigo-200 transition-colors hover:bg-indigo-500/20"
               >
                 {suggestion}
               </button>
@@ -249,7 +249,7 @@ How can I help you today?`,
       )}
 
       {/* Input */}
-      <div className="p-4 border-t bg-white rounded-b-2xl">
+      <div className="border-t border-slate-800 bg-slate-950/90 p-4">
         <div className="flex items-center space-x-2">
           <input
             type="text"
@@ -257,18 +257,18 @@ How can I help you today?`,
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Ask me anything..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+            className="market-input flex-1 px-4 py-3 text-sm"
             disabled={isTyping}
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl px-4 py-3 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="market-button-primary rounded-xl px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Send size={18} />
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2 text-center">
+        <p className="mt-2 text-center text-xs text-slate-500">
           Powered by AI • May make mistakes
         </p>
       </div>

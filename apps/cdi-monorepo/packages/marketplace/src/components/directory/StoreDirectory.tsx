@@ -29,22 +29,22 @@ interface MemberStore {
 const tierInfo = {
   'free': {
     name: 'Community Member',
-    color: 'bg-blue-100 text-blue-700',
+    color: 'border-cyan-400/30 bg-cyan-500/15 text-cyan-100',
     icon: '🌱'
   },
   'partner': {
     name: 'Partner Level',
-    color: 'bg-green-100 text-green-700',
+    color: 'border-emerald-400/30 bg-emerald-500/15 text-emerald-100',
     icon: '🤝'
   },
   'professional': {
     name: 'Professional',
-    color: 'bg-purple-100 text-purple-700',
+    color: 'border-violet-400/30 bg-violet-500/15 text-violet-100',
     icon: '⭐'
   },
   'enterprise': {
     name: 'Enterprise',
-    color: 'bg-gold-100 text-gold-700',
+    color: 'border-amber-400/30 bg-amber-500/15 text-amber-100',
     icon: '👑'
   }
 };
@@ -161,35 +161,37 @@ export default function StoreDirectory() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="market-shell flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading member stores...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-cyan-400"></div>
+          <p className="text-slate-300">Loading member stores...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="market-shell min-h-screen">
       {/* Hero Section */}
-      <div className="relative min-h-[400px] bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white">
+      <div className="market-hero relative min-h-[400px] overflow-hidden text-white">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
           style={{
             backgroundImage: 'url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80")'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/85 to-purple-600/85" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.2),transparent_38%),linear-gradient(135deg,rgba(15,23,42,0.92),rgba(49,46,129,0.88),rgba(8,47,73,0.92))]" />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex items-center min-h-[400px]">
           <div className="text-center w-full">
-            <Store className="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/15 bg-white/10 backdrop-blur-xl">
+              <Store className="h-12 w-12 drop-shadow-lg" />
+            </div>
             <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">Member Store Directory</h1>
-            <p className="text-2xl text-blue-100 max-w-3xl mx-auto drop-shadow-md">
+            <p className="mx-auto max-w-3xl text-2xl text-slate-200 drop-shadow-md">
               Discover amazing stores from our nonprofit community members
             </p>
-            <div className="mt-8 flex items-center justify-center space-x-6 text-blue-100">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-slate-200">
               <div className="flex items-center space-x-2">
                 <Store size={20} />
                 <span>{stores.length} Member Stores</span>
@@ -208,29 +210,29 @@ export default function StoreDirectory() {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+      <div className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search stores, members, or locations..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full pl-10 pr-4"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               {/* Tier Filter */}
               <div className="flex items-center space-x-2">
-                <Filter size={18} className="text-gray-500" />
+                <Filter size={18} className="text-slate-400" />
                 <select
                   value={selectedTier}
                   onChange={(e) => setSelectedTier(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input px-3 py-2"
                 >
                   <option value="all">All Tiers</option>
                   <option value="free">Community Members</option>
@@ -244,7 +246,7 @@ export default function StoreDirectory() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input px-3 py-2"
               >
                 <option value="newest">Newest First</option>
                 <option value="rating">Highest Rated</option>
@@ -253,23 +255,23 @@ export default function StoreDirectory() {
               </select>
 
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <div className="flex items-center rounded-2xl border border-white/10 bg-slate-900/80 p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded ${
+                  className={`rounded-xl p-2 transition-colors ${
                     viewMode === 'grid'
-                      ? 'bg-white shadow-sm text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'bg-cyan-500/15 text-cyan-200'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <Grid size={18} />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded ${
+                  className={`rounded-xl p-2 transition-colors ${
                     viewMode === 'list'
-                      ? 'bg-white shadow-sm text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'bg-cyan-500/15 text-cyan-200'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <List size={18} />
@@ -283,10 +285,10 @@ export default function StoreDirectory() {
       {/* Store Grid/List */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredStores.length === 0 ? (
-          <div className="text-center py-16">
-            <Store size={64} className="mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Stores Found</h3>
-            <p className="text-gray-600">
+          <div className="market-panel py-16 text-center">
+            <Store size={64} className="mx-auto mb-4 text-slate-500" />
+            <h3 className="mb-2 text-xl font-semibold text-white">No Stores Found</h3>
+            <p className="text-slate-300">
               {searchQuery || selectedTier !== 'all'
                 ? 'Try adjusting your filters or search query.'
                 : 'No member stores are currently available.'}
@@ -294,7 +296,7 @@ export default function StoreDirectory() {
           </div>
         ) : (
           <>
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm text-slate-400">
               Showing {filteredStores.length} of {stores.length} stores
             </div>
             
@@ -320,27 +322,27 @@ function StoreCard({ store, viewMode }: { store: MemberStore; viewMode: 'grid' |
   if (viewMode === 'list') {
     return (
       <Link to={`/store/${store.store_slug || store.profiles?.username}`}>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+        <div className="market-panel-hover rounded-3xl p-6">
           <div className="flex items-start space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 text-xl font-bold text-white shadow-[0_16px_32px_-20px_rgba(34,211,238,0.8)]">
               {store.store_name?.[0] || store.profiles?.username?.[0] || 'S'}
             </div>
             
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900 truncate">
+                  <h3 className="truncate text-lg font-semibold text-white">
                     {store.store_name || `${store.profiles?.username}'s Store`}
                   </h3>
-                  <p className="text-gray-600 text-sm">@{store.profiles?.username}</p>
+                  <p className="text-sm text-slate-400">@{store.profiles?.username}</p>
                 </div>
                 
                 <div className="flex flex-col items-end space-y-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${tierConfig.color}`}>
+                  <span className={`rounded-full border px-2 py-1 text-xs font-medium ${tierConfig.color}`}>
                     {tierConfig.icon} {tierConfig.name}
                   </span>
                   {store.featured && (
-                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                    <span className="rounded-full border border-amber-400/30 bg-amber-500/15 px-2 py-1 text-xs font-medium text-amber-100">
                       ⭐ Featured
                     </span>
                   )}
@@ -348,10 +350,10 @@ function StoreCard({ store, viewMode }: { store: MemberStore; viewMode: 'grid' |
               </div>
               
               {store.profiles?.bio && (
-                <p className="text-gray-600 text-sm mt-2 line-clamp-2">{store.profiles.bio}</p>
+                <p className="mt-2 line-clamp-2 text-sm text-slate-300">{store.profiles.bio}</p>
               )}
               
-              <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
+              <div className="mt-3 flex items-center space-x-4 text-sm text-slate-400">
                 {store.profiles?.city && (
                   <span className="flex items-center space-x-1">
                     <MapPin size={14} />
@@ -359,7 +361,7 @@ function StoreCard({ store, viewMode }: { store: MemberStore; viewMode: 'grid' |
                   </span>
                 )}
                 <span className="flex items-center space-x-1">
-                  <Star size={14} className="text-yellow-500" />
+                  <Star size={14} className="text-amber-300" />
                   <span>{store.stats?.rating?.toFixed(1)} ({store.stats?.reviews_count})</span>
                 </span>
                 <span>{store.stats?.total_listings} listings</span>
@@ -373,35 +375,35 @@ function StoreCard({ store, viewMode }: { store: MemberStore; viewMode: 'grid' |
 
   return (
     <Link to={`/store/${store.store_slug || store.profiles?.username}`}>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+      <div className="market-panel-hover overflow-hidden rounded-3xl">
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 font-bold text-white shadow-[0_16px_32px_-20px_rgba(34,211,238,0.8)]">
               {store.store_name?.[0] || store.profiles?.username?.[0] || 'S'}
             </div>
             
             <div className="flex flex-col space-y-1">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${tierConfig.color}`}>
+              <span className={`rounded-full border px-2 py-1 text-xs font-medium ${tierConfig.color}`}>
                 {tierConfig.icon} {tierConfig.name}
               </span>
               {store.featured && (
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                <span className="rounded-full border border-amber-400/30 bg-amber-500/15 px-2 py-1 text-xs font-medium text-amber-100">
                   ⭐ Featured
                 </span>
               )}
             </div>
           </div>
           
-          <h3 className="font-semibold text-lg text-gray-900 mb-1 truncate">
+          <h3 className="mb-1 truncate text-lg font-semibold text-white">
             {store.store_name || `${store.profiles?.username}'s Store`}
           </h3>
-          <p className="text-gray-600 text-sm mb-3">@{store.profiles?.username}</p>
+          <p className="mb-3 text-sm text-slate-400">@{store.profiles?.username}</p>
           
           {store.profiles?.bio && (
-            <p className="text-gray-600 text-sm mb-4 line-clamp-3">{store.profiles.bio}</p>
+            <p className="mb-4 line-clamp-3 text-sm text-slate-300">{store.profiles.bio}</p>
           )}
           
-          <div className="space-y-2 text-sm text-gray-500">
+          <div className="space-y-2 text-sm text-slate-400">
             {store.profiles?.city && (
               <div className="flex items-center space-x-1">
                 <MapPin size={14} />
@@ -409,7 +411,7 @@ function StoreCard({ store, viewMode }: { store: MemberStore; viewMode: 'grid' |
               </div>
             )}
             <div className="flex items-center space-x-1">
-              <Star size={14} className="text-yellow-500" />
+              <Star size={14} className="text-amber-300" />
               <span>{store.stats?.rating?.toFixed(1)} ({store.stats?.reviews_count} reviews)</span>
             </div>
             <div className="flex justify-between">

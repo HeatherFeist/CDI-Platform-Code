@@ -6,24 +6,24 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto">
+    <footer className="mt-auto border-t border-slate-800 bg-slate-950/90 text-slate-300 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">Constructive Designs Inc.</h3>
+            <h3 className="mb-4 text-lg font-bold text-white">Constructive Designs Inc.</h3>
             <p className="text-sm mb-4">
               A 501(c)(3) nonprofit organization dedicated to economic empowerment and community development.
             </p>
             <div className="flex items-center gap-2 text-sm">
-              <Heart className="w-4 h-4 text-red-500" />
+              <Heart className="h-4 w-4 text-indigo-300" />
               <span>Building stronger communities</span>
             </div>
           </div>
 
           {/* Marketplace Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Marketplace</h4>
+            <h4 className="mb-4 font-semibold text-white">Marketplace</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/" className="hover:text-white transition">Browse Auctions</Link>
@@ -42,7 +42,7 @@ export default function Footer() {
 
           {/* Nonprofit Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Our Organization</h4>
+            <h4 className="mb-4 font-semibold text-white">Our Organization</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/about" className="hover:text-white transition">About Us</Link>
@@ -67,7 +67,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Contact</h4>
+            <h4 className="mb-4 font-semibold text-white">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -90,19 +90,19 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
+        <div className="mt-8 border-t border-slate-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-center md:text-left">
               <p>© {currentYear} Constructive Designs Inc. All rights reserved.</p>
-              <p className="text-gray-500 mt-1">
+              <p className="mt-1 text-slate-500">
                 501(c)(3) Nonprofit Organization | EIN: 86-3183952 | Founded 2021
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
-              <span className="text-gray-600">•</span>
+              <span className="text-slate-600">•</span>
               <Link to="/contact" className="hover:text-white transition">Terms of Service</Link>
-              <span className="text-gray-600">•</span>
+              <span className="text-slate-600">•</span>
               <a 
                 href="https://www.guidestar.org" 
                 target="_blank" 

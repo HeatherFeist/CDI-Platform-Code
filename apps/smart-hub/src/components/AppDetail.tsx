@@ -145,6 +145,36 @@ const APPS_META: Record<string, AppMeta> = {
     token: 'MicroFarm Coins 🌱',
     previewImage: 'https://images.unsplash.com/photo-1484981138541-3d074aa97716?w=1200',
   },
+  'shopreneur': {
+    title: "Shop'reneur",
+    device: 'E-Commerce Platform',
+    description:
+      "Shop'reneur empowers entrepreneurs to build and manage their online stores with ease — from inventory tracking and sales analytics to affiliate-linked checkout flows with QR codes.",
+    stats: {
+      'Status': 'Live',
+      'Store Builder': 'Included',
+      'Inventory Mgmt': 'Real-time',
+      'Checkout': 'QR + Affiliate',
+    },
+    fundingBreakdown: {
+      'Store Setup': 'Free',
+      'Inventory Tools': 'Included',
+      'Analytics': 'Included',
+      'QR Checkout': 'Included',
+      'Affiliate Links': 'Included',
+    },
+    checklist: [
+      'Create your store profile',
+      'Add products to inventory',
+      'Set up affiliate store links',
+      'Generate per-store QR codes',
+      'Share checkout links with customers',
+      'Track sales and analytics',
+    ],
+    planUrl: 'https://shopreneur.constructivedesignsinc.org',
+    token: 'Shop Coins 🛒',
+    previewImage: 'https://img.freepik.com/free-photo/showing-cart-trolley-shopping-online-sign-graphic_53876-133967.jpg?semt=ais_hybrid&w=740&q=80',
+  },
 };
 
 export const AppDetail: React.FC = () => {

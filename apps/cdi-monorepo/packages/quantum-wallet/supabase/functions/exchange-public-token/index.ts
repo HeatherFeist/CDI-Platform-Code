@@ -33,7 +33,7 @@ serve(async (req) => {
             .from('user_api_keys')
             .select('service, api_key')
             .eq('user_id', user.id)
-            .in('service', ['plaid_client_id', 'plaid_secret'])
+            .in('service', ['plaid_client_id', 'plaid_secret', 'plaid_env'])
 
         if (keysError || !keys) {
             throw new Error('Failed to fetch Plaid keys')
@@ -41,13 +41,19 @@ serve(async (req) => {
 
         const clientId = keys.find(k => k.service === 'plaid_client_id')?.api_key
         const secret = keys.find(k => k.service === 'plaid_secret')?.api_key
+        const plaidEnv = keys.find(k => k.service === 'plaid_env')?.api_key || 'production'
+        const plaidBaseUrl = plaidEnv === 'sandbox'
+            ? 'https://sandbox.plaid.com'
+            : plaidEnv === 'development'
+            ? 'https://development.plaid.com'
+            : 'https://production.plaid.com'
 
         if (!clientId || !secret) {
             throw new Error('Plaid keys not configured')
         }
 
         // Exchange public token
-        const response = await fetch('https://sandbox.plaid.com/item/public_token/exchange', {
+        const response = await fetch(`${plaidBaseUrl}/item/public_token/exchange`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

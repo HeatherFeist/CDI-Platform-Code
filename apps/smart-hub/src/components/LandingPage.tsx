@@ -90,8 +90,8 @@ export const LandingPage: React.FC = () => {
             slug: 'renovision',
             icon: '/icons/renovision.svg',
             title: 'Renovision',
-            subtitle: 'Real Estate Platform',
-            description: 'Comprehensive property management and real estate investment platform with AI-powered insights.',
+            subtitle: 'Home Renovation',
+            description: 'Plan your next renovation with AI-powered estimates, real material prices, and tax-free purchasing.',
             status: 'Live',
             brandColor: '#2D68FF',
             initialState: true,
@@ -101,8 +101,8 @@ export const LandingPage: React.FC = () => {
             slug: 'marketplace',
             icon: '/icons/marketplace.svg',
             title: 'Marketplace',
-            subtitle: 'E-Commerce Hub',
-            description: 'Full-featured marketplace for buying, selling, and trading with integrated payment solutions.',
+            subtitle: 'Buy & Sell Locally',
+            description: 'Buy, sell, auction, or trade with people in your community. Safe meetups and PayPal protection built in.',
             status: 'Live',
             brandColor: '#00C2FF',
             initialState: true,
@@ -112,8 +112,8 @@ export const LandingPage: React.FC = () => {
             slug: 'wallet',
             icon: '/icons/wallet.svg',
             title: 'Quantum Wallet',
-            subtitle: 'Digital Wallet',
-            description: 'Secure cryptocurrency and token management with real-time portfolio tracking and analytics.',
+            subtitle: 'Money Manager',
+            description: 'Link your bank accounts, track spending, and manage project budgets — all in one dashboard.',
             status: 'Live',
             brandColor: '#9333EA',
             initialState: true,
@@ -124,9 +124,20 @@ export const LandingPage: React.FC = () => {
             icon: '/icons/image-editor.svg',
             title: 'Image Editor',
             subtitle: 'AI Photo Editor',
-            description: 'Professional image editing with AI-powered enhancements, filters, and smart object removal.',
+            description: 'Visualize renovation ideas before you start. Upload a room photo and see what it could look like.',
             status: 'Live',
             brandColor: '#EC4899',
+            initialState: true,
+            isCustomIcon: true,
+        },
+        {
+            slug: 'shopreneur',
+            icon: 'https://img.freepik.com/free-photo/showing-cart-trolley-shopping-online-sign-graphic_53876-133967.jpg?semt=ais_hybrid&w=740&q=80',
+            title: "Shop'reneur",
+            subtitle: 'Start Your Store',
+            description: 'Launch your own online store in minutes — inventory management, payments, and analytics included.',
+            status: 'Live',
+            brandColor: '#0EA5E9',
             initialState: true,
             isCustomIcon: true,
         },
@@ -137,8 +148,8 @@ export const LandingPage: React.FC = () => {
         <div className="min-h-screen text-white font-sans">
             <nav className="sticky top-0 z-50 glass-heavy px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-center gap-8">
-                    <button className="text-gray-300 px-4 py-2 rounded-lg hover:text-white transition-colors">Apps</button>
-                    <button className="text-gray-300 px-4 py-2 rounded-lg hover:text-white transition-colors">Devices</button>
+                    <button className="text-gray-300 px-4 py-2 rounded-lg hover:text-white transition-colors">Tools</button>
+                    <button className="text-gray-300 px-4 py-2 rounded-lg hover:text-white transition-colors" onClick={() => navigate('/business-directory')}>Find a Pro</button>
                     <div className="bg-primary p-2.5 rounded-2xl shadow-sm">
                         <Building2 size={24} />
                     </div>
@@ -149,14 +160,14 @@ export const LandingPage: React.FC = () => {
 
             <header className="hero-glow py-20 px-6 text-center">
                 <div className="max-w-4xl mx-auto">
-                    <h1 className="text-5xl font-bold gradient-text mb-4">Welcome to your Smart Hub</h1>
-                    <p className="text-gray-300 text-lg">Control devices, manage automations, and view device status.</p>
+                    <h1 className="text-5xl font-bold gradient-text mb-4">Save Money on Home Projects</h1>
+                    <p className="text-gray-300 text-lg">Free AI tools, tax-exempt material savings, and a local marketplace — all from a 501(c)(3) nonprofit.</p>
                 </div>
             </header>
 
             <main className="-mt-12 px-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex gap-8 justify-center items-start py-12">
+                    <div className="flex gap-8 justify-center items-start py-12 flex-wrap">
                         {apps.map((app) => (
                             <div key={app.slug}>
                                 <AppCard app={app} />
@@ -168,8 +179,8 @@ export const LandingPage: React.FC = () => {
 
             <footer className="mt-16 px-6 pb-12 text-gray-400 text-center">
                 <div className="max-w-7xl mx-auto">
-                    <div className="mb-2">© 2025 Constructive Designs Inc.</div>
-                    <div className="text-sm text-gray-500">Built with care for connected homes.</div>
+                    <div className="mb-2">© 2026 Constructive Designs Inc.</div>
+                    <div className="text-sm text-gray-500">A 501(c)(3) nonprofit — saving you money on every project.</div>
                 </div>
             </footer>
         </div>

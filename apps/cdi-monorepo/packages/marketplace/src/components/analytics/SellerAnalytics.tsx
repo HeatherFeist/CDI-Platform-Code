@@ -221,18 +221,18 @@ export function SellerAnalytics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-400 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 p-6 text-slate-100">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Seller Analytics</h1>
-          <p className="text-gray-600">Track your performance and grow your business</p>
+          <h1 className="text-3xl font-bold text-white">Seller Analytics</h1>
+          <p className="text-slate-400">Track your performance and grow your business</p>
         </div>
         
         {/* Timeframe Selector */}
@@ -243,8 +243,8 @@ export function SellerAnalytics() {
               onClick={() => setTimeframe(tf)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 timeframe === tf
-                  ? 'bg-gradient-to-br from-purple-600 to-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gradient-to-br from-indigo-600 to-blue-500 text-white shadow-lg shadow-indigo-950/30'
+                  : 'border border-white/10 bg-slate-900/60 text-slate-300 hover:bg-slate-800'
               }`}
             >
               {tf === 'week' ? 'Last 7 Days' : tf === 'month' ? 'Last 30 Days' : tf === 'year' ? 'Last Year' : 'All Time'}
@@ -255,70 +255,70 @@ export function SellerAnalytics() {
 
       {/* Key Stats */}
       <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <FiDollarSign className="w-5 h-5 text-green-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/15">
+              <FiDollarSign className="h-5 w-5 text-emerald-300" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 ${stats.total_revenue.toFixed(2)}
               </div>
-              <div className="text-sm text-gray-600">Total Revenue</div>
+              <div className="text-sm text-slate-400">Total Revenue</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-500">
             From {stats.total_sales} sales
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FiPackage className="w-5 h-5 text-blue-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/15">
+              <FiPackage className="h-5 w-5 text-cyan-300" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 {stats.total_sales}
               </div>
-              <div className="text-sm text-gray-600">Items Sold</div>
+              <div className="text-sm text-slate-400">Items Sold</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-500">
             {stats.active_listings} active listings
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <FiTrendingUp className="w-5 h-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/15">
+              <FiTrendingUp className="h-5 w-5 text-indigo-300" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 ${stats.average_sale_price.toFixed(2)}
               </div>
-              <div className="text-sm text-gray-600">Avg Sale Price</div>
+              <div className="text-sm text-slate-400">Avg Sale Price</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-500">
             Per item sold
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <FiBarChart2 className="w-5 h-5 text-orange-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/15">
+              <FiBarChart2 className="h-5 w-5 text-amber-300" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 {stats.conversion_rate.toFixed(1)}%
               </div>
-              <div className="text-sm text-gray-600">Conversion Rate</div>
+              <div className="text-sm text-slate-400">Conversion Rate</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-500">
             {stats.total_views} total views
           </div>
         </div>
@@ -327,9 +327,9 @@ export function SellerAnalytics() {
       {/* Charts Row */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Top Categories */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiPieChart className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiPieChart className="h-5 w-5 text-indigo-300" />
             Top Performing Categories
           </h2>
           
@@ -337,22 +337,22 @@ export function SellerAnalytics() {
             <div className="space-y-3">
               {topCategories.map((cat, idx) => (
                 <div key={cat.category_name} className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-500 text-sm font-bold text-white">
                     {idx + 1}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="font-medium text-gray-900">{cat.category_name}</span>
-                      <span className="text-green-600 font-semibold">${cat.revenue.toFixed(2)}</span>
+                      <span className="font-medium text-slate-100">{cat.category_name}</span>
+                      <span className="font-semibold text-emerald-300">${cat.revenue.toFixed(2)}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-600">
+                    <div className="flex items-center gap-4 text-xs text-slate-400">
                       <span>{cat.total_sales} sales</span>
                       <span>•</span>
                       <span>Avg: ${cat.avg_price.toFixed(2)}</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div className="mt-2 h-2 w-full rounded-full bg-slate-800">
                       <div 
-                        className="bg-gradient-to-r from-purple-600 to-blue-500 h-2 rounded-full"
+                        className="h-2 rounded-full bg-gradient-to-r from-indigo-600 to-blue-500"
                         style={{ width: `${(cat.revenue / topCategories[0].revenue) * 100}%` }}
                       />
                     </div>
@@ -361,17 +361,17 @@ export function SellerAnalytics() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
-              <FiPieChart className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+            <div className="py-8 text-center text-slate-500">
+              <FiPieChart className="mx-auto mb-2 h-12 w-12 text-slate-700" />
               <p>No sales data yet</p>
             </div>
           )}
         </div>
 
         {/* Revenue Trend */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiTrendingUp className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiTrendingUp className="h-5 w-5 text-indigo-300" />
             Revenue Trend
           </h2>
           
@@ -379,17 +379,17 @@ export function SellerAnalytics() {
             <div className="space-y-3">
               {revenueByMonth.map(month => (
                 <div key={month.month} className="flex items-center gap-3">
-                  <div className="w-16 text-sm text-gray-600 font-medium">
+                  <div className="w-16 text-sm font-medium text-slate-400">
                     {new Date(month.month + '-01').toLocaleDateString('en-US', { month: 'short' })}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-sm text-gray-700">{month.sales} sales</span>
-                      <span className="font-semibold text-green-600">${month.revenue.toFixed(2)}</span>
+                      <span className="text-sm text-slate-300">{month.sales} sales</span>
+                      <span className="font-semibold text-emerald-300">${month.revenue.toFixed(2)}</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div className="h-3 w-full rounded-full bg-slate-800">
                       <div 
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full"
+                        className="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500"
                         style={{ 
                           width: `${Math.max(10, (month.revenue / Math.max(...revenueByMonth.map(m => m.revenue))) * 100)}%` 
                         }}
@@ -400,8 +400,8 @@ export function SellerAnalytics() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
-              <FiTrendingUp className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+            <div className="py-8 text-center text-slate-500">
+              <FiTrendingUp className="mx-auto mb-2 h-12 w-12 text-slate-700" />
               <p>No revenue data yet</p>
             </div>
           )}
@@ -411,67 +411,67 @@ export function SellerAnalytics() {
       {/* Recent Sales & Best Sellers */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Recent Sales */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiClock className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiClock className="h-5 w-5 text-indigo-300" />
             Recent Sales
           </h2>
           
           {recentSales.length > 0 ? (
             <div className="space-y-3">
               {recentSales.map((item, idx) => (
-                <div key={idx} className="flex items-start justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={idx} className="flex items-start justify-between rounded-xl border border-white/10 bg-slate-950/35 p-3">
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 mb-1">{item.title}</div>
-                    <div className="flex items-center gap-2 text-xs text-gray-600">
+                    <div className="mb-1 font-medium text-slate-100">{item.title}</div>
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
                       <span>{item.category}</span>
                       <span>•</span>
                       <span>{new Date(item.sold_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-green-600">${item.price.toFixed(2)}</div>
+                    <div className="font-bold text-emerald-300">${item.price.toFixed(2)}</div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
-              <FiPackage className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+            <div className="py-8 text-center text-slate-500">
+              <FiPackage className="mx-auto mb-2 h-12 w-12 text-slate-700" />
               <p>No recent sales</p>
             </div>
           )}
         </div>
 
         {/* Best Sellers */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiStar className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiStar className="h-5 w-5 text-indigo-300" />
             Best Sellers (Highest Value)
           </h2>
           
           {bestSellers.length > 0 ? (
             <div className="space-y-3">
               {bestSellers.map((item, idx) => (
-                <div key={idx} className="flex items-start justify-between p-3 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                <div key={idx} className="flex items-start justify-between rounded-xl border border-amber-300/20 bg-amber-500/10 p-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="w-6 h-6 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-xs font-bold text-slate-950">
                         {idx + 1}
                       </span>
-                      <div className="font-medium text-gray-900">{item.title}</div>
+                      <div className="font-medium text-slate-100">{item.title}</div>
                     </div>
-                    <div className="text-xs text-gray-600 ml-8">{item.category}</div>
+                    <div className="ml-8 text-xs text-slate-400">{item.category}</div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-orange-600 text-lg">${item.price.toFixed(2)}</div>
+                    <div className="text-lg font-bold text-amber-300">${item.price.toFixed(2)}</div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
-              <FiStar className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+            <div className="py-8 text-center text-slate-500">
+              <FiStar className="mx-auto mb-2 h-12 w-12 text-slate-700" />
               <p>No sales data yet</p>
             </div>
           )}
@@ -479,28 +479,28 @@ export function SellerAnalytics() {
       </div>
 
       {/* Insights & Recommendations */}
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border-2 border-purple-200">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <FiTrendingUp className="w-5 h-5 text-purple-600" />
+      <div className="market-panel border border-indigo-400/20 p-6">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+          <FiTrendingUp className="h-5 w-5 text-indigo-300" />
           Insights & Recommendations
         </h2>
         
         <div className="grid md:grid-cols-2 gap-4">
           {topCategories.length > 0 && (
-            <div className="bg-white rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-900 mb-2">🎯 Focus on Your Winners</div>
-              <div className="text-sm text-gray-600">
-                Your <span className="font-semibold text-purple-600">{topCategories[0].category_name}</span> category 
-                generated <span className="font-semibold text-green-600">${topCategories[0].revenue.toFixed(2)}</span>. 
+            <div className="rounded-xl border border-white/10 bg-slate-950/35 p-4">
+              <div className="mb-2 text-sm font-medium text-white">🎯 Focus on Your Winners</div>
+              <div className="text-sm text-slate-300">
+                Your <span className="font-semibold text-indigo-300">{topCategories[0].category_name}</span> category 
+                generated <span className="font-semibold text-emerald-300">${topCategories[0].revenue.toFixed(2)}</span>. 
                 Consider stocking more items in this category!
               </div>
             </div>
           )}
           
           {stats.conversion_rate < 30 && stats.total_listings > 0 && (
-            <div className="bg-white rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-900 mb-2">📸 Improve Your Listings</div>
-              <div className="text-sm text-gray-600">
+            <div className="rounded-xl border border-white/10 bg-slate-950/35 p-4">
+              <div className="mb-2 text-sm font-medium text-white">📸 Improve Your Listings</div>
+              <div className="text-sm text-slate-300">
                 Your conversion rate is {stats.conversion_rate.toFixed(1)}%. Try adding better photos, 
                 detailed descriptions, and competitive pricing to boost sales!
               </div>
@@ -508,18 +508,18 @@ export function SellerAnalytics() {
           )}
           
           {stats.average_sale_price > 0 && (
-            <div className="bg-white rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-900 mb-2">💰 Price Sweet Spot</div>
-              <div className="text-sm text-gray-600">
-                Your average sale price is <span className="font-semibold text-purple-600">${stats.average_sale_price.toFixed(2)}</span>. 
+            <div className="rounded-xl border border-white/10 bg-slate-950/35 p-4">
+              <div className="mb-2 text-sm font-medium text-white">💰 Price Sweet Spot</div>
+              <div className="text-sm text-slate-300">
+                Your average sale price is <span className="font-semibold text-indigo-300">${stats.average_sale_price.toFixed(2)}</span>. 
                 Items priced within 20% of this tend to sell faster!
               </div>
             </div>
           )}
           
-          <div className="bg-white rounded-lg p-4">
-            <div className="text-sm font-medium text-gray-900 mb-2">🚚 Delivery Options Matter</div>
-            <div className="text-sm text-gray-600">
+          <div className="rounded-xl border border-white/10 bg-slate-950/35 p-4">
+            <div className="mb-2 text-sm font-medium text-white">🚚 Delivery Options Matter</div>
+            <div className="text-sm text-slate-300">
               Listings with multiple delivery options sell 40% faster. Offer same-day delivery to beat the competition!
             </div>
           </div>

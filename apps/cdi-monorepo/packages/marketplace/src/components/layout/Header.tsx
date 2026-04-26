@@ -23,19 +23,21 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-gradient-primary shadow-lg sticky top-0 z-40">
+      <header className="sticky top-0 z-40 border-b border-slate-800/70 bg-slate-950/85 shadow-2xl backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
               <Link
                 to="/"
-                className="flex items-center space-x-2 text-white hover:text-gray-100 transition-colors"
+                className="flex items-center space-x-3 text-white transition-colors hover:text-indigo-200"
               >
-                <Gavel size={28} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-500 shadow-lg shadow-indigo-950/40">
+                  <Gavel size={22} />
+                </div>
                 <div className="hidden sm:block">
-                  <div className="font-bold text-lg">Constructive Designs</div>
-                  <div className="text-xs text-gray-400">Marketplace</div>
-                  <div className="text-xs text-purple-100">Auction & Trading Platform</div>
+                  <div className="text-lg font-bold tracking-tight">Constructive Designs</div>
+                  <div className="text-xs uppercase tracking-[0.18em] text-slate-400">Marketplace</div>
+                  <div className="text-xs text-indigo-200">Auction and Store Platform</div>
                 </div>
               </Link>
 
@@ -43,7 +45,7 @@ export default function Header() {
                 <Link
                   to="/"
                   className={`font-medium transition-colors ${
-                    location.pathname === '/' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                    location.pathname === '/' ? 'font-bold text-white' : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   Auctions
@@ -52,7 +54,7 @@ export default function Header() {
                 <Link
                   to="/trade"
                   className={`font-medium transition-colors ${
-                    location.pathname === '/trade' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                    location.pathname === '/trade' ? 'font-bold text-white' : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   Trade
@@ -60,28 +62,28 @@ export default function Header() {
                 
                 {/* Store Directory Dropdown */}
                 <div className="relative group">
-                  <button className="font-medium text-purple-100 hover:text-white transition-colors flex items-center space-x-1">
+                  <button className="flex items-center space-x-1 font-medium text-slate-300 transition-colors hover:text-white">
                     <span>Stores</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="absolute left-0 mt-2 w-56 rounded-2xl border border-slate-800 bg-slate-950/95 shadow-2xl opacity-0 invisible transition-all group-hover:visible group-hover:opacity-100">
                     <Link
                       to="/store/browse"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                      className="block w-full rounded-t-2xl px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Shop Store Items
                     </Link>
                     <Link
                       to="/store/directory"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Browse All Stores
                     </Link>
                     <Link
                       to="/members/register"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
+                      className="block w-full rounded-b-2xl px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Become a Member
                     </Link>
@@ -90,34 +92,34 @@ export default function Header() {
                 
                 {/* Nonprofit Dropdown */}
                 <div className="relative group">
-                  <button className="font-medium text-purple-100 hover:text-white transition-colors flex items-center space-x-1">
+                  <button className="flex items-center space-x-1 font-medium text-slate-300 transition-colors hover:text-white">
                     <span>About Us</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="absolute left-0 mt-2 w-48 rounded-2xl border border-slate-800 bg-slate-950/95 shadow-2xl opacity-0 invisible transition-all group-hover:visible group-hover:opacity-100">
                     <Link
                       to="/about"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                      className="block w-full rounded-t-2xl px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Our Mission
                     </Link>
                     <Link
                       to="/programs"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Programs
                     </Link>
                     <Link
                       to="/impact"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Our Impact
                     </Link>
                     <Link
                       to="/contact"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
+                      className="block w-full rounded-b-2xl px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                     >
                       Contact
                     </Link>
@@ -126,7 +128,7 @@ export default function Header() {
 
                 <Link
                   to="/donate"
-                  className="font-medium bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors text-white"
+                  className="market-button-secondary px-3 py-2 font-medium text-white"
                 >
                   Donate
                 </Link>
@@ -136,7 +138,7 @@ export default function Header() {
                     <Link
                       to="/dashboard"
                       className={`font-medium transition-colors ${
-                        location.pathname === '/dashboard' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                        location.pathname === '/dashboard' ? 'font-bold text-white' : 'text-slate-300 hover:text-white'
                       }`}
                     >
                       My Auctions
@@ -151,7 +153,7 @@ export default function Header() {
                 <>
                   <Link
                     to="/listings/create"
-                    className="hidden sm:flex items-center space-x-2 bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-50 transition-colors font-medium shadow-md"
+                    className="market-button-primary hidden items-center space-x-2 px-4 py-2 font-medium sm:flex"
                   >
                     <Plus size={20} />
                     <span>List Item</span>
@@ -159,74 +161,74 @@ export default function Header() {
 
                   <button 
                     onClick={() => setCartOpen(true)}
-                    className="relative text-white hover:text-purple-100 transition-colors"
+                    className="relative text-slate-200 transition-colors hover:text-white"
                   >
                     <ShoppingCart size={24} />
                     {getCartItemCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-white text-purple-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
+                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-slate-950 shadow-md">
                         {getCartItemCount()}
                       </span>
                     )}
                   </button>
 
-                  <button className="relative text-white hover:text-purple-100 transition-colors">
+                  <button className="relative text-slate-200 transition-colors hover:text-white">
                     <Bell size={24} />
-                    <span className="absolute -top-1 -right-1 bg-white text-purple-600 text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-md font-bold">
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-slate-950 shadow-md">
                       0
                     </span>
                   </button>
 
                   <div className="relative group">
-                    <button className="flex items-center space-x-2 text-white hover:text-purple-100 transition-colors">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-purple-600 font-bold shadow-md">
+                    <button className="flex items-center space-x-2 text-white transition-colors hover:text-indigo-200">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 font-bold text-white shadow-md">
                         {profile?.username?.[0]?.toUpperCase() || 'U'}
                       </div>
                       <span className="hidden sm:block font-medium">{profile?.username}</span>
                     </button>
 
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                    <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-800 bg-slate-950/95 shadow-2xl opacity-0 invisible transition-all group-hover:visible group-hover:opacity-100">
                       <Link
                         to="/profile"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                        className="block w-full rounded-t-2xl px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                       >
                         Profile
                       </Link>
                       <Link
                         to="/dashboard"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                       >
                         Dashboard
                       </Link>
                       <Link
                         to="/trading"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                       >
                         Trading
                       </Link>
                       <Link
                         to="/settings/ai"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                       >
                         AI Settings
                       </Link>
                       <Link
                         to="/settings/social"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                       >
                         Social Settings
                       </Link>
                       {profile?.is_admin && (
                         <Link
                           to="/admin"
-                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          className="block w-full px-4 py-3 text-left text-slate-200 hover:bg-slate-900"
                         >
                           Admin Panel
                         </Link>
                       )}
-                      <hr className="my-1" />
+                      <hr className="my-1 border-slate-800" />
                       <button
                         onClick={signOut}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 rounded-b-lg"
+                        className="block w-full rounded-b-2xl px-4 py-3 text-left text-red-400 hover:bg-slate-900"
                       >
                         Sign Out
                       </button>
@@ -237,13 +239,13 @@ export default function Header() {
                 <div className="hidden sm:flex items-center space-x-3">
                   <button
                     onClick={() => handleAuthClick('signin')}
-                    className="px-4 py-2 text-white hover:text-purple-100 font-medium transition-colors"
+                    className="px-4 py-2 font-medium text-slate-200 transition-colors hover:text-white"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="px-4 py-2 bg-white text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium shadow-md"
+                    className="market-button-primary px-4 py-2 font-medium"
                   >
                     Sign Up
                   </button>
@@ -252,7 +254,7 @@ export default function Header() {
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden text-gray-600 hover:text-gray-900"
+                className="text-slate-300 hover:text-white md:hidden"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>

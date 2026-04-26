@@ -154,21 +154,21 @@ export function AISettings() {
   const getStatusBadge = (source: 'user' | 'environment' | 'none', label: string) => {
     if (source === 'user') {
       return (
-        <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+        <div className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-sm text-emerald-300">
           <FiCheckCircle className="w-4 h-4" />
           <span>{label}: Connected (Your Key)</span>
         </div>
       );
     } else if (source === 'environment') {
       return (
-        <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+        <div className="flex items-center gap-2 rounded-full bg-cyan-500/15 px-3 py-1 text-sm text-cyan-300">
           <FiCheckCircle className="w-4 h-4" />
           <span>{label}: Connected (Environment)</span>
         </div>
       );
     } else {
       return (
-        <div className="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+        <div className="flex items-center gap-2 rounded-full bg-red-500/15 px-3 py-1 text-sm text-red-300">
           <FiAlertCircle className="w-4 h-4" />
           <span>{label}: Not Configured</span>
         </div>
@@ -177,33 +177,35 @@ export function AISettings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="mx-auto max-w-4xl p-6 text-slate-100">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <FiSettings className="w-8 h-8 text-purple-600" />
-          <h1 className="text-3xl font-bold text-gray-900">AI Settings</h1>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-lg shadow-indigo-950/40">
+            <FiSettings className="h-6 w-6 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-white">AI Settings</h1>
         </div>
-        <p className="text-gray-600">
+        <p className="text-slate-400">
           Manage your OpenAI and Gemini API keys to enable AI-powered features. Choose your preferred provider below.
         </p>
       </div>
 
       {/* Provider Selection */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="market-panel mb-6 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <FiKey className="w-5 h-5 text-purple-600" />
-          <h2 className="text-xl font-semibold text-gray-900">Preferred AI Provider</h2>
+          <FiKey className="h-5 w-5 text-indigo-300" />
+          <h2 className="text-xl font-semibold text-white">Preferred AI Provider</h2>
         </div>
         <div className="mb-4">
-          <label htmlFor="providerSelect" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="providerSelect" className="mb-2 block text-sm font-medium text-slate-300">
             Choose which AI provider to use by default. If the selected provider fails, the app will automatically fall back to the other if available.
           </label>
           <select
             id="providerSelect"
             value={preferredProvider}
             onChange={handleProviderChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="market-input w-full px-4 py-2"
           >
             <option value="openai">OpenAI (ChatGPT, DALL-E)</option>
             <option value="gemini">Gemini (Google AI Studio)</option>
@@ -216,13 +218,13 @@ export function AISettings() {
       </div>
 
       {/* OpenAI API Key Configuration */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="market-panel mb-6 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <FiKey className="w-5 h-5 text-purple-600" />
-          <h2 className="text-xl font-semibold text-gray-900">OpenAI API Key</h2>
+          <FiKey className="h-5 w-5 text-indigo-300" />
+          <h2 className="text-xl font-semibold text-white">OpenAI API Key</h2>
         </div>
         <div className="mb-4">
-          <label htmlFor="openaiKey" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="openaiKey" className="mb-2 block text-sm font-medium text-slate-300">
             Your OpenAI API Key
           </label>
           <div className="relative">
@@ -232,22 +234,22 @@ export function AISettings() {
               value={openaiKey}
               onChange={(e) => setOpenaiKey(e.target.value)}
               placeholder="Enter your OpenAI API key (sk-...)"
-              className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="market-input w-full px-4 py-2 pr-12"
             />
             <button
               type="button"
               onClick={() => setShowOpenaiKey(!showOpenaiKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
             >
               {showOpenaiKey ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
             </button>
           </div>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-slate-500">
             Your API key is stored securely in your browser and never sent to our servers.
           </p>
         </div>
         {openaiTestResult && (
-          <div className={`mb-4 p-4 rounded-lg ${openaiTestResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border-red-200 border'}`}>
+          <div className={`mb-4 rounded-lg border p-4 ${openaiTestResult.success ? 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200' : 'border-red-400/20 bg-red-500/10 text-red-200'}`}>
             <div className="flex items-center gap-2">
               {openaiTestResult.success ? <FiCheckCircle className="w-5 h-5" /> : <FiAlertCircle className="w-5 h-5" />}
               <span>{openaiTestResult.message}</span>
@@ -258,21 +260,21 @@ export function AISettings() {
           <button
             onClick={handleTestOpenaiKey}
             disabled={openaiTesting || !openaiKey.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 text-white transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {openaiTesting ? <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />Testing...</> : <><FiCheckCircle className="w-4 h-4" />Test Connection</>}
           </button>
           <button
             onClick={handleSaveOpenaiKey}
             disabled={openaiSaving || !openaiKey.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-600 to-blue-500 text-white rounded-lg hover:from-purple-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="market-button-primary flex items-center gap-2 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {openaiSaving ? <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />Saving...</> : <><FiKey className="w-4 h-4" />Save API Key</>}
           </button>
           {hasUserOpenaiKey && (
             <button
               onClick={handleRemoveOpenaiKey}
-              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+              className="rounded-lg border border-red-400/30 px-4 py-2 text-red-300 transition-colors hover:bg-red-500/10"
             >Remove Key</button>
           )}
         </div>
@@ -280,7 +282,7 @@ export function AISettings() {
           href="https://platform.openai.com/api-keys"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-white text-purple-600 font-medium rounded-lg shadow hover:shadow-md transition-shadow"
+          className="market-button-secondary mt-4 inline-flex items-center gap-2 px-6 py-3 font-medium"
         >
           <span>Get OpenAI API Key</span>
           <FiExternalLink className="w-4 h-4" />
@@ -288,13 +290,13 @@ export function AISettings() {
       </div>
 
       {/* Gemini API Key Configuration */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="market-panel mb-6 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <FiKey className="w-5 h-5 text-blue-600" />
-          <h2 className="text-xl font-semibold text-gray-900">Gemini (Google AI Studio) API Key</h2>
+          <FiKey className="h-5 w-5 text-cyan-300" />
+          <h2 className="text-xl font-semibold text-white">Gemini (Google AI Studio) API Key</h2>
         </div>
         <div className="mb-4">
-          <label htmlFor="geminiKey" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="geminiKey" className="mb-2 block text-sm font-medium text-slate-300">
             Your Gemini API Key
           </label>
           <div className="relative">
@@ -304,22 +306,22 @@ export function AISettings() {
               value={geminiKey}
               onChange={(e) => setGeminiKey(e.target.value)}
               placeholder="Enter your Gemini API key (from Google AI Studio)"
-              className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="market-input w-full px-4 py-2 pr-12"
             />
             <button
               type="button"
               onClick={() => setShowGeminiKey(!showGeminiKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
             >
               {showGeminiKey ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
             </button>
           </div>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-slate-500">
             Your Gemini API key is stored securely in your browser and never sent to our servers.
           </p>
         </div>
         {geminiTestResult && (
-          <div className={`mb-4 p-4 rounded-lg ${geminiTestResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border-red-200 border'}`}>
+          <div className={`mb-4 rounded-lg border p-4 ${geminiTestResult.success ? 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200' : 'border-red-400/20 bg-red-500/10 text-red-200'}`}>
             <div className="flex items-center gap-2">
               {geminiTestResult.success ? <FiCheckCircle className="w-5 h-5" /> : <FiAlertCircle className="w-5 h-5" />}
               <span>{geminiTestResult.message}</span>
@@ -330,21 +332,21 @@ export function AISettings() {
           <button
             onClick={handleTestGeminiKey}
             disabled={geminiTesting || !geminiKey.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 text-white transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {geminiTesting ? <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />Testing...</> : <><FiCheckCircle className="w-4 h-4" />Test Connection</>}
           </button>
           <button
             onClick={handleSaveGeminiKey}
             disabled={geminiSaving || !geminiKey.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-600 to-purple-500 text-white rounded-lg hover:from-blue-700 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="market-button-primary flex items-center gap-2 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {geminiSaving ? <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />Saving...</> : <><FiKey className="w-4 h-4" />Save API Key</>}
           </button>
           {hasUserGeminiKey && (
             <button
               onClick={handleRemoveGeminiKey}
-              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+              className="rounded-lg border border-red-400/30 px-4 py-2 text-red-300 transition-colors hover:bg-red-500/10"
             >Remove Key</button>
           )}
         </div>
@@ -352,7 +354,7 @@ export function AISettings() {
           href="https://aistudio.google.com/apikey"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-white text-blue-600 font-medium rounded-lg shadow hover:shadow-md transition-shadow"
+          className="market-button-secondary mt-4 inline-flex items-center gap-2 px-6 py-3 font-medium"
         >
           <span>Get Gemini API Key</span>
           <FiExternalLink className="w-4 h-4" />
@@ -360,32 +362,32 @@ export function AISettings() {
       </div>
 
       {/* FAQ */}
-      <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <div className="market-panel mt-6 p-6">
+        <h2 className="mb-4 text-xl font-semibold text-white">
           Frequently Asked Questions
         </h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-medium text-gray-900 mb-1">Why do I need my own API key?</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-1 font-medium text-white">Why do I need my own API key?</h3>
+            <p className="text-sm text-slate-400">
               We believe in transparency and keeping costs low. By using your own API key, you control your AI usage and costs directly. Both OpenAI and Gemini offer free credits for new users. This allows us to keep our platform fee low while providing powerful AI features.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-1">Is my API key secure?</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-1 font-medium text-white">Is my API key secure?</h3>
+            <p className="text-sm text-slate-400">
               Yes! Your API keys are stored only in your browser's local storage and are never sent to our servers. They're used directly to communicate with the AI services.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-1">Does OpenAI or Gemini charge for API usage?</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-1 font-medium text-white">Does OpenAI or Gemini charge for API usage?</h3>
+            <p className="text-sm text-slate-400">
               Both providers offer free credits for new users. After that, pricing is very affordable for most use cases. See their respective pricing pages for details.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-1">Can I use the platform without AI features?</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-1 font-medium text-white">Can I use the platform without AI features?</h3>
+            <p className="text-sm text-slate-400">
               Absolutely! All core auction and store features work perfectly without AI. The AI features are optional helpers that can save you time when creating listings, but they're not required.
             </p>
           </div>

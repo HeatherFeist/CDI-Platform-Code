@@ -98,8 +98,8 @@ export function DriverDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"></div>
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-cyan-400 border-t-transparent"></div>
       </div>
     );
   }
@@ -107,19 +107,19 @@ export function DriverDashboard() {
   if (!driver) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-8 text-center">
-          <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="market-panel text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/15">
             <FiTruck className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="mb-2 text-2xl font-bold text-white">
             Not a Driver Yet?
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="mb-6 text-slate-300">
             Join our delivery team and start earning with flexible hours and great pay!
           </p>
           <Link
             to="/driver/register"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 shadow-lg transition-all"
+            className="market-button-primary inline-flex items-center gap-2 px-6 py-3"
           >
             <FiTruck className="w-5 h-5" />
             Become a Driver
@@ -132,17 +132,17 @@ export function DriverDashboard() {
   if (driver.background_check_status === 'pending') {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-8 text-center">
-          <div className="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-3xl border border-amber-400/30 bg-amber-500/10 p-8 text-center backdrop-blur-sm">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-amber-400/30 bg-amber-500/20">
             <FiClock className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-yellow-900 mb-2">
+          <h2 className="mb-2 text-2xl font-bold text-amber-100">
             Application Under Review
           </h2>
-          <p className="text-yellow-700 mb-4">
+          <p className="mb-4 text-amber-100/85">
             Your driver application is being reviewed. We'll notify you once it's approved!
           </p>
-          <p className="text-sm text-yellow-600">
+          <p className="text-sm text-amber-200/80">
             Typical review time: 1-2 business days
           </p>
         </div>
@@ -153,11 +153,11 @@ export function DriverDashboard() {
   if (!driver.is_active) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-red-50 border-2 border-red-300 rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-red-900 mb-2">
+        <div className="rounded-3xl border border-rose-400/30 bg-rose-500/10 p-8 text-center backdrop-blur-sm">
+          <h2 className="mb-2 text-2xl font-bold text-rose-100">
             Account Inactive
           </h2>
-          <p className="text-red-700">
+          <p className="text-rose-100/85">
             Your driver account is currently inactive. Please contact support for assistance.
           </p>
         </div>
@@ -168,21 +168,21 @@ export function DriverDashboard() {
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Header with Availability Toggle */}
-      <div className="bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg p-6 text-white">
+      <div className="rounded-3xl border border-cyan-400/25 bg-gradient-to-br from-slate-900 via-indigo-950 to-cyan-950 p-6 text-white shadow-[0_24px_60px_-28px_rgba(14,165,233,0.45)]">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold mb-1">Driver Dashboard</h1>
-            <p className="text-purple-100">
+            <p className="text-slate-200">
               {driver.vehicle_year} {driver.vehicle_make} {driver.vehicle_model}
             </p>
           </div>
           <button
             onClick={toggleAvailability}
             disabled={updatingAvailability}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-lg ${
+            className={`rounded-2xl px-6 py-3 font-semibold transition-all ${
               driver.is_available
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-green-500 hover:bg-green-600'
+                ? 'bg-rose-500/90 hover:bg-rose-400'
+                : 'bg-emerald-500/90 hover:bg-emerald-400'
             } disabled:opacity-50`}
           >
             {updatingAvailability ? (
@@ -199,7 +199,7 @@ export function DriverDashboard() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${driver.is_available ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
+          <div className={`h-3 w-3 rounded-full ${driver.is_available ? 'bg-emerald-300 animate-pulse' : 'bg-slate-500'}`} />
           <span className="font-medium">
             {driver.is_available ? 'Online - Accepting Deliveries' : 'Offline'}
           </span>
@@ -208,70 +208,70 @@ export function DriverDashboard() {
 
       {/* Stats Grid */}
       <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <FiDollarSign className="w-5 h-5 text-green-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/15">
+              <FiDollarSign className="h-5 w-5 text-emerald-200" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 ${stats?.total_earnings.toFixed(2) || '0.00'}
               </div>
-              <div className="text-sm text-gray-600">Total Earnings</div>
+              <div className="text-sm text-slate-300">Total Earnings</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             + ${stats?.total_tips.toFixed(2) || '0.00'} in tips
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FiPackage className="w-5 h-5 text-blue-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-400/30 bg-cyan-500/15">
+              <FiPackage className="h-5 w-5 text-cyan-200" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 {stats?.completed_deliveries || 0}
               </div>
-              <div className="text-sm text-gray-600">Completed</div>
+              <div className="text-sm text-slate-300">Completed</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             {stats?.completion_rate.toFixed(1)}% completion rate
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <FiStar className="w-5 h-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-400/30 bg-violet-500/15">
+              <FiStar className="h-5 w-5 text-violet-200" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 {stats?.rating.toFixed(1) || '5.0'}
               </div>
-              <div className="text-sm text-gray-600">Rating</div>
+              <div className="text-sm text-slate-300">Rating</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             From {stats?.total_ratings || 0} reviews
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="market-panel p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <FiTrendingUp className="w-5 h-5 text-orange-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-amber-400/30 bg-amber-500/15">
+              <FiTrendingUp className="h-5 w-5 text-amber-200" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-white">
                 ${stats?.this_week_earnings.toFixed(2) || '0.00'}
               </div>
-              <div className="text-sm text-gray-600">This Week</div>
+              <div className="text-sm text-slate-300">This Week</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             {stats?.this_week_deliveries || 0} deliveries
           </div>
         </div>
@@ -279,64 +279,64 @@ export function DriverDashboard() {
 
       {/* Available Deliveries */}
       {driver.is_available && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiMapPin className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiMapPin className="h-5 w-5 text-cyan-300" />
             Available Deliveries Nearby
           </h2>
 
           {availableDeliveries.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FiPackage className="w-8 h-8 text-gray-400" />
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                <FiPackage className="h-8 w-8 text-slate-500" />
               </div>
-              <p className="text-gray-600 mb-2">No deliveries available right now</p>
-              <p className="text-sm text-gray-500">Check back soon or try expanding your radius</p>
+              <p className="mb-2 text-slate-300">No deliveries available right now</p>
+              <p className="text-sm text-slate-500">Check back soon or try expanding your radius</p>
             </div>
           ) : (
             <div className="space-y-4">
               {availableDeliveries.map(delivery => (
                 <div
                   key={delivery.id}
-                  className="border-2 border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-all"
+                  className="rounded-3xl border border-white/10 bg-slate-950/70 p-4 transition-all backdrop-blur-sm hover:border-cyan-400/35 hover:bg-slate-900/80"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-1">
+                      <h3 className="mb-1 font-semibold text-white">
                         {delivery.listing_title}
                       </h3>
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-slate-300">
                         <div className="flex items-center gap-2">
-                          <FiMapPin className="w-4 h-4 text-gray-400" />
+                          <FiMapPin className="h-4 w-4 text-slate-500" />
                           <span>Pickup: {delivery.pickup_address.city}, {delivery.pickup_address.state}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FiMapPin className="w-4 h-4 text-purple-500" />
+                          <FiMapPin className="h-4 w-4 text-cyan-300" />
                           <span>Deliver: {delivery.delivery_address.city}, {delivery.delivery_address.state}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FiClock className="w-4 h-4 text-gray-400" />
+                          <FiClock className="h-4 w-4 text-slate-500" />
                           <span>{delivery.distance_miles.toFixed(1)} miles • ~{delivery.estimated_duration_minutes} mins</span>
                         </div>
                       </div>
                     </div>
                     <div className="text-right ml-4">
-                      <div className="text-2xl font-bold text-green-600">
+                      <div className="text-2xl font-bold text-emerald-300">
                         ${delivery.driver_earnings.toFixed(2)}
                       </div>
-                      <div className="text-xs text-gray-500">+ tips</div>
+                      <div className="text-xs text-slate-400">+ tips</div>
                     </div>
                   </div>
 
                   {delivery.special_instructions && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded p-2 mb-3 text-sm text-yellow-800">
-                      📝 {delivery.special_instructions}
+                    <div className="mb-3 rounded-2xl border border-amber-400/25 bg-amber-500/10 p-3 text-sm text-amber-100/90">
+                      Notes: {delivery.special_instructions}
                     </div>
                   )}
 
                   <button
                     onClick={() => acceptDelivery(delivery.id)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all"
+                    className="market-button-primary flex w-full items-center justify-center gap-2 px-4 py-2"
                   >
                     <FiCheck className="w-5 h-5" />
                     Accept Delivery
@@ -349,28 +349,28 @@ export function DriverDashboard() {
       )}
 
       {/* Monthly Summary */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <FiTrendingUp className="w-5 h-5 text-purple-600" />
+      <div className="market-panel p-6">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+          <FiTrendingUp className="h-5 w-5 text-cyan-300" />
           This Month
         </h2>
         
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
-            <div className="text-sm text-green-800 mb-1">Deliveries</div>
-            <div className="text-3xl font-bold text-green-600">
+          <div className="rounded-3xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+            <div className="mb-1 text-sm text-emerald-100/85">Deliveries</div>
+            <div className="text-3xl font-bold text-emerald-300">
               {stats?.this_month_deliveries || 0}
             </div>
           </div>
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-            <div className="text-sm text-blue-800 mb-1">Earnings</div>
-            <div className="text-3xl font-bold text-blue-600">
+          <div className="rounded-3xl border border-cyan-400/25 bg-cyan-500/10 p-4">
+            <div className="mb-1 text-sm text-cyan-100/85">Earnings</div>
+            <div className="text-3xl font-bold text-cyan-300">
               ${stats?.this_month_earnings.toFixed(2) || '0.00'}
             </div>
           </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-            <div className="text-sm text-purple-800 mb-1">Avg Tip</div>
-            <div className="text-3xl font-bold text-purple-600">
+          <div className="rounded-3xl border border-violet-400/25 bg-violet-500/10 p-4">
+            <div className="mb-1 text-sm text-violet-100/85">Avg Tip</div>
+            <div className="text-3xl font-bold text-violet-300">
               ${stats?.average_tip.toFixed(2) || '0.00'}
             </div>
           </div>

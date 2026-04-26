@@ -127,11 +127,11 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 
   const getMethodColor = (method: string) => {
     switch (method) {
-      case 'pickup': return { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-600', hover: 'hover:bg-green-100' };
-      case 'local_delivery': return { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-600', hover: 'hover:bg-blue-100' };
-      case 'seller_delivery': return { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-600', hover: 'hover:bg-purple-100' };
-      case 'shipping': return { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-600', hover: 'hover:bg-orange-100' };
-      default: return { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-600', hover: 'hover:bg-gray-100' };
+      case 'pickup': return { bg: 'bg-emerald-500/10', border: 'border-emerald-400/20', text: 'text-emerald-300', hover: 'hover:bg-emerald-500/15' };
+      case 'local_delivery': return { bg: 'bg-cyan-500/10', border: 'border-cyan-400/20', text: 'text-cyan-300', hover: 'hover:bg-cyan-500/15' };
+      case 'seller_delivery': return { bg: 'bg-indigo-500/10', border: 'border-indigo-400/20', text: 'text-indigo-300', hover: 'hover:bg-indigo-500/15' };
+      case 'shipping': return { bg: 'bg-amber-500/10', border: 'border-amber-400/20', text: 'text-amber-300', hover: 'hover:bg-amber-500/15' };
+      default: return { bg: 'bg-slate-900/70', border: 'border-slate-700', text: 'text-slate-300', hover: 'hover:bg-slate-800' };
     }
   };
 
@@ -140,7 +140,7 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       <button
         onClick={handleBuyNowClick}
         disabled={loading}
-        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+        className="market-button-primary flex w-full items-center justify-center space-x-2 px-6 py-3 font-semibold transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
       >
         {loading ? (
           <>
@@ -156,26 +156,26 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       </button>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+        <div className="rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-red-200">
           <p className="font-semibold">Payment Error</p>
           <p className="text-sm">{error}</p>
         </div>
       )}
 
-      <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
+      <div className="flex items-center justify-center space-x-4 text-sm text-slate-400">
         <div className="flex items-center space-x-1">
-          <FaLock className="text-green-600" />
+          <FaLock className="text-emerald-300" />
           <span>Secure Checkout</span>
         </div>
         <div className="flex items-center space-x-1">
-          <FaShieldAlt className="text-blue-600" />
+          <FaShieldAlt className="text-cyan-300" />
           <span>Buyer Protection</span>
         </div>
       </div>
 
       {/* Test mode indicator */}
       {import.meta.env.MODE === 'development' && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
+        <div className="rounded-xl border border-amber-300/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
           <p className="font-semibold">🧪 Test Mode</p>
           <p className="mb-2">Use these test card numbers:</p>
           <ul className="space-y-1 text-xs">
@@ -195,18 +195,18 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 
       {/* Delivery Method Selection Modal */}
       {showDeliveryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+          <div className="market-panel max-h-[90vh] w-full max-w-2xl overflow-y-auto">
+            <div className="sticky top-0 flex items-center justify-between border-b border-slate-800 bg-slate-950/95 px-6 py-4 backdrop-blur-xl">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Choose Delivery Method</h3>
-                <p className="text-sm text-gray-600 mt-1">Select how you'd like to receive this item</p>
+                <h3 className="text-xl font-bold text-white">Choose Delivery Method</h3>
+                <p className="mt-1 text-sm text-slate-400">Select how you'd like to receive this item</p>
               </div>
               <button
                 onClick={() => setShowDeliveryModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="rounded-full p-2 transition-colors hover:bg-slate-900/40"
               >
-                <X size={24} className="text-gray-500" />
+                <X size={24} className="text-slate-400" />
               </button>
             </div>
 
@@ -222,7 +222,7 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
                     onClick={() => handleDeliverySelect(option)}
                     className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
                       isSelected
-                        ? `${colors.border} ${colors.bg} ring-2 ring-offset-2 ring-${colors.text.replace('text-', '')}`
+                        ? `${colors.border} ${colors.bg} ring-2 ring-indigo-400/40 ring-offset-0`
                         : `${colors.border} ${colors.bg} ${colors.hover}`
                     }`}
                   >
@@ -240,10 +240,10 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
                           </div>
                           
                           {option.description && (
-                            <p className="text-sm text-gray-600 mb-2">{option.description}</p>
+                            <p className="mb-2 text-sm text-slate-300">{option.description}</p>
                           )}
 
-                          <div className="text-xs text-gray-500 space-y-1">
+                          <div className="space-y-1 text-xs text-slate-400">
                             {option.method === 'local_delivery' && option.radius_miles && (
                               <p>• Delivers within {option.radius_miles} miles</p>
                             )}
@@ -273,22 +273,22 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
               })}
             </div>
 
-            <div className="sticky bottom-0 bg-gray-50 border-t px-6 py-4">
+            <div className="sticky bottom-0 border-t border-slate-800 bg-slate-950/95 px-6 py-4 backdrop-blur-xl">
               {selectedDelivery && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mb-4 rounded-xl border border-cyan-400/20 bg-cyan-500/10 p-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700">Item Price:</span>
-                    <span className="font-semibold text-gray-900">{formatCurrency(price)}</span>
+                    <span className="text-slate-300">Item Price:</span>
+                    <span className="font-semibold text-slate-100">{formatCurrency(price)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1">
-                    <span className="text-gray-700">Delivery Fee:</span>
-                    <span className={`font-semibold ${selectedDelivery.fee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                    <span className="text-slate-300">Delivery Fee:</span>
+                    <span className={`font-semibold ${selectedDelivery.fee === 0 ? 'text-emerald-300' : 'text-slate-100'}`}>
                       {selectedDelivery.fee === 0 ? 'FREE' : formatCurrency(selectedDelivery.fee)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-base font-bold mt-2 pt-2 border-t border-blue-300">
-                    <span className="text-gray-900">Total:</span>
-                    <span className="text-blue-600">{formatCurrency(price + selectedDelivery.fee)}</span>
+                  <div className="mt-2 flex items-center justify-between border-t border-cyan-400/20 pt-2 text-base font-bold">
+                    <span className="text-white">Total:</span>
+                    <span className="text-cyan-300">{formatCurrency(price + selectedDelivery.fee)}</span>
                   </div>
                 </div>
               )}
@@ -296,14 +296,14 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowDeliveryModal(false)}
-                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                  className="market-button-secondary flex-1 px-6 py-3 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmDelivery}
                   disabled={!selectedDelivery}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="market-button-primary flex-1 px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Continue to Checkout
                 </button>

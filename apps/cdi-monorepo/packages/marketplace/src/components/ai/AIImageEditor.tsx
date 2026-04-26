@@ -135,21 +135,21 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
   // If user doesn't have access, show upgrade prompt
   if (!hasAccess) {
     return (
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border-2 border-purple-300">
+      <div className="market-panel border border-indigo-400/20 p-6">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full mb-4">
+          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-xl shadow-indigo-950/40">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+          <h3 className="mb-2 text-xl font-bold text-white">
             AI Image Editor - Premium Feature
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="mb-4 text-slate-300">
             Transform your product photos with AI - add models, change backgrounds, create lifestyle shots
           </p>
           
-          <div className="bg-white rounded-lg p-4 mb-4">
-            <p className="text-sm font-medium text-gray-900 mb-2">What you can do:</p>
-            <ul className="text-sm text-gray-600 space-y-1 text-left">
+          <div className="mb-4 rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+            <p className="mb-2 text-sm font-medium text-white">What you can do:</p>
+            <ul className="space-y-1 text-left text-sm text-slate-300">
               <li>✨ Put products on professional models</li>
               <li>🏠 Create lifestyle setting photos</li>
               <li>📸 Generate studio backgrounds</li>
@@ -158,21 +158,21 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
             </ul>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-purple-50 rounded-lg p-4 mb-4 border border-green-200">
+          <div className="mb-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Crown className="w-5 h-5 text-green-600" />
-              <p className="font-semibold text-gray-900">Available with Partner tier and above</p>
+              <Crown className="h-5 w-5 text-emerald-300" />
+              <p className="font-semibold text-white">Available with Partner tier and above</p>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-slate-300">
               Upgrade to unlock AI image generation and establish your store as a trusted seller
             </p>
           </div>
 
-          <button className="px-6 py-3 bg-gradient-to-r from-green-600 to-purple-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl">
+          <button className="market-button-primary px-6 py-3 font-semibold">
             Upgrade to Partner Tier
           </button>
 
-          <p className="text-xs text-gray-500 mt-3">
+          <p className="mt-3 text-xs text-slate-500">
             💡 You still have access to AI text generation for descriptions and titles
           </p>
         </div>
@@ -181,38 +181,38 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
   }
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200">
+    <div className="market-panel p-6">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-5 h-5 text-purple-600" />
-        <h3 className="text-lg font-semibold text-gray-900">AI Image Editor</h3>
+        <Sparkles className="h-5 w-5 text-indigo-300" />
+        <h3 className="text-lg font-semibold text-white">AI Image Editor</h3>
         {isPremiumTier && (
-          <span className="px-2 py-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold rounded-full">
+          <span className="rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 px-2 py-1 text-xs font-bold text-white">
             {userTier.toUpperCase()}
           </span>
         )}
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="mb-4 text-sm text-slate-300">
         Transform your product photos with AI - add models, change backgrounds, create lifestyle shots
       </p>
 
       {/* Usage Stats */}
       {usageStats.limit > 0 && (
-        <div className="bg-white rounded-lg p-3 mb-4 border border-purple-200">
+        <div className="mb-4 rounded-xl border border-white/10 bg-slate-950/35 p-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Monthly Usage:</span>
-            <span className={`font-semibold ${usageStats.current >= usageStats.limit ? 'text-red-600' : 'text-green-600'}`}>
+            <span className="text-slate-400">Monthly Usage:</span>
+            <span className={`font-semibold ${usageStats.current >= usageStats.limit ? 'text-red-300' : 'text-emerald-300'}`}>
               {usageStats.current} / {usageStats.limit} images
             </span>
           </div>
-          <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+          <div className="mt-2 h-2 w-full rounded-full bg-slate-800">
             <div 
               className={`h-2 rounded-full transition-all ${usageStats.current >= usageStats.limit ? 'bg-red-500' : 'bg-green-500'}`}
               style={{ width: `${Math.min((usageStats.current / usageStats.limit) * 100, 100)}%` }}
             />
           </div>
           {!usageStats.canUse && (
-            <div className="mt-2 flex items-center gap-2 text-xs text-red-600">
+            <div className="mt-2 flex items-center gap-2 text-xs text-red-300">
               <AlertCircle size={14} />
               <span>Monthly limit reached. Upgrade for more!</span>
             </div>
@@ -222,13 +222,13 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
 
       {/* Quick Style Buttons */}
       <div className="space-y-3 mb-4">
-        <p className="text-sm font-medium text-gray-700">Quick Styles:</p>
+        <p className="text-sm font-medium text-slate-300">Quick Styles:</p>
         
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => handleQuickEdit('model', 'female')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             👩 Female Model
           </button>
@@ -236,7 +236,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
           <button
             onClick={() => handleQuickEdit('model', 'male')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             👨 Male Model
           </button>
@@ -244,7 +244,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
           <button
             onClick={() => handleQuickEdit('lifestyle')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             🏠 Lifestyle Shot
           </button>
@@ -252,7 +252,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
           <button
             onClick={() => handleQuickEdit('studio')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             📸 Studio Background
           </button>
@@ -260,7 +260,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
           <button
             onClick={() => handleQuickEdit('wall')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             🖼️ On Wall
           </button>
@@ -268,7 +268,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
           <button
             onClick={() => handleQuickEdit('flatlay')}
             disabled={generating}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors text-sm disabled:opacity-50"
+            className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-slate-200 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
           >
             ✨ Flat Lay
           </button>
@@ -279,7 +279,7 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
       <div className="mb-4">
         <button
           onClick={() => setShowCustomPrompt(!showCustomPrompt)}
-          className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+          className="text-sm font-medium text-indigo-300 hover:text-indigo-200"
         >
           {showCustomPrompt ? '− Hide Custom Prompt' : '+ Use Custom Prompt'}
         </button>
@@ -290,13 +290,13 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
               placeholder="E.g., Show this t-shirt on a person at the beach at sunset"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              className="market-input w-full px-3 py-2 text-sm"
               rows={3}
             />
             <button
               onClick={handleCustomPrompt}
               disabled={generating || !customPrompt.trim()}
-              className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm disabled:opacity-50 flex items-center gap-2"
+              className="market-button-primary mt-2 flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
             >
               <Wand2 size={16} />
               Generate Custom
@@ -307,42 +307,42 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
 
       {/* Loading State */}
       {generating && (
-        <div className="flex items-center justify-center py-8 bg-white rounded-lg border-2 border-dashed border-purple-300">
+        <div className="flex items-center justify-center rounded-2xl border-2 border-dashed border-indigo-400/30 bg-slate-950/35 py-8">
           <div className="text-center">
-            <Loader2 className="w-8 h-8 text-purple-600 animate-spin mx-auto mb-2" />
-            <p className="text-sm text-gray-600">Generating image with AI...</p>
-            <p className="text-xs text-gray-500 mt-1">This usually takes 10-30 seconds</p>
+            <Loader2 className="mx-auto mb-2 h-8 w-8 animate-spin text-indigo-300" />
+            <p className="text-sm text-slate-300">Generating image with AI...</p>
+            <p className="mt-1 text-xs text-slate-500">This usually takes 10-30 seconds</p>
           </div>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="mb-4 rounded-xl border border-red-400/20 bg-red-500/10 p-4">
+          <p className="text-sm text-red-200">{error}</p>
         </div>
       )}
 
       {/* Generated Image Preview */}
       {generatedImage && !generating && (
-        <div className="bg-white rounded-lg p-4 border-2 border-purple-300">
-          <p className="text-sm font-medium text-gray-700 mb-2">Generated Image:</p>
+        <div className="rounded-2xl border border-indigo-400/20 bg-slate-950/35 p-4">
+          <p className="mb-2 text-sm font-medium text-slate-300">Generated Image:</p>
           <img
             src={generatedImage}
             alt="AI Generated"
-            className="w-full rounded-lg mb-3"
+            className="mb-3 w-full rounded-xl"
           />
           <div className="flex gap-2">
             <button
               onClick={handleUseImage}
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+              className="market-button-primary flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm font-medium"
             >
               <ImageIcon size={16} />
               Use This Image
             </button>
             <button
               onClick={handleDownload}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm flex items-center gap-2"
+              className="market-button-secondary flex items-center gap-2 px-4 py-2 text-sm"
             >
               <Download size={16} />
               Download
@@ -352,8 +352,8 @@ export function AIImageEditor({ currentImage, onImageGenerated, userTier }: AIIm
       )}
 
       {/* Info */}
-      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-        <p className="text-xs text-blue-800">
+      <div className="mt-4 rounded-xl border border-cyan-400/20 bg-cyan-500/10 p-3">
+        <p className="text-xs text-cyan-100">
           <strong>💡 Tips:</strong> AI image editing works best with PNG images that have transparent backgrounds. 
           For JPEG photos, try "Studio Background" or "Lifestyle Shot" for best results.
         </p>

@@ -3,10 +3,10 @@ import { TrendingUp, Users, Home, Briefcase, Heart, Award } from 'lucide-react';
 
 export default function ImpactPage() {
   const stats = [
-    { icon: Users, label: 'Community Members Served', value: '500+', color: 'blue' },
-    { icon: Briefcase, label: 'Jobs Placed', value: '150+', color: 'green' },
-    { icon: Home, label: 'Housing Placements', value: '75+', color: 'purple' },
-    { icon: Heart, label: 'Marketplace Transactions', value: '1,000+', color: 'red' }
+    { icon: Users, label: 'Community Members Served', value: '500+', color: 'sky' },
+    { icon: Briefcase, label: 'Jobs Placed', value: '150+', color: 'emerald' },
+    { icon: Home, label: 'Housing Placements', value: '75+', color: 'indigo' },
+    { icon: Heart, label: 'Marketplace Transactions', value: '1,000+', color: 'rose' }
   ];
 
   const testimonials = [
@@ -39,9 +39,9 @@ export default function ImpactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen text-slate-100">
       {/* Hero Section */}
-      <div className="relative min-h-[500px] bg-gradient-to-r from-purple-600/90 to-purple-800/90 text-white">
+      <div className="market-hero relative min-h-[500px] overflow-hidden text-white">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -50,14 +50,16 @@ export default function ImpactPage() {
           }}
         />
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/85 to-purple-800/85" />
+        <div className="absolute inset-0 bg-slate-950/72" />
         
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex items-center min-h-[500px]">
           <div className="text-center w-full">
-            <TrendingUp className="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-2xl shadow-indigo-950/50">
+              <TrendingUp className="h-10 w-10" />
+            </div>
             <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">Our Impact</h1>
-            <p className="text-2xl text-purple-100 max-w-3xl mx-auto drop-shadow-md">
+            <p className="text-2xl text-slate-200 max-w-3xl mx-auto drop-shadow-md">
               See how we're creating lasting change in the Dayton community
             </p>
           </div>
@@ -70,19 +72,19 @@ export default function ImpactPage() {
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             const colorClasses = {
-              blue: 'bg-blue-100 text-blue-600',
-              green: 'bg-green-100 text-green-600',
-              purple: 'bg-purple-100 text-purple-600',
-              red: 'bg-red-100 text-red-600'
+              sky: 'bg-sky-500/15 text-sky-300',
+              emerald: 'bg-emerald-500/15 text-emerald-300',
+              indigo: 'bg-indigo-500/15 text-indigo-300',
+              rose: 'bg-rose-500/15 text-rose-300'
             };
             
             return (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-lg text-center">
+              <div key={index} className="market-panel p-8 text-center">
                 <div className={`w-16 h-16 ${colorClasses[stat.color as keyof typeof colorClasses]} rounded-full flex items-center justify-center mx-auto mb-4`}>
                   <Icon className="w-8 h-8" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
+                <div className="mb-2 text-4xl font-bold text-white">{stat.value}</div>
+                <div className="font-medium text-slate-400">{stat.label}</div>
               </div>
             );
           })}
@@ -90,19 +92,19 @@ export default function ImpactPage() {
 
         {/* Success Stories */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">Success Stories</h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <h2 className="mb-4 text-center text-3xl font-bold text-white">Success Stories</h2>
+          <p className="mx-auto mb-12 max-w-2xl text-center text-slate-400">
             Real stories from community members whose lives have been transformed through our programs
           </p>
           
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-lg">
+              <div key={index} className="market-panel p-8">
                 <div className="text-6xl mb-4">{testimonial.image}</div>
-                <p className="text-gray-700 italic mb-6">"{testimonial.quote}"</p>
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-600">{testimonial.role}</div>
+                <p className="mb-6 italic text-slate-300">"{testimonial.quote}"</p>
+                <div className="border-t border-white/10 pt-4">
+                  <div className="font-semibold text-white">{testimonial.name}</div>
+                  <div className="text-sm text-slate-400">{testimonial.role}</div>
                 </div>
               </div>
             ))}
@@ -111,26 +113,26 @@ export default function ImpactPage() {
 
         {/* Timeline */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Our Journey</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold text-white">Our Journey</h2>
           
           <div className="relative">
             {/* Timeline line */}
-            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-purple-200"></div>
+            <div className="absolute left-1/2 hidden h-full w-px -translate-x-1/2 transform bg-indigo-300/20 md:block"></div>
             
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
                 <div key={index} className={`flex items-center gap-8 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                    <div className="bg-white p-6 rounded-xl shadow-lg inline-block">
-                      <div className="text-purple-600 font-bold text-lg mb-2">{milestone.year}</div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{milestone.title}</h3>
-                      <p className="text-gray-600">{milestone.description}</p>
+                    <div className="market-panel inline-block p-6 text-left">
+                      <div className="mb-2 text-lg font-bold text-indigo-300">{milestone.year}</div>
+                      <h3 className="mb-2 text-xl font-bold text-white">{milestone.title}</h3>
+                      <p className="text-slate-400">{milestone.description}</p>
                     </div>
                   </div>
                   
                   {/* Timeline dot */}
                   <div className="hidden md:block relative z-10">
-                    <div className="w-6 h-6 bg-purple-600 rounded-full border-4 border-white shadow-lg"></div>
+                    <div className="h-6 w-6 rounded-full border-4 border-slate-950 bg-indigo-400 shadow-lg shadow-indigo-950/50"></div>
                   </div>
                   
                   <div className="flex-1"></div>
@@ -142,97 +144,97 @@ export default function ImpactPage() {
 
         {/* Program Impact Details */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Program Highlights</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold text-white">Program Highlights</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-xl border border-blue-100">
+            <div className="rounded-xl border border-sky-400/20 bg-sky-500/10 p-8 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-blue-600 text-white p-3 rounded-lg">
+                <div className="rounded-lg bg-sky-500/20 p-3 text-sky-300">
                   <Award className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Job Training Success</h3>
+                <h3 className="text-2xl font-bold text-white">Job Training Success</h3>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Program Completion Rate</span>
-                  <span className="font-bold text-blue-600">85%</span>
+                  <span className="text-slate-300">Program Completion Rate</span>
+                  <span className="font-bold text-sky-300">85%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Job Placement Rate</span>
-                  <span className="font-bold text-blue-600">78%</span>
+                  <span className="text-slate-300">Job Placement Rate</span>
+                  <span className="font-bold text-sky-300">78%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Average Wage Increase</span>
-                  <span className="font-bold text-blue-600">$4.50/hr</span>
+                  <span className="text-slate-300">Average Wage Increase</span>
+                  <span className="font-bold text-sky-300">$4.50/hr</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-white p-8 rounded-xl border border-green-100">
+            <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-8 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-green-600 text-white p-3 rounded-lg">
+                <div className="rounded-lg bg-emerald-500/20 p-3 text-emerald-300">
                   <Home className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Housing Impact</h3>
+                <h3 className="text-2xl font-bold text-white">Housing Impact</h3>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Families Housed</span>
-                  <span className="font-bold text-green-600">75+</span>
+                  <span className="text-slate-300">Families Housed</span>
+                  <span className="font-bold text-emerald-300">75+</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Emergency Assistance Provided</span>
-                  <span className="font-bold text-green-600">$45,000</span>
+                  <span className="text-slate-300">Emergency Assistance Provided</span>
+                  <span className="font-bold text-emerald-300">$45,000</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Housing Stability Rate</span>
-                  <span className="font-bold text-green-600">92%</span>
+                  <span className="text-slate-300">Housing Stability Rate</span>
+                  <span className="font-bold text-emerald-300">92%</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-xl border border-purple-100">
+            <div className="rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-8 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-purple-600 text-white p-3 rounded-lg">
+                <div className="rounded-lg bg-indigo-500/20 p-3 text-indigo-300">
                   <Users className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Marketplace Growth</h3>
+                <h3 className="text-2xl font-bold text-white">Marketplace Growth</h3>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Active Users</span>
-                  <span className="font-bold text-purple-600">300+</span>
+                  <span className="text-slate-300">Active Users</span>
+                  <span className="font-bold text-indigo-300">300+</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Total Transactions</span>
-                  <span className="font-bold text-purple-600">1,000+</span>
+                  <span className="text-slate-300">Total Transactions</span>
+                  <span className="font-bold text-indigo-300">1,000+</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Revenue to Programs</span>
-                  <span className="font-bold text-purple-600">$12,000</span>
+                  <span className="text-slate-300">Revenue to Programs</span>
+                  <span className="font-bold text-indigo-300">$12,000</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-xl border border-orange-100">
+            <div className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 p-8 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-orange-600 text-white p-3 rounded-lg">
+                <div className="rounded-lg bg-cyan-500/20 p-3 text-cyan-300">
                   <Heart className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Community Engagement</h3>
+                <h3 className="text-2xl font-bold text-white">Community Engagement</h3>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Workshops Held</span>
-                  <span className="font-bold text-orange-600">50+</span>
+                  <span className="text-slate-300">Workshops Held</span>
+                  <span className="font-bold text-cyan-300">50+</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Volunteer Hours</span>
-                  <span className="font-bold text-orange-600">2,000+</span>
+                  <span className="text-slate-300">Volunteer Hours</span>
+                  <span className="font-bold text-cyan-300">2,000+</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Partner Organizations</span>
-                  <span className="font-bold text-orange-600">15</span>
+                  <span className="text-slate-300">Partner Organizations</span>
+                  <span className="font-bold text-cyan-300">15</span>
                 </div>
               </div>
             </div>
@@ -240,21 +242,21 @@ export default function ImpactPage() {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-2xl p-12 text-center">
+        <div className="market-hero p-12 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Be Part of Our Impact</h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-slate-200">
             Your support helps us continue creating opportunities and changing lives in the Dayton community
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <a 
               href="/donate" 
-              className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition"
+              className="market-button-primary px-8 py-3"
             >
               Donate Now
             </a>
             <a 
               href="/programs" 
-              className="bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-600 transition border-2 border-white"
+              className="market-button-secondary px-8 py-3"
             >
               Learn About Programs
             </a>

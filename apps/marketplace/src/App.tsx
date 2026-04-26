@@ -30,8 +30,6 @@ import ProgramsPage from './components/nonprofit/ProgramsPage';
 import ContactPage from './components/nonprofit/ContactPage';
 import PrivacyPolicyPage from './components/nonprofit/PrivacyPolicyPage';
 import NonprofitStatusPage from './components/nonprofit/NonprofitStatusPage';
-import ProductPage from './app/products/[id]/page';
-import EmbeddedProductPage from './app/products/embed/[id]/page';
 import MetaOAuthCallback from './components/auth/MetaOAuthCallback';
 import FacebookAuthCallback from './components/auth/FacebookAuthCallback';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
@@ -62,11 +60,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'products/:id',
-        element: <ProductPage />
+        element: <ListingDetail />
       },
       {
         path: 'products/embed/:id',
-        element: <EmbeddedProductPage />
+        element: <ListingDetail />
       },
       {
         path: 'dashboard',

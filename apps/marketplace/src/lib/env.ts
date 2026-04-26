@@ -13,10 +13,10 @@ export function validateEnvironment(): EnvironmentConfig {
   const requiredVars = {
     supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
     supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-    stripePublishableKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
   };
 
   const optionalVars = {
+    stripePublishableKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '',
     appName: import.meta.env.VITE_APP_NAME || 'Auction Platform',
     appVersion: import.meta.env.VITE_APP_VERSION || '1.0.0',
     platformFeePercentage: parseInt(import.meta.env.VITE_PLATFORM_FEE_PERCENTAGE || '10'),

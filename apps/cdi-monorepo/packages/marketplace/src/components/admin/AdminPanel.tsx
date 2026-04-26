@@ -85,14 +85,14 @@ export default function AdminPanel() {
 
   if (!profile?.is_admin) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <AlertTriangle size={48} className="mx-auto text-red-500 mb-4" />
-          <p className="text-gray-600 text-lg">Access Denied</p>
-          <p className="text-gray-500 mt-2">You do not have admin privileges</p>
+          <AlertTriangle size={48} className="mx-auto mb-4 text-red-400" />
+          <p className="text-lg text-slate-200">Access Denied</p>
+          <p className="mt-2 text-slate-500">You do not have admin privileges</p>
           <button
             onClick={() => navigate('/')}
-            className="mt-4 text-blue-600 hover:text-blue-700"
+            className="mt-4 font-medium text-indigo-300 hover:text-indigo-200"
           >
             Return Home
           </button>
@@ -102,25 +102,27 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">
-            <Shield size={32} className="text-red-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-lg shadow-indigo-950/40">
+              <Shield size={26} className="text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
           </div>
-          <p className="text-gray-600">Manage users and content across the platform</p>
+          <p className="text-slate-400">Manage users and content across the platform</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="border-b border-gray-200">
+        <div className="market-panel overflow-hidden">
+          <div className="border-b border-slate-800">
             <div className="flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab('listings')}
                 className={`py-4 border-b-2 font-medium transition-colors flex items-center ${
                   activeTab === 'listings'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                    ? 'border-indigo-400 text-indigo-300'
+                    : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 <Package size={20} className="mr-2" />
@@ -130,8 +132,8 @@ export default function AdminPanel() {
                 onClick={() => setActiveTab('users')}
                 className={`py-4 border-b-2 font-medium transition-colors flex items-center ${
                   activeTab === 'users'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                    ? 'border-indigo-400 text-indigo-300'
+                    : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 <Users size={20} className="mr-2" />
@@ -143,21 +145,21 @@ export default function AdminPanel() {
           <div className="p-6">
             {loading ? (
               <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-4 text-gray-600">Loading...</p>
+                <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-400"></div>
+                <p className="mt-4 text-slate-400">Loading...</p>
               </div>
             ) : activeTab === 'listings' ? (
               <div className="space-y-4">
                 {listings.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
-                    <Package size={48} className="mx-auto text-gray-300 mb-4" />
+                  <div className="py-12 text-center text-slate-500">
+                    <Package size={48} className="mx-auto mb-4 text-slate-700" />
                     <p>No listings found</p>
                   </div>
                 ) : (
                   listings.map((listing) => (
                     <div
                       key={listing.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                      className="rounded-xl border border-white/10 bg-slate-950/35 p-4 transition-colors hover:border-indigo-400/40"
                     >
                       <div className="flex items-start space-x-4">
                         <img
@@ -168,29 +170,29 @@ export default function AdminPanel() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="font-semibold text-gray-900 mb-1">{listing.title}</h3>
-                              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <h3 className="mb-1 font-semibold text-white">{listing.title}</h3>
+                              <div className="flex items-center space-x-4 text-sm text-slate-400">
                                 <span>Seller: {listing.seller?.username}</span>
                                 {listing.category && (
-                                  <span className="bg-gray-100 px-2 py-1 rounded">
+                                  <span className="rounded-full border border-white/10 bg-slate-900 px-3 py-1">
                                     {listing.category.name}
                                   </span>
                                 )}
-                                <span className={`px-2 py-1 rounded font-medium ${
-                                  listing.status === 'active' ? 'bg-green-100 text-green-700' :
-                                  listing.status === 'sold' ? 'bg-blue-100 text-blue-700' :
-                                  'bg-gray-100 text-gray-700'
+                                <span className={`rounded-full px-3 py-1 font-medium ${
+                                  listing.status === 'active' ? 'bg-emerald-500/15 text-emerald-300' :
+                                  listing.status === 'sold' ? 'bg-cyan-500/15 text-cyan-300' :
+                                  'bg-slate-800 text-slate-300'
                                 }`}>
                                   {listing.status}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 mt-2">
+                              <p className="mt-2 text-sm text-slate-500">
                                 Created: {new Date(listing.created_at).toLocaleDateString()}
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm text-gray-600">Current Bid</p>
-                              <p className="text-xl font-bold text-blue-600">
+                              <p className="text-sm text-slate-400">Current Bid</p>
+                              <p className="text-xl font-bold text-indigo-300">
                                 ${listing.current_bid > 0 ? listing.current_bid.toFixed(2) : listing.starting_bid.toFixed(2)}
                               </p>
                             </div>
@@ -198,13 +200,13 @@ export default function AdminPanel() {
                           <div className="flex items-center space-x-2 mt-3">
                             <button
                               onClick={() => navigate(`/listings/${listing.id}`)}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                              className="text-sm font-medium text-indigo-300 hover:text-indigo-200"
                             >
                               View Details
                             </button>
                             <button
                               onClick={() => handleDeleteListing(listing.id)}
-                              className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center"
+                              className="flex items-center text-sm font-medium text-red-400 hover:text-red-300"
                             >
                               <Trash2 size={14} className="mr-1" />
                               Delete
@@ -219,62 +221,62 @@ export default function AdminPanel() {
             ) : (
               <div className="space-y-4">
                 {users.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
-                    <Users size={48} className="mx-auto text-gray-300 mb-4" />
+                  <div className="py-12 text-center text-slate-500">
+                    <Users size={48} className="mx-auto mb-4 text-slate-700" />
                     <p>No users found</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="bg-gray-50 border-b border-gray-200">
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">User</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Rating</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Joined</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                        <tr className="border-b border-slate-800 bg-slate-950/45">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">User</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Email</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Rating</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Status</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Joined</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200">
+                      <tbody className="divide-y divide-slate-800">
                         {users.map((user) => (
-                          <tr key={user.id} className="hover:bg-gray-50">
+                          <tr key={user.id} className="hover:bg-slate-900/30">
                             <td className="px-4 py-3">
                               <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 font-medium text-white">
                                   {user.username[0].toUpperCase()}
                                 </div>
                                 <div>
-                                  <p className="font-medium text-gray-900">{user.username}</p>
+                                  <p className="font-medium text-white">{user.username}</p>
                                   {user.full_name && (
-                                    <p className="text-sm text-gray-500">{user.full_name}</p>
+                                    <p className="text-sm text-slate-500">{user.full_name}</p>
                                   )}
                                 </div>
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{user.id}</td>
+                            <td className="px-4 py-3 text-sm text-slate-400">{user.id}</td>
                             <td className="px-4 py-3">
                               {user.rating > 0 ? (
-                                <span className="text-sm text-gray-900">
+                                <span className="text-sm text-slate-200">
                                   {user.rating.toFixed(1)} ({user.total_reviews})
                                 </span>
                               ) : (
-                                <span className="text-sm text-gray-500">No reviews</span>
+                                <span className="text-sm text-slate-500">No reviews</span>
                               )}
                             </td>
                             <td className="px-4 py-3">
                               {user.is_admin ? (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                <span className="inline-flex items-center rounded-full bg-red-500/15 px-3 py-1 text-xs font-medium text-red-300">
                                   <Shield size={12} className="mr-1" />
                                   Admin
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                <span className="inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300">
                                   User
                                 </span>
                               )}
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">
+                            <td className="px-4 py-3 text-sm text-slate-400">
                               {new Date(user.created_at).toLocaleDateString()}
                             </td>
                             <td className="px-4 py-3">
@@ -282,8 +284,8 @@ export default function AdminPanel() {
                                 onClick={() => handleToggleAdmin(user.id, user.is_admin)}
                                 className={`text-sm font-medium ${
                                   user.is_admin
-                                    ? 'text-red-600 hover:text-red-700'
-                                    : 'text-green-600 hover:text-green-700'
+                                    ? 'text-red-400 hover:text-red-300'
+                                    : 'text-emerald-300 hover:text-emerald-200'
                                 }`}
                               >
                                 {user.is_admin ? 'Remove Admin' : 'Make Admin'}

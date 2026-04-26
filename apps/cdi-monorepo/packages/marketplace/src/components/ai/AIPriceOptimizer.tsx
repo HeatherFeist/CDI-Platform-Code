@@ -62,10 +62,10 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
 
   const getPriceChangeColor = () => {
     const change = getPriceChangePercentage();
-    if (change === null) return 'text-gray-600';
-    if (change > 0) return 'text-green-600';
-    if (change < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (change === null) return 'text-slate-400';
+    if (change > 0) return 'text-emerald-300';
+    if (change < 0) return 'text-red-300';
+    return 'text-slate-400';
   };
 
   const formatPriceChange = () => {
@@ -76,24 +76,24 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="market-panel p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-full p-2 mr-3">
+          <div className="mr-3 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 p-2 shadow-lg shadow-indigo-950/30">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">AI Price Optimizer</h2>
-            <p className="text-gray-600">Get AI-powered pricing recommendations</p>
+            <h2 className="text-xl font-bold text-white">AI Price Optimizer</h2>
+            <p className="text-slate-300">Get AI-powered pricing recommendations</p>
           </div>
         </div>
         
         <button
           onClick={analyzePrice}
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="market-button-primary px-4 py-2 disabled:opacity-50"
         >
           {loading ? 'Analyzing...' : 'Refresh Analysis'}
         </button>
@@ -101,19 +101,19 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
 
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-3 text-gray-600">Analyzing market data...</span>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-300"></div>
+          <span className="ml-3 text-slate-300">Analyzing market data...</span>
         </div>
       )}
 
       {analysis && !loading && (
         <div className="space-y-6">
           {/* Price Recommendation */}
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-6">
+          <div className="rounded-2xl border border-indigo-400/20 bg-slate-950/35 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Price Recommendation</h3>
+              <h3 className="text-lg font-semibold text-white">Price Recommendation</h3>
               {acceptedPrice && (
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-200">
                   ✓ Applied
                 </span>
               )}
@@ -121,15 +121,15 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Current Price</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="mb-1 text-sm text-slate-400">Current Price</p>
+                <p className="text-2xl font-bold text-slate-100">
                   ${productData.currentPrice?.toFixed(2) || '0.00'}
                 </p>
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">AI Suggested Price</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="mb-1 text-sm text-slate-400">AI Suggested Price</p>
+                <p className="text-3xl font-bold text-emerald-300">
                   ${analysis.suggestedPrice.toFixed(2)}
                 </p>
                 {getPriceChangePercentage() !== null && (
@@ -140,8 +140,8 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Optimal Range</p>
-                <p className="text-lg font-semibold text-blue-600">
+                <p className="mb-1 text-sm text-slate-400">Optimal Range</p>
+                <p className="text-lg font-semibold text-cyan-300">
                   ${analysis.priceRange.min} - ${analysis.priceRange.max}
                 </p>
               </div>
@@ -151,7 +151,7 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={handleAcceptPrice}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
+                  className="market-button-primary px-6 py-3 font-medium"
                 >
                   Accept AI Recommendation
                 </button>
@@ -160,28 +160,28 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
           </div>
 
           {/* Pricing Reasoning */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-gray-900">AI Analysis</h4>
+              <h4 className="font-medium text-white">AI Analysis</h4>
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-blue-600 hover:text-blue-700 text-sm"
+                className="text-sm text-indigo-300 hover:text-indigo-200"
               >
                 {showDetails ? 'Hide Details' : 'Show Details'}
               </button>
             </div>
             
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed text-slate-300">
               {analysis.reasoning}
             </p>
             
             {showDetails && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <h5 className="font-medium text-gray-900 mb-2">Key Factors Considered:</h5>
+              <div className="mt-4 border-t border-slate-800 pt-4">
+                <h5 className="mb-2 font-medium text-white">Key Factors Considered:</h5>
                 <ul className="space-y-1">
                   {analysis.competitiveFactors.map((factor, index) => (
-                    <li key={index} className="flex items-start text-sm text-gray-700">
-                      <svg className="w-4 h-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <li key={index} className="flex items-start text-sm text-slate-300">
+                      <svg className="mr-2 mt-0.5 h-4 w-4 flex-shrink-0 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {factor}
@@ -193,14 +193,14 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
           </div>
 
           {/* Pricing Tips */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4">
+            <h4 className="mb-2 flex items-center font-medium text-cyan-100">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Pricing Tips for Nonprofit Marketplace
             </h4>
-            <ul className="text-blue-800 text-sm space-y-1">
+            <ul className="space-y-1 text-sm text-cyan-100">
               <li>• Buyers often pay premium prices to support nonprofit causes</li>
               <li>• Highlight the social impact of their purchase</li>
               <li>• Consider seasonal demand and trending categories</li>
@@ -211,19 +211,19 @@ export const AIPriceOptimizer: React.FC<PriceOptimizationProps> = ({
 
           {/* Performance Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white border rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">92%</div>
-              <div className="text-sm text-gray-600">AI Accuracy Rate</div>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4 text-center">
+              <div className="text-2xl font-bold text-emerald-300">92%</div>
+              <div className="text-sm text-slate-400">AI Accuracy Rate</div>
             </div>
             
-            <div className="bg-white border rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">+18%</div>
-              <div className="text-sm text-gray-600">Avg. Sales Increase</div>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4 text-center">
+              <div className="text-2xl font-bold text-cyan-300">+18%</div>
+              <div className="text-sm text-slate-400">Avg. Sales Increase</div>
             </div>
             
-            <div className="bg-white border rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">2.3x</div>
-              <div className="text-sm text-gray-600">Faster Sell Time</div>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4 text-center">
+              <div className="text-2xl font-bold text-indigo-300">2.3x</div>
+              <div className="text-sm text-slate-400">Faster Sell Time</div>
             </div>
           </div>
         </div>
@@ -262,13 +262,13 @@ export const PriceOptimizationWidget: React.FC<{
   const improvement = suggestion ? ((suggestion - currentPrice) / currentPrice) * 100 : 0;
 
   return (
-    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+    <div className="rounded-xl border border-amber-300/20 bg-amber-500/10 p-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <svg className="w-4 h-4 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="mr-2 h-4 w-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className="text-sm font-medium text-yellow-800">
+          <span className="text-sm font-medium text-amber-100">
             {loading ? 'Analyzing...' : `AI suggests $${suggestion?.toFixed(2)} (+${improvement.toFixed(1)}%)`}
           </span>
         </div>
@@ -276,7 +276,7 @@ export const PriceOptimizationWidget: React.FC<{
         <button
           onClick={onQuickOptimize}
           disabled={loading}
-          className="text-xs bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 disabled:opacity-50"
+          className="rounded-lg bg-amber-400 px-2 py-1 text-xs font-medium text-slate-950 transition-colors hover:bg-amber-300 disabled:opacity-50"
         >
           Optimize
         </button>

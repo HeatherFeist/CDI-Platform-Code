@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isConfigured } from '../supabase';
-// import { provisionWorkspaceAccount } from '../services/workspaceProvisioningService'; // DISABLED - needs server-side
+import { provisionWorkspaceAccount } from '../services/workspaceProvisioningService';
 
 type UserRole = 'admin' | 'manager' | 'technician' | 'sales';
 type UserContext = 'business_owner' | 'team_member' | 'contractor' | 'subcontractor';
@@ -407,46 +407,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 throw profileError;
             }
 
-            // STEP 2: Provision Google Workspace account
-            // TEMPORARILY DISABLED - googleapis can't run in browser, needs server-side implementation
-            console.log('⏭️  Skipping Google Workspace provisioning (needs server-side setup)');
-            /*
-            console.log('🔄 Provisioning Google Workspace account...');
-            const workspaceResult = await provisionWorkspaceAccount({
-                firstName: profile.first_name,
-                lastName: profile.last_name,
-                personalEmail: email,
-                firebaseUid: authData.user.id,
-            });
+            // STEP 2: Provision Google Workspace account (via Supabase Edge Function)
+            console.log('🔄 Provisioning Google Workspace account via Edge Function...');
+            try {
+                const workspaceResult = await provisionWorkspaceAccount({
+                    profileId: authData.user.id,
+                    firstName: profile.first_name,
+                    lastName: profile.last_name,
+                    recoveryEmail: email,
+                });
 
-            if (workspaceResult.success && workspaceResult.workspaceEmail) {
-                console.log('✅ Workspace account created:', workspaceResult.workspaceEmail);
-                
-                // STEP 3: Update profile with workspace email
-                const { error: updateError } = await supabase
-                    .from('profiles')
-                    .update({ workspace_email: workspaceResult.workspaceEmail })
-                    .eq('id', authData.user.id);
-
-                if (updateError) {
-                    console.error('⚠️ Failed to save workspace email to profile:', updateError);
-                    // Don't fail signup if this fails - workspace account was created
+                if (workspaceResult.success && workspaceResult.workspaceEmail) {
+                    console.log('✅ Workspace account created:', workspaceResult.workspaceEmail);
+                    console.log('   - Temp password for Workspace:', workspaceResult.tempPassword);
+                } else {
+                    console.warn('⚠️ Workspace provisioning failed:', workspaceResult.error);
+                    console.warn('   User can still use the app, but won\'t have Workspace account');
                 }
-
-                console.log('✅ Signup complete! User has:');
-                console.log('   - Personal email:', email);
-                console.log('   - Workspace email:', workspaceResult.workspaceEmail);
-                console.log('   - Temp password for Workspace:', workspaceResult.tempPassword);
-                
-                // TODO: Send welcome email with workspace credentials
-                // await sendWelcomeEmail(email, workspaceResult.workspaceEmail, workspaceResult.tempPassword);
-                
-            } else {
-                console.warn('⚠️ Workspace provisioning failed:', workspaceResult.error);
-                console.warn('   User can still use the app, but won\'t have Workspace account');
-                // Don't fail the entire signup - user can still use the app
+            } catch (wsError) {
+                console.warn('⚠️ Workspace provisioning unavailable:', wsError);
+                // Don't fail signup if Edge Function isn't deployed yet
             }
-            */
 
             console.log('✅ Signup process completed successfully');
 

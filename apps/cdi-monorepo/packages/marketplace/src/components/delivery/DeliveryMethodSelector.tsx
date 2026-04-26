@@ -89,12 +89,17 @@ export function DeliveryMethodSelector({
   };
 
   const suggestedTips = [0, 3, 5, 10];
+  const optionCardBase = 'rounded-3xl border p-4 transition-all backdrop-blur-sm';
+  const optionCardSelected = 'border-cyan-400/60 bg-slate-900/90 shadow-[0_24px_60px_-28px_rgba(34,211,238,0.55)]';
+  const optionCardUnselected = 'border-white/10 bg-slate-950/70 hover:border-cyan-400/30 hover:bg-slate-900/85';
+  const iconBase = 'flex h-10 w-10 items-center justify-center rounded-2xl border';
+  const inputClass = 'market-input w-full';
 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose Delivery Method</h3>
-        <p className="text-sm text-gray-600">
+        <h3 className="mb-2 text-lg font-semibold text-white">Choose Delivery Method</h3>
+        <p className="text-sm text-slate-300">
           Select how you'd like to receive this item
         </p>
       </div>
@@ -102,47 +107,49 @@ export function DeliveryMethodSelector({
       {/* Self-Pickup */}
       {availableOptions.includes('self_pickup') && (
         <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+          className={`${optionCardBase} cursor-pointer ${
             selectedMethod === 'self_pickup'
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-gray-200 bg-white hover:border-purple-300'
+              ? optionCardSelected
+              : optionCardUnselected
           }`}
           onClick={() => onMethodChange('self_pickup')}
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                selectedMethod === 'self_pickup' ? 'bg-purple-600' : 'bg-gray-200'
+              <div className={`${iconBase} ${
+                selectedMethod === 'self_pickup'
+                  ? 'border-cyan-400/50 bg-cyan-500/20'
+                  : 'border-white/10 bg-white/5'
               }`}>
                 <FiMapPin className={`w-5 h-5 ${
-                  selectedMethod === 'self_pickup' ? 'text-white' : 'text-gray-500'
+                  selectedMethod === 'self_pickup' ? 'text-cyan-200' : 'text-slate-400'
                 }`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold text-gray-900">Self-Pickup</h4>
-                  <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                  <h4 className="font-semibold text-white">Self-Pickup</h4>
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-200">
                     FREE
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="mb-2 text-sm text-slate-300">
                   Pick up directly from the seller
                 </p>
                 {pickupAddress && (
-                  <div className="text-xs text-gray-500 bg-gray-50 rounded p-2">
-                    <p className="font-medium">Pickup Location:</p>
+                  <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-3 text-xs text-slate-300">
+                    <p className="font-medium text-slate-100">Pickup Location:</p>
                     <p>{pickupAddress.street}</p>
                     <p>{pickupAddress.city}, {pickupAddress.state} {pickupAddress.zip}</p>
                     {pickupAddress.instructions && (
-                      <p className="mt-1 text-gray-600">📝 {pickupAddress.instructions}</p>
+                      <p className="mt-1 text-slate-400">Notes: {pickupAddress.instructions}</p>
                     )}
                   </div>
                 )}
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-green-600">FREE</div>
-              <div className="text-xs text-gray-500">No delivery fee</div>
+              <div className="text-xl font-bold text-emerald-300">FREE</div>
+              <div className="text-xs text-slate-400">No delivery fee</div>
             </div>
           </div>
         </div>
@@ -151,10 +158,10 @@ export function DeliveryMethodSelector({
       {/* Seller Delivery */}
       {availableOptions.includes('seller_delivery') && (
         <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+          className={`${optionCardBase} cursor-pointer ${
             selectedMethod === 'seller_delivery'
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-gray-200 bg-white hover:border-purple-300'
+              ? optionCardSelected
+              : optionCardUnselected
           }`}
           onClick={() => {
             onMethodChange('seller_delivery');
@@ -163,42 +170,44 @@ export function DeliveryMethodSelector({
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                selectedMethod === 'seller_delivery' ? 'bg-purple-600' : 'bg-gray-200'
+              <div className={`${iconBase} ${
+                selectedMethod === 'seller_delivery'
+                  ? 'border-indigo-400/50 bg-indigo-500/20'
+                  : 'border-white/10 bg-white/5'
               }`}>
                 <FiTruck className={`w-5 h-5 ${
-                  selectedMethod === 'seller_delivery' ? 'text-white' : 'text-gray-500'
+                  selectedMethod === 'seller_delivery' ? 'text-indigo-200' : 'text-slate-400'
                 }`} />
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-1">Seller Delivers</h4>
-                <p className="text-sm text-gray-600 mb-2">
+                <h4 className="mb-1 font-semibold text-white">Seller Delivers</h4>
+                <p className="mb-2 text-sm text-slate-300">
                   Seller will deliver to your address
                 </p>
-                <div className="flex items-center gap-2 text-xs text-gray-600">
+                <div className="flex items-center gap-2 text-xs text-slate-400">
                   <FiMapPin className="w-3 h-3" />
                   <span>Within {sellerDeliveryRadius} miles</span>
                 </div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-purple-600">
+              <div className="text-xl font-bold text-cyan-300">
                 ${sellerDeliveryFee.toFixed(2)}
               </div>
-              <div className="text-xs text-gray-500">Delivery fee</div>
+              <div className="text-xs text-slate-400">Delivery fee</div>
             </div>
           </div>
 
           {selectedMethod === 'seller_delivery' && showAddressForm && (
-            <div className="mt-4 pt-4 border-t border-purple-200" onClick={(e) => e.stopPropagation()}>
-              <h5 className="font-medium text-gray-900 mb-3">Your Delivery Address</h5>
+            <div className="mt-4 border-t border-white/10 pt-4" onClick={(e) => e.stopPropagation()}>
+              <h5 className="mb-3 font-medium text-slate-100">Your Delivery Address</h5>
               <div className="space-y-3">
                 <input
                   type="text"
                   value={deliveryAddress?.street || ''}
                   onChange={(e) => handleAddressChange('street', e.target.value)}
                   placeholder="Street Address"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className={inputClass}
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -206,7 +215,7 @@ export function DeliveryMethodSelector({
                     value={deliveryAddress?.city || ''}
                     onChange={(e) => handleAddressChange('city', e.target.value)}
                     placeholder="City"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className={inputClass}
                   />
                   <input
                     type="text"
@@ -214,7 +223,7 @@ export function DeliveryMethodSelector({
                     onChange={(e) => handleAddressChange('state', e.target.value)}
                     placeholder="State"
                     maxLength={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className={inputClass}
                   />
                 </div>
                 <input
@@ -222,14 +231,14 @@ export function DeliveryMethodSelector({
                   value={deliveryAddress?.zip || ''}
                   onChange={(e) => handleAddressChange('zip', e.target.value)}
                   placeholder="ZIP Code"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className={inputClass}
                 />
                 <textarea
                   value={deliveryAddress?.instructions || ''}
                   onChange={(e) => handleAddressChange('instructions', e.target.value)}
                   placeholder="Delivery instructions (gate code, apartment number, etc.)"
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
             </div>
@@ -240,10 +249,10 @@ export function DeliveryMethodSelector({
       {/* Platform Delivery */}
       {availableOptions.includes('platform_delivery') && (
         <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+          className={`${optionCardBase} cursor-pointer ${
             selectedMethod === 'platform_delivery'
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-gray-200 bg-white hover:border-purple-300'
+              ? optionCardSelected
+              : optionCardUnselected
           }`}
           onClick={() => {
             onMethodChange('platform_delivery');
@@ -252,24 +261,26 @@ export function DeliveryMethodSelector({
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                selectedMethod === 'platform_delivery' ? 'bg-purple-600' : 'bg-gray-200'
+              <div className={`${iconBase} ${
+                selectedMethod === 'platform_delivery'
+                  ? 'border-cyan-400/50 bg-cyan-500/20'
+                  : 'border-white/10 bg-white/5'
               }`}>
                 <FiTruck className={`w-5 h-5 ${
-                  selectedMethod === 'platform_delivery' ? 'text-white' : 'text-gray-500'
+                  selectedMethod === 'platform_delivery' ? 'text-cyan-200' : 'text-slate-400'
                 }`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold text-gray-900">Platform Delivery</h4>
-                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                  <h4 className="font-semibold text-white">Platform Delivery</h4>
+                  <span className="rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2 py-0.5 text-xs font-medium text-cyan-200">
                     TRACKED
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="mb-2 text-sm text-slate-300">
                   Professional driver pickup & delivery
                 </p>
-                <div className="flex items-center gap-3 text-xs text-gray-600">
+                <div className="flex items-center gap-3 text-xs text-slate-400">
                   <div className="flex items-center gap-1">
                     <FiClock className="w-3 h-3" />
                     <span>Same day</span>
@@ -284,28 +295,28 @@ export function DeliveryMethodSelector({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-purple-600">
+              <div className="text-xl font-bold text-cyan-300">
                 ${platformDeliveryFee > 0 ? platformDeliveryFee.toFixed(2) : '---'}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-slate-400">
                 {platformDeliveryFee > 0 ? '+ optional tip' : 'Enter address'}
               </div>
             </div>
           </div>
 
           {selectedMethod === 'platform_delivery' && (
-            <div className="mt-4 pt-4 border-t border-purple-200 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-4 space-y-4 border-t border-white/10 pt-4" onClick={(e) => e.stopPropagation()}>
               {/* Address Form */}
               {showAddressForm && (
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-3">Your Delivery Address</h5>
+                  <h5 className="mb-3 font-medium text-slate-100">Your Delivery Address</h5>
                   <div className="space-y-3">
                     <input
                       type="text"
                       value={deliveryAddress?.street || ''}
                       onChange={(e) => handleAddressChange('street', e.target.value)}
                       placeholder="Street Address"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={inputClass}
                     />
                     <div className="grid grid-cols-2 gap-3">
                       <input
@@ -313,7 +324,7 @@ export function DeliveryMethodSelector({
                         value={deliveryAddress?.city || ''}
                         onChange={(e) => handleAddressChange('city', e.target.value)}
                         placeholder="City"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className={inputClass}
                       />
                       <input
                         type="text"
@@ -321,7 +332,7 @@ export function DeliveryMethodSelector({
                         onChange={(e) => handleAddressChange('state', e.target.value)}
                         placeholder="State"
                         maxLength={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className={inputClass}
                       />
                     </div>
                     <input
@@ -329,14 +340,14 @@ export function DeliveryMethodSelector({
                       value={deliveryAddress?.zip || ''}
                       onChange={(e) => handleAddressChange('zip', e.target.value)}
                       placeholder="ZIP Code"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={inputClass}
                     />
                     <textarea
                       value={deliveryAddress?.instructions || ''}
                       onChange={(e) => handleAddressChange('instructions', e.target.value)}
                       placeholder="Delivery instructions (gate code, apartment number, etc.)"
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={inputClass}
                     />
                   </div>
                 </div>
@@ -345,17 +356,17 @@ export function DeliveryMethodSelector({
               {/* Tip Selection */}
               {platformDeliveryFee > 0 && (
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-3">Tip Your Driver (Optional)</h5>
+                  <h5 className="mb-3 font-medium text-slate-100">Tip Your Driver (Optional)</h5>
                   <div className="grid grid-cols-4 gap-2 mb-3">
                     {suggestedTips.map(tip => (
                       <button
                         key={tip}
                         type="button"
                         onClick={() => onDeliveryTipChange?.(tip)}
-                        className={`px-3 py-2 rounded-lg border-2 font-medium transition-all ${
+                        className={`rounded-2xl border px-3 py-2 font-medium transition-all ${
                           deliveryTip === tip
-                            ? 'border-purple-500 bg-purple-50 text-purple-700'
-                            : 'border-gray-200 text-gray-700 hover:border-purple-300'
+                            ? 'border-cyan-400/50 bg-cyan-500/15 text-cyan-100'
+                            : 'border-white/10 bg-slate-950/70 text-slate-300 hover:border-cyan-400/30'
                         }`}
                       >
                         {tip === 0 ? 'No Tip' : `$${tip}`}
@@ -363,7 +374,7 @@ export function DeliveryMethodSelector({
                     ))}
                   </div>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">$</span>
                     <input
                       type="number"
                       value={deliveryTip}
@@ -371,11 +382,11 @@ export function DeliveryMethodSelector({
                       min="0"
                       step="0.50"
                       placeholder="Custom tip"
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="market-input w-full pl-8 pr-3"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    💡 100% of your tip goes directly to the driver
+                  <p className="mt-2 text-xs text-slate-400">
+                    100% of your tip goes directly to the driver
                   </p>
                 </div>
               )}
@@ -387,10 +398,10 @@ export function DeliveryMethodSelector({
       {/* Shipping */}
       {availableOptions.includes('shipping') && (
         <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+          className={`${optionCardBase} cursor-pointer ${
             selectedMethod === 'shipping'
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-gray-200 bg-white hover:border-purple-300'
+              ? optionCardSelected
+              : optionCardUnselected
           }`}
           onClick={() => {
             onMethodChange('shipping');
@@ -399,27 +410,29 @@ export function DeliveryMethodSelector({
         >
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                selectedMethod === 'shipping' ? 'bg-purple-600' : 'bg-gray-200'
+              <div className={`${iconBase} ${
+                selectedMethod === 'shipping'
+                  ? 'border-violet-400/50 bg-violet-500/20'
+                  : 'border-white/10 bg-white/5'
               }`}>
                 <FiPackage className={`w-5 h-5 ${
-                  selectedMethod === 'shipping' ? 'text-white' : 'text-gray-500'
+                  selectedMethod === 'shipping' ? 'text-violet-200' : 'text-slate-400'
                 }`} />
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-1">Shipping</h4>
-                <p className="text-sm text-gray-600 mb-2">
+                <h4 className="mb-1 font-semibold text-white">Shipping</h4>
+                <p className="mb-2 text-sm text-slate-300">
                   Traditional carrier (USPS, UPS, FedEx)
                 </p>
-                <div className="flex items-center gap-2 text-xs text-gray-600">
+                <div className="flex items-center gap-2 text-xs text-slate-400">
                   <FiClock className="w-3 h-3" />
                   <span>3-7 business days</span>
                 </div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-gray-600">TBD</div>
-              <div className="text-xs text-gray-500">Calculated at checkout</div>
+              <div className="text-xl font-bold text-slate-200">TBD</div>
+              <div className="text-xs text-slate-400">Calculated at checkout</div>
             </div>
           </div>
         </div>
@@ -427,10 +440,10 @@ export function DeliveryMethodSelector({
 
       {/* Total Summary */}
       {selectedMethod && (
-        <div className="bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg p-4 text-white">
+        <div className="rounded-3xl border border-cyan-400/25 bg-gradient-to-br from-slate-900 via-indigo-950 to-cyan-950 p-4 text-white shadow-[0_24px_60px_-28px_rgba(14,165,233,0.45)]">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold">Order Summary</h4>
-            <FiCheck className="w-5 h-5" />
+            <FiCheck className="h-5 w-5 text-cyan-200" />
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -457,7 +470,7 @@ export function DeliveryMethodSelector({
                 )}
               </>
             )}
-            <div className="border-t border-purple-400 pt-2 flex justify-between font-bold text-lg">
+            <div className="flex justify-between border-t border-white/10 pt-2 text-lg font-bold">
               <span>Total</span>
               <span>${getTotalCost(selectedMethod).toFixed(2)}</span>
             </div>

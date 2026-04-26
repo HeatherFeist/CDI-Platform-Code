@@ -60,17 +60,17 @@ export function DriverRegistration() {
   if (success) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-green-50 border-2 border-green-500 rounded-lg p-8 text-center">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-3xl border border-emerald-400/30 bg-emerald-500/10 p-8 text-center backdrop-blur-sm">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/35 bg-emerald-500/20">
             <FiCheck className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-green-900 mb-2">
+          <h2 className="mb-2 text-2xl font-bold text-emerald-100">
             Application Submitted!
           </h2>
-          <p className="text-green-700 mb-4">
+          <p className="mb-4 text-emerald-100/85">
             Your driver application has been received. We'll review it and get back to you within 1-2 business days.
           </p>
-          <p className="text-sm text-green-600">
+          <p className="text-sm text-emerald-200/80">
             Redirecting to your dashboard...
           </p>
         </div>
@@ -83,34 +83,34 @@ export function DriverRegistration() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-400/25 bg-gradient-to-br from-indigo-600/80 to-cyan-500/80 shadow-[0_16px_32px_-20px_rgba(34,211,238,0.8)]">
             <FiTruck className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Become a Delivery Driver</h1>
-            <p className="text-gray-600">Join our delivery team and start earning</p>
+            <h1 className="text-3xl font-bold text-white">Become a Delivery Driver</h1>
+            <p className="text-slate-300">Join our delivery team and start earning</p>
           </div>
         </div>
       </div>
 
       {/* Benefits */}
       <div className="grid md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
-          <div className="text-2xl font-bold text-green-600 mb-1">80-85%</div>
-          <div className="text-sm text-green-800">Of delivery fee to you</div>
+        <div className="rounded-3xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+          <div className="mb-1 text-2xl font-bold text-emerald-300">80-85%</div>
+          <div className="text-sm text-emerald-100/85">Of delivery fee to you</div>
         </div>
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-          <div className="text-2xl font-bold text-blue-600 mb-1">100%</div>
-          <div className="text-sm text-blue-800">Of tips go to you</div>
+        <div className="rounded-3xl border border-cyan-400/25 bg-cyan-500/10 p-4">
+          <div className="mb-1 text-2xl font-bold text-cyan-300">100%</div>
+          <div className="text-sm text-cyan-100/85">Of tips go to you</div>
         </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-          <div className="text-2xl font-bold text-purple-600 mb-1">Flexible</div>
-          <div className="text-sm text-purple-800">Set your own schedule</div>
+        <div className="rounded-3xl border border-violet-400/25 bg-violet-500/10 p-4">
+          <div className="mb-1 text-2xl font-bold text-violet-300">Flexible</div>
+          <div className="text-sm text-violet-100/85">Set your own schedule</div>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-800">
+        <div className="mb-6 flex items-center gap-2 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-rose-100">
           <FiAlertCircle className="w-5 h-5" />
           <span>{error}</span>
         </div>
@@ -118,16 +118,16 @@ export function DriverRegistration() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Vehicle Information */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiTruck className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiTruck className="h-5 w-5 text-cyan-300" />
             Vehicle Information
           </h2>
 
           <div className="space-y-4">
             {/* Vehicle Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Vehicle Type *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -136,10 +136,10 @@ export function DriverRegistration() {
                     key={value}
                     type="button"
                     onClick={() => setFormData({ ...formData, vehicle_type: value })}
-                    className={`p-3 border-2 rounded-lg text-center transition-all ${
+                    className={`rounded-2xl border p-3 text-center transition-all ${
                       formData.vehicle_type === value
-                        ? 'border-purple-500 bg-purple-50'
-                        : 'border-gray-200 hover:border-purple-300'
+                        ? 'border-cyan-400/50 bg-cyan-500/15 text-white'
+                        : 'border-white/10 bg-slate-950/70 text-slate-300 hover:border-cyan-400/30'
                     }`}
                   >
                     <div className="text-2xl mb-1">{icon}</div>
@@ -152,7 +152,7 @@ export function DriverRegistration() {
             {/* Vehicle Details */}
             <div className="grid md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Make *
                 </label>
                 <input
@@ -161,11 +161,11 @@ export function DriverRegistration() {
                   value={formData.vehicle_make}
                   onChange={(e) => setFormData({ ...formData, vehicle_make: e.target.value })}
                   placeholder="Toyota"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Model *
                 </label>
                 <input
@@ -174,11 +174,11 @@ export function DriverRegistration() {
                   value={formData.vehicle_model}
                   onChange={(e) => setFormData({ ...formData, vehicle_model: e.target.value })}
                   placeholder="Camry"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Year *
                 </label>
                 <input
@@ -188,14 +188,14 @@ export function DriverRegistration() {
                   onChange={(e) => setFormData({ ...formData, vehicle_year: parseInt(e.target.value) })}
                   min="1990"
                   max={new Date().getFullYear() + 1}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
             </div>
 
             {/* License Plate */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="mb-1 block text-sm font-medium text-slate-200">
                 License Plate *
               </label>
               <input
@@ -204,23 +204,23 @@ export function DriverRegistration() {
                 value={formData.license_plate}
                 onChange={(e) => setFormData({ ...formData, license_plate: e.target.value.toUpperCase() })}
                 placeholder="ABC1234"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent uppercase"
+                className="market-input w-full uppercase"
               />
             </div>
           </div>
         </div>
 
         {/* Driver Information */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiUser className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiUser className="h-5 w-5 text-cyan-300" />
             Driver Information
           </h2>
 
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Driver's License Number *
                 </label>
                 <input
@@ -229,11 +229,11 @@ export function DriverRegistration() {
                   value={formData.license_number}
                   onChange={(e) => setFormData({ ...formData, license_number: e.target.value })}
                   placeholder="DL123456789"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                <label className="mb-1 flex items-center gap-1 text-sm font-medium text-slate-200">
                   <FiPhone className="w-4 h-4" />
                   Phone Number *
                 </label>
@@ -243,7 +243,7 @@ export function DriverRegistration() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="(555) 123-4567"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
             </div>
@@ -251,15 +251,15 @@ export function DriverRegistration() {
         </div>
 
         {/* Insurance */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiShield className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiShield className="h-5 w-5 text-cyan-300" />
             Insurance Information
           </h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+              <label className="mb-1 flex items-center gap-1 text-sm font-medium text-slate-200">
                 <FiCalendar className="w-4 h-4" />
                 Insurance Expiry Date *
               </label>
@@ -269,11 +269,11 @@ export function DriverRegistration() {
                 value={formData.insurance_expiry}
                 onChange={(e) => setFormData({ ...formData, insurance_expiry: e.target.value })}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="market-input w-full"
               />
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-              <p className="font-medium mb-1">Insurance Requirements:</p>
+            <div className="rounded-2xl border border-cyan-400/25 bg-cyan-500/10 p-3 text-sm text-cyan-100/90">
+              <p className="mb-1 font-medium">Insurance Requirements:</p>
               <ul className="list-disc list-inside space-y-1 text-xs">
                 <li>Valid auto insurance policy</li>
                 <li>Minimum liability coverage required</li>
@@ -284,16 +284,16 @@ export function DriverRegistration() {
         </div>
 
         {/* Emergency Contact */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FiPhone className="w-5 h-5 text-purple-600" />
+        <div className="market-panel p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-white">
+            <FiPhone className="h-5 w-5 text-cyan-300" />
             Emergency Contact
           </h2>
 
           <div className="space-y-4">
             <div className="grid md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Name *
                 </label>
                 <input
@@ -305,11 +305,11 @@ export function DriverRegistration() {
                     emergency_contact: { ...formData.emergency_contact, name: e.target.value }
                   })}
                   placeholder="John Doe"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Phone *
                 </label>
                 <input
@@ -321,11 +321,11 @@ export function DriverRegistration() {
                     emergency_contact: { ...formData.emergency_contact, phone: e.target.value }
                   })}
                   placeholder="(555) 987-6543"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-200">
                   Relationship *
                 </label>
                 <input
@@ -337,7 +337,7 @@ export function DriverRegistration() {
                     emergency_contact: { ...formData.emergency_contact, relationship: e.target.value }
                   })}
                   placeholder="Spouse, Parent, etc."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="market-input w-full"
                 />
               </div>
             </div>
@@ -345,9 +345,9 @@ export function DriverRegistration() {
         </div>
 
         {/* Submit */}
-        <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border-2 border-purple-200">
-          <h3 className="font-semibold text-gray-900 mb-2">Next Steps</h3>
-          <ul className="text-sm text-gray-700 space-y-1 mb-4">
+        <div className="rounded-3xl border border-cyan-400/25 bg-gradient-to-br from-slate-900 via-indigo-950 to-cyan-950 p-6 text-white shadow-[0_24px_60px_-28px_rgba(14,165,233,0.45)]">
+          <h3 className="mb-2 font-semibold text-white">Next Steps</h3>
+          <ul className="mb-4 space-y-1 text-sm text-slate-200">
             <li>✓ Submit your application</li>
             <li>✓ Background check will be initiated (if required)</li>
             <li>✓ Insurance verification</li>
@@ -358,7 +358,7 @@ export function DriverRegistration() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-br from-purple-600 to-blue-500 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-all"
+            className="market-button-primary flex w-full items-center justify-center gap-2 px-6 py-3 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>

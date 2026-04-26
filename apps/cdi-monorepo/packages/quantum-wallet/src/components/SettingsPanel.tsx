@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
-import { Key, Save, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Key, Save, Eye, EyeOff, AlertCircle, LogIn } from 'lucide-react';
 import PaymentIntegrationsManager from './PaymentIntegrationsManager';
 
-export default function SettingsPanel() {
+interface SettingsPanelProps {
+  onSignInRequest?: () => void;
+}
+
+export default function SettingsPanel({ onSignInRequest }: SettingsPanelProps) {
   const [plaidKey, setPlaidKey] = useState('');
   const [plaidSecret, setPlaidSecret] = useState('');
+  const [plaidEnv, setPlaidEnv] = useState('production');
   const [showKeys, setShowKeys] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -25,13 +30,14 @@ export default function SettingsPanel() {
       // Load existing Plaid keys
       const { data } = await supabase
         .from('user_api_keys')
-        .select('*')
+        .select('service, api_key')
         .eq('user_id', currentUser.id)
-        .eq('service', 'plaid');
+        .in('service', ['plaid_client_id', 'plaid_secret', 'plaid_env']);
 
       if (data && data.length > 0) {
-        setPlaidKey(data.find(k => k.api_key.startsWith('client_id'))?.api_key || '');
-        setPlaidSecret(data.find(k => k.api_key.startsWith('secret'))?.api_key || '');
+        setPlaidKey(data.find(k => k.service === 'plaid_client_id')?.api_key || '');
+        setPlaidSecret(data.find(k => k.service === 'plaid_secret')?.api_key || '');
+        setPlaidEnv(data.find(k => k.service === 'plaid_env')?.api_key || 'production');
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -41,6 +47,7 @@ export default function SettingsPanel() {
   const handleSave = async () => {
     if (!user) {
       setMessage('Please sign in to save settings');
+      if (onSignInRequest) onSignInRequest();
       return;
     }
 
@@ -48,22 +55,17 @@ export default function SettingsPanel() {
     setMessage('');
 
     try {
-      // Save Plaid client ID
-      if (plaidKey) {
-        await supabase.from('user_api_keys').upsert({
-          user_id: user.id,
-          service: 'plaid',
-          api_key: plaidKey,
-        });
-      }
+      const upserts: Array<{ user_id: string; service: string; api_key: string }> = [];
 
-      // Save Plaid secret
-      if (plaidSecret) {
-        await supabase.from('user_api_keys').upsert({
-          user_id: user.id,
-          service: 'plaid_secret',
-          api_key: plaidSecret,
-        });
+      if (plaidKey) upserts.push({ user_id: user.id, service: 'plaid_client_id', api_key: plaidKey });
+      if (plaidSecret) upserts.push({ user_id: user.id, service: 'plaid_secret', api_key: plaidSecret });
+      upserts.push({ user_id: user.id, service: 'plaid_env', api_key: plaidEnv });
+
+      if (upserts.length > 0) {
+        const { error } = await supabase
+          .from('user_api_keys')
+          .upsert(upserts, { onConflict: 'user_id,service' });
+        if (error) throw error;
       }
 
       setMessage('✅ Settings saved successfully!');
@@ -78,6 +80,30 @@ export default function SettingsPanel() {
 
   return (
     <div className="max-w-3xl space-y-6">
+      {/* Sign-in prompt when not authenticated */}
+      {!user && (
+        <div className="bg-amber-500/20 backdrop-blur-lg rounded-2xl p-6 border border-amber-500/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <LogIn className="w-6 h-6 text-amber-300" />
+              <div>
+                <h3 className="text-lg font-bold text-amber-100">Sign in to save your settings</h3>
+                <p className="text-amber-200 text-sm">Your API keys and preferences require an account to persist securely.</p>
+              </div>
+            </div>
+            {onSignInRequest && (
+              <button
+                onClick={onSignInRequest}
+                className="flex items-center space-x-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold rounded-lg transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Plaid API Configuration - Moved to top to prevent overlap */}
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
         <div className="flex items-center space-x-3 mb-4">
@@ -131,6 +157,21 @@ export default function SettingsPanel() {
               placeholder="Enter your Plaid secret..."
               className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+          </div>
+
+          <div>
+            <label className="block text-blue-200 text-sm font-medium mb-2">
+              Environment
+            </label>
+            <select
+              value={plaidEnv}
+              onChange={(e) => setPlaidEnv(e.target.value)}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="production" className="bg-slate-800">Production (Live Banking)</option>
+              <option value="development" className="bg-slate-800">Development</option>
+              <option value="sandbox" className="bg-slate-800">Sandbox (Test)</option>
+            </select>
           </div>
 
           <div className="flex items-center justify-between">

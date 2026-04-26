@@ -4,33 +4,79 @@
 
 @layer base {
   :root {
-    --gradient-purple: #9333ea;
+    --gradient-purple: #4f46e5;
     --gradient-blue: #3b82f6;
+    --market-bg-top: #0f172a;
+    --market-bg-mid: #1e1b4b;
+    --market-bg-bottom: #020617;
   }
   
   body {
-    background: linear-gradient(135deg, #f3e7ff 0%, #e0f2fe 100%);
+    color: #e2e8f0;
+    background:
+      radial-gradient(circle at top, rgba(79, 70, 229, 0.22), transparent 30%),
+      linear-gradient(135deg, var(--market-bg-top) 0%, var(--market-bg-mid) 48%, var(--market-bg-bottom) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  #root {
     min-height: 100vh;
   }
 }
 
 @layer utilities {
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
   }
   
   .bg-gradient-primary-hover {
-    background: linear-gradient(135deg, #7e22ce 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%);
   }
   
   .text-gradient-primary {
-    background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #818cf8 0%, #60a5fa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .border-gradient-primary {
-    border-image: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%) 1;
+    border-image: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) 1;
+  }
+
+  .market-shell {
+    @apply text-slate-100;
+  }
+
+  .market-hero {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92) 0%, rgba(30, 27, 75, 0.94) 52%, rgba(15, 23, 42, 0.96) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.18);
+    box-shadow: 0 24px 48px rgba(2, 6, 23, 0.25);
+  }
+
+  .market-panel {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/55 backdrop-blur-xl shadow-xl;
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.22);
+  }
+
+  .market-panel-hover {
+    @apply transition-all duration-300 hover:border-slate-700/80 hover:shadow-2xl;
+  }
+
+  .market-input {
+    @apply rounded-xl border border-slate-700/70 bg-slate-950/70 text-slate-100 placeholder:text-slate-400 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/40;
+  }
+
+  .market-pill {
+    @apply rounded-full border border-indigo-500/25 bg-indigo-500/15 px-3 py-1 text-sm text-indigo-200;
+  }
+
+  .market-button-primary {
+    @apply rounded-xl bg-gradient-to-r from-indigo-600 to-blue-500 text-white shadow-lg shadow-indigo-950/40 transition-all duration-300 hover:from-indigo-500 hover:to-blue-400 hover:shadow-xl;
+  }
+
+  .market-button-secondary {
+    @apply rounded-xl border border-slate-700/70 bg-slate-900/60 text-slate-200 transition-colors hover:bg-slate-800/70 hover:text-white;
   }
 }

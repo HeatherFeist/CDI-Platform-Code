@@ -52,15 +52,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+      <div className="market-panel w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+          <h2 className="text-2xl font-bold text-white">
             {mode === 'signin' ? 'Sign In' : 'Create Account'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-slate-400 transition-colors hover:text-white"
           >
             <X size={24} />
           </button>
@@ -69,16 +69,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {mode === 'signup' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 transform text-slate-500" size={20} />
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input w-full py-2 pl-10 pr-4"
                   placeholder="Choose a username"
                   required
                 />
@@ -87,16 +87,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-300">
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 transform text-slate-500" size={20} />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full py-2 pl-10 pr-4"
                 placeholder="your@email.com"
                 required
               />
@@ -104,16 +104,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-300">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 transform text-slate-500" size={20} />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full py-2 pl-10 pr-4"
                 placeholder="••••••••"
                 required
                 minLength={6}
@@ -122,7 +122,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
             </div>
           )}
@@ -130,7 +130,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-primary text-white py-2 rounded-lg font-medium hover:bg-gradient-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            className="market-button-primary w-full py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Please wait...' : mode === 'signin' ? 'Sign In' : 'Create Account'}
           </button>
@@ -139,7 +139,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
             <button
               type="button"
               onClick={toggleMode}
-              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+              className="text-sm font-medium text-indigo-300 hover:text-indigo-200"
             >
               {mode === 'signin'
                 ? "Don't have an account? Sign up"

@@ -102,28 +102,28 @@ export default function BrowseStore() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading store items...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-400"></div>
+          <p className="text-slate-400">Loading store items...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+      <div className="market-hero text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center space-x-3 mb-3">
             <Store size={40} />
             <h1 className="text-4xl font-bold">Browse Store</h1>
           </div>
-          <p className="text-green-100 text-lg">
+          <p className="text-lg text-slate-300">
             Shop fixed-price items from trusted sellers
           </p>
-          <div className="mt-6 flex items-center space-x-6 text-green-100">
+          <div className="mt-6 flex items-center space-x-6 text-slate-300">
             <div className="flex items-center space-x-2">
               <Package size={20} />
               <span>{listings.length} items available</span>
@@ -137,29 +137,29 @@ export default function BrowseStore() {
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+      <div className="sticky top-0 z-10 border-b border-slate-800/80 bg-slate-950/85 shadow-xl backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 transform text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search items or sellers..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="market-input w-full py-2 pl-10 pr-4"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               {/* Category Filter */}
               <div className="flex items-center space-x-2">
-                <Filter size={18} className="text-gray-500" />
+                <Filter size={18} className="text-slate-400" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="market-input px-3 py-2"
                 >
                   <option value="all">All Categories</option>
                   {categories.map((category) => (
@@ -177,15 +177,15 @@ export default function BrowseStore() {
                   placeholder="Min $"
                   value={priceRange.min}
                   onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                  className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="market-input w-24 px-3 py-2"
                 />
-                <span className="text-gray-500">-</span>
+                <span className="text-slate-500">-</span>
                 <input
                   type="number"
                   placeholder="Max $"
                   value={priceRange.max}
                   onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                  className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="market-input w-24 px-3 py-2"
                 />
               </div>
 
@@ -193,7 +193,7 @@ export default function BrowseStore() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="market-input px-3 py-2"
               >
                 <option value="newest">Newest First</option>
                 <option value="price-low">Price: Low to High</option>
@@ -202,13 +202,13 @@ export default function BrowseStore() {
               </select>
 
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <div className="flex items-center rounded-xl bg-slate-900/80 p-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded ${
                     viewMode === 'grid'
-                      ? 'bg-white shadow-sm text-green-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'bg-slate-800 shadow-sm text-indigo-300'
+                      : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
                   <Grid size={18} />
@@ -217,8 +217,8 @@ export default function BrowseStore() {
                   onClick={() => setViewMode('list')}
                   className={`p-2 rounded ${
                     viewMode === 'list'
-                      ? 'bg-white shadow-sm text-green-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'bg-slate-800 shadow-sm text-indigo-300'
+                      : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
                   <List size={18} />
@@ -230,19 +230,19 @@ export default function BrowseStore() {
           {/* Active Filters Summary */}
           {(searchQuery || selectedCategory !== 'all' || priceRange.min || priceRange.max) && (
             <div className="mt-3 flex items-center space-x-2 text-sm">
-              <span className="text-gray-600">Active filters:</span>
+              <span className="text-slate-400">Active filters:</span>
               {searchQuery && (
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                <span className="market-pill">
                   Search: "{searchQuery}"
                 </span>
               )}
               {selectedCategory !== 'all' && (
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                <span className="market-pill">
                   {selectedCategory}
                 </span>
               )}
               {(priceRange.min || priceRange.max) && (
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                <span className="market-pill">
                   ${priceRange.min || '0'} - ${priceRange.max || '∞'}
                 </span>
               )}
@@ -252,7 +252,7 @@ export default function BrowseStore() {
                   setSelectedCategory('all');
                   setPriceRange({ min: '', max: '' });
                 }}
-                className="text-green-600 hover:text-green-700 font-medium"
+                className="font-medium text-indigo-300 hover:text-indigo-200"
               >
                 Clear all
               </button>
@@ -264,10 +264,10 @@ export default function BrowseStore() {
       {/* Listings Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredListings.length === 0 ? (
-          <div className="text-center py-16">
-            <Package size={64} className="mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Items Found</h3>
-            <p className="text-gray-600">
+          <div className="market-panel py-16 text-center">
+            <Package size={64} className="mx-auto mb-4 text-slate-600" />
+            <h3 className="mb-2 text-xl font-semibold text-slate-100">No Items Found</h3>
+            <p className="text-slate-400">
               {searchQuery || selectedCategory !== 'all' || priceRange.min || priceRange.max
                 ? 'Try adjusting your filters or search query.'
                 : 'No store items are currently available.'}
@@ -279,7 +279,7 @@ export default function BrowseStore() {
                   setSelectedCategory('all');
                   setPriceRange({ min: '', max: '' });
                 }}
-                className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className="market-button-primary mt-4 px-6 py-2"
               >
                 Clear Filters
               </button>
@@ -287,7 +287,7 @@ export default function BrowseStore() {
           </div>
         ) : (
           <>
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm text-slate-400">
               Showing {filteredListings.length} of {listings.length} items
             </div>
             <div

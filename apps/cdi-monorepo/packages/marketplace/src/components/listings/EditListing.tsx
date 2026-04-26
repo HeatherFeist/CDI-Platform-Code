@@ -346,10 +346,10 @@ export default function EditListing() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="market-shell flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading listing...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-cyan-400"></div>
+          <p className="mt-4 text-slate-300">Loading listing...</p>
         </div>
       </div>
     );
@@ -357,12 +357,12 @@ export default function EditListing() {
 
   if (error && !originalListing) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="market-shell flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">{error}</p>
+          <p className="mb-4 text-xl text-rose-300">{error}</p>
           <button
             onClick={() => navigate('/dashboard')}
-            className="text-blue-600 hover:text-blue-700"
+            className="text-cyan-300 hover:text-cyan-200"
           >
             Return to Dashboard
           </button>
@@ -372,31 +372,31 @@ export default function EditListing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="market-shell min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate(`/listings/${listingId}`)}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="mb-6 flex items-center text-slate-300 transition-colors hover:text-white"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back to Listing
         </button>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Listing</h1>
-          <p className="text-gray-600 mb-8">Update your auction listing details</p>
+        <div className="market-panel p-6 md:p-8">
+          <h1 className="mb-2 text-3xl font-bold text-white">Edit Listing</h1>
+          <p className="mb-8 text-slate-300">Update your auction listing details</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Title *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 placeholder="e.g., Vintage Camera in Excellent Condition"
                 required
               />
@@ -404,17 +404,17 @@ export default function EditListing() {
 
             {/* AI Assistant Panel - Same as CreateListing */}
             {geminiAIService.isConfigured() && (
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-4">
+              <div className="rounded-3xl border border-cyan-400/25 bg-gradient-to-r from-slate-900 via-indigo-950/90 to-cyan-950/80 p-4 text-white shadow-[0_24px_60px_-28px_rgba(14,165,233,0.45)]">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <Sparkles className="text-purple-600" size={20} />
-                    <h3 className="font-semibold text-gray-900">AI Assistant</h3>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">BETA</span>
+                    <Sparkles className="text-cyan-300" size={20} />
+                    <h3 className="font-semibold text-white">AI Assistant</h3>
+                    <span className="rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2 py-1 text-xs text-cyan-100">BETA</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowAITools(!showAITools)}
-                    className="text-sm text-purple-600 hover:text-purple-700"
+                    className="text-sm text-cyan-200 hover:text-white"
                   >
                     {showAITools ? 'Hide' : 'Show'}
                   </button>
@@ -422,7 +422,7 @@ export default function EditListing() {
 
                 {showAITools && (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600">Let AI help you improve your listing!</p>
+                    <p className="text-sm text-slate-200">Let AI help you improve your listing.</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                       {formData.images.length > 0 && (
@@ -430,7 +430,7 @@ export default function EditListing() {
                           type="button"
                           onClick={analyzeFirstImage}
                           disabled={analyzingImage}
-                          className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                          className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                         >
                           <Lightbulb size={16} />
                           <span className="text-sm font-medium">
@@ -443,7 +443,7 @@ export default function EditListing() {
                         type="button"
                         onClick={generateDescription}
                         disabled={generatingDescription || !formData.title}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                       >
                         <Wand2 size={16} />
                         <span className="text-sm font-medium">
@@ -455,7 +455,7 @@ export default function EditListing() {
                         type="button"
                         onClick={suggestPricing}
                         disabled={generatingPricing || !formData.title}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                       >
                         <DollarSign size={16} />
                         <span className="text-sm font-medium">
@@ -469,7 +469,7 @@ export default function EditListing() {
                         type="button"
                         onClick={improveDescription}
                         disabled={generatingDescription}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors disabled:opacity-50"
+                        className="market-button-primary flex w-full items-center justify-center space-x-2 px-4 py-2 disabled:opacity-50"
                       >
                         <Sparkles size={16} />
                         <span className="text-sm font-medium">
@@ -484,14 +484,14 @@ export default function EditListing() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Description *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={6}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 placeholder="Describe your item in detail..."
                 required
               />
@@ -499,13 +499,13 @@ export default function EditListing() {
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Category
               </label>
               <select
                 value={formData.category_id}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
               >
                 <option value="">Select a category</option>
                 {categories.map((category) => (
@@ -518,13 +518,13 @@ export default function EditListing() {
 
             {/* Condition */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Item Condition
               </label>
               <select
                 value={formData.condition}
                 onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 required
               >
                 <option value="new">✨ New - Brand new, unused item</option>
@@ -535,7 +535,7 @@ export default function EditListing() {
 
             {/* Images */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Images *
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
@@ -559,18 +559,18 @@ export default function EditListing() {
                   type="button"
                   onClick={handleImageAdd}
                   disabled={uploading}
-                  className="h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-32 items-center justify-center rounded-3xl border-2 border-dashed border-white/15 bg-slate-950/60 transition-colors hover:border-cyan-400/40 hover:bg-slate-900/80 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <div className="text-center">
                     {uploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-1"></div>
-                        <span className="text-sm text-gray-600">Uploading...</span>
+                        <div className="mx-auto mb-1 h-6 w-6 animate-spin rounded-full border-b-2 border-cyan-400"></div>
+                        <span className="text-sm text-slate-300">Uploading...</span>
                       </>
                     ) : (
                       <>
-                        <Plus size={24} className="mx-auto text-gray-400 mb-1" />
-                        <span className="text-sm text-gray-600">Add Image</span>
+                        <Plus size={24} className="mx-auto mb-1 text-slate-500" />
+                        <span className="text-sm text-slate-300">Add Image</span>
                       </>
                     )}
                   </div>
@@ -580,7 +580,7 @@ export default function EditListing() {
 
             {/* AI Image Enhancement */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 AI Photo Enhancement
               </label>
               <ImageEnhancer 
@@ -629,7 +629,7 @@ export default function EditListing() {
             {/* Pricing */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-200">
                   Starting Bid ($) *
                 </label>
                 <input
@@ -638,14 +638,14 @@ export default function EditListing() {
                   min="0"
                   value={formData.starting_bid}
                   onChange={(e) => setFormData({ ...formData, starting_bid: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input w-full"
                   placeholder="0.00"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-200">
                   Bid Increment ($) *
                 </label>
                 <input
@@ -654,13 +654,13 @@ export default function EditListing() {
                   min="0.01"
                   value={formData.bid_increment}
                   onChange={(e) => setFormData({ ...formData, bid_increment: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input w-full"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-200">
                   Reserve Price ($)
                 </label>
                 <input
@@ -669,14 +669,14 @@ export default function EditListing() {
                   min="0"
                   value={formData.reserve_price}
                   onChange={(e) => setFormData({ ...formData, reserve_price: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input w-full"
                   placeholder="Optional"
                 />
-                <p className="text-xs text-gray-500 mt-1">Minimum price you'll accept</p>
+                <p className="mt-1 text-xs text-slate-400">Minimum price you'll accept</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-200">
                   Buy Now Price ($)
                 </label>
                 <input
@@ -685,35 +685,35 @@ export default function EditListing() {
                   min="0"
                   value={formData.buy_now_price}
                   onChange={(e) => setFormData({ ...formData, buy_now_price: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="market-input w-full"
                   placeholder="Optional"
                 />
-                <p className="text-xs text-gray-500 mt-1">Allow instant purchase</p>
+                <p className="mt-1 text-xs text-slate-400">Allow instant purchase</p>
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
                 {error}
               </div>
             )}
 
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
+            <div className="rounded-2xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
               <strong>Note:</strong> Updating the starting bid will reset the current bid to the new starting price.
             </div>
 
-            <div className="flex justify-end space-x-4 pt-6 border-t">
+            <div className="flex justify-end space-x-4 border-t border-white/10 pt-6">
               <button
                 type="button"
                 onClick={() => navigate(`/listings/${listingId}`)}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="market-button-secondary px-6 py-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="market-button-primary px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>

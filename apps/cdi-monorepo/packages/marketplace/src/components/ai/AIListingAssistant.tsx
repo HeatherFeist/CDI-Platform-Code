@@ -113,25 +113,25 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="market-panel p-6">
       <div className="flex items-center mb-6">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-2 mr-3">
+        <div className="mr-3 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 p-2 shadow-lg shadow-indigo-950/30">
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">AI Listing Assistant</h2>
-          <p className="text-gray-600">Let AI help you create the perfect product listing</p>
+          <h2 className="text-xl font-bold text-white">AI Listing Assistant</h2>
+          <p className="text-slate-300">Let AI help you create the perfect product listing</p>
         </div>
       </div>
 
       {/* Image Upload Section */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="mb-2 block text-sm font-medium text-slate-300">
           Product Images (AI will analyze these)
         </label>
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+        <div className="rounded-2xl border-2 border-dashed border-slate-700 p-6 bg-slate-950/35">
           <input
             type="file"
             multiple
@@ -142,12 +142,12 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
           />
           <label
             htmlFor="image-upload"
-            className="cursor-pointer flex flex-col items-center"
+              className="flex cursor-pointer flex-col items-center"
           >
-            <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="mb-2 h-12 w-12 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-slate-300">
               {selectedImages.length > 0 
                 ? `${selectedImages.length} images selected` 
                 : 'Click to upload images or drag and drop'
@@ -160,7 +160,7 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
           <button
             onClick={analyzeImages}
             disabled={loading}
-            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="market-button-primary mt-3 px-4 py-2 disabled:opacity-50"
           >
             {loading ? 'Analyzing Images...' : 'Analyze Images with AI'}
           </button>
@@ -169,14 +169,14 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
 
       {/* Image Analysis Results */}
       {imageAnalyses.length > 0 && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <h3 className="font-medium text-green-800 mb-2">AI Image Analysis</h3>
+        <div className="mb-6 rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-4">
+          <h3 className="mb-2 font-medium text-emerald-200">AI Image Analysis</h3>
           {imageAnalyses.map((analysis, index) => (
             <div key={index} className="mb-3 last:mb-0">
-              <p className="text-sm text-green-700">
+              <p className="text-sm text-slate-100">
                 <strong>Image {index + 1}:</strong> {analysis.description}
               </p>
-              <p className="text-xs text-green-600">
+              <p className="text-xs text-emerald-200">
                 Condition: {analysis.condition} | 
                 Estimated Value: ${analysis.estimatedValue} |
                 Suggested Categories: {analysis.suggestedCategories.join(', ')}
@@ -196,19 +196,19 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
             type="text"
             value={formData.title}
             onChange={(e) => setFormData({...formData, title: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="market-input w-full px-3 py-2"
             placeholder="Enter product title..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Category
           </label>
           <select
             value={formData.category}
             onChange={(e) => setFormData({...formData, category: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="market-input w-full px-3 py-2"
           >
             <option value="">Select category...</option>
             <option value="Electronics">Electronics</option>
@@ -223,13 +223,13 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Condition
           </label>
           <select
             value={formData.condition}
             onChange={(e) => setFormData({...formData, condition: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="market-input w-full px-3 py-2"
           >
             <option value="">Select condition...</option>
             <option value="New">New</option>
@@ -241,14 +241,14 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Starting Price ($)
           </label>
           <input
             type="number"
             value={formData.price}
             onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value) || 0})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="market-input w-full px-3 py-2"
             placeholder="0.00"
             min="0"
             step="0.01"
@@ -257,13 +257,13 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="mb-1 block text-sm font-medium text-slate-300">
           Basic Description
         </label>
         <textarea
           value={formData.description}
           onChange={(e) => setFormData({...formData, description: e.target.value})}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="market-input w-full px-3 py-2"
           rows={3}
           placeholder="Provide any details about the item..."
         />
@@ -272,7 +272,7 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
       <button
         onClick={generateListing}
         disabled={loading || !formData.title}
-        className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="market-button-primary flex w-full items-center justify-center px-6 py-3 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>
@@ -294,43 +294,43 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
 
       {/* Generated Listing Preview */}
       {generatedListing && (
-        <div className="mt-6 p-6 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
+        <div className="mt-6 rounded-2xl border border-indigo-400/20 bg-slate-950/35 p-6">
           <div className="flex items-center mb-4">
-            <svg className="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="mr-2 h-6 w-6 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <h3 className="text-lg font-semibold text-gray-900">AI-Generated Listing</h3>
+            <h3 className="text-lg font-semibold text-white">AI-Generated Listing</h3>
           </div>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Optimized Title</label>
-              <p className="mt-1 p-2 bg-white border rounded text-gray-900">{generatedListing.title}</p>
+              <label className="block text-sm font-medium text-slate-300">Optimized Title</label>
+              <p className="mt-1 rounded-xl border border-white/10 bg-slate-900/70 p-2 text-slate-100">{generatedListing.title}</p>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700">Enhanced Description</label>
-              <p className="mt-1 p-3 bg-white border rounded text-gray-900 whitespace-pre-wrap">{generatedListing.description}</p>
+              <label className="block text-sm font-medium text-slate-300">Enhanced Description</label>
+              <p className="mt-1 whitespace-pre-wrap rounded-xl border border-white/10 bg-slate-900/70 p-3 text-slate-100">{generatedListing.description}</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Suggested Price</label>
-                <p className="mt-1 p-2 bg-white border rounded text-gray-900 font-semibold">
+                <label className="block text-sm font-medium text-slate-300">Suggested Price</label>
+                <p className="mt-1 rounded-xl border border-white/10 bg-slate-900/70 p-2 font-semibold text-slate-100">
                   ${generatedListing.suggestedPrice}
                 </p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
-                <p className="mt-1 p-2 bg-white border rounded text-gray-900">{generatedListing.category}</p>
+                <label className="block text-sm font-medium text-slate-300">Category</label>
+                <p className="mt-1 rounded-xl border border-white/10 bg-slate-900/70 p-2 text-slate-100">{generatedListing.category}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Tags</label>
-                <div className="mt-1 p-2 bg-white border rounded">
+                <label className="block text-sm font-medium text-slate-300">Tags</label>
+                <div className="mt-1 rounded-xl border border-white/10 bg-slate-900/70 p-2">
                   {generatedListing.tags.map((tag, index) => (
-                    <span key={index} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                    <span key={index} className="mb-1 mr-1 inline-block rounded-full border border-indigo-400/20 bg-indigo-500/15 px-2 py-1 text-xs text-indigo-200">
                       {tag}
                     </span>
                   ))}
@@ -339,8 +339,8 @@ export const AIListingAssistant: React.FC<AIListingAssistantProps> = ({
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700">SEO Keywords</label>
-              <p className="mt-1 p-2 bg-white border rounded text-gray-600 text-sm">
+              <label className="block text-sm font-medium text-slate-300">SEO Keywords</label>
+              <p className="mt-1 rounded-xl border border-white/10 bg-slate-900/70 p-2 text-sm text-slate-300">
                 {generatedListing.seoKeywords.join(', ')}
               </p>
             </div>

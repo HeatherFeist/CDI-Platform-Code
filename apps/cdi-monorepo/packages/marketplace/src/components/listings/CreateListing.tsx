@@ -457,33 +457,33 @@ export default function CreateListing() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="market-shell min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="mb-6 flex items-center text-slate-300 transition-colors hover:text-white"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back
         </button>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">List an Item</h1>
-          <p className="text-gray-600 mb-8">Sell through auction or fixed price in your store</p>
+        <div className="market-panel p-6 md:p-8">
+          <h1 className="mb-2 text-3xl font-bold text-white">List an Item</h1>
+          <p className="mb-8 text-slate-300">Sell through auction or fixed price in your store</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Listing Type Selector */}
             <ListingTypeSelector value={listingType} onChange={setListingType} />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Title *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 placeholder="e.g., Vintage Camera in Excellent Condition"
                 required
               />
@@ -491,17 +491,17 @@ export default function CreateListing() {
 
             {/* AI Assistant Panel */}
             {geminiAIService.isConfigured() && (
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-4">
+              <div className="rounded-3xl border border-cyan-400/25 bg-gradient-to-r from-slate-900 via-indigo-950/90 to-cyan-950/80 p-4 text-white shadow-[0_24px_60px_-28px_rgba(14,165,233,0.45)]">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <Sparkles className="text-purple-600" size={20} />
-                    <h3 className="font-semibold text-gray-900">AI Assistant (Gemini)</h3>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">BETA</span>
+                    <Sparkles className="text-cyan-300" size={20} />
+                    <h3 className="font-semibold text-white">AI Assistant (Gemini)</h3>
+                    <span className="rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2 py-1 text-xs text-cyan-100">BETA</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowAITools(!showAITools)}
-                    className="text-sm text-purple-600 hover:text-purple-700"
+                    className="text-sm text-cyan-200 hover:text-white"
                   >
                     {showAITools ? 'Hide' : 'Show'}
                   </button>
@@ -509,7 +509,7 @@ export default function CreateListing() {
 
                 {showAITools && (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600">Let AI help you create a compelling listing!</p>
+                    <p className="text-sm text-slate-200">Let AI help you create a compelling listing.</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                       {formData.images.length > 0 && (
@@ -517,7 +517,7 @@ export default function CreateListing() {
                           type="button"
                           onClick={analyzeFirstImage}
                           disabled={analyzingImage}
-                          className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                          className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                         >
                           <Lightbulb size={16} />
                           <span className="text-sm font-medium">
@@ -530,7 +530,7 @@ export default function CreateListing() {
                         type="button"
                         onClick={generateDescription}
                         disabled={generatingDescription || !formData.title}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                       >
                         <Wand2 size={16} />
                         <span className="text-sm font-medium">
@@ -542,7 +542,7 @@ export default function CreateListing() {
                         type="button"
                         onClick={suggestPricing}
                         disabled={generatingPricing || !formData.title}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center space-x-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-500/20 disabled:opacity-50"
                       >
                         <DollarSign size={16} />
                         <span className="text-sm font-medium">
@@ -556,7 +556,7 @@ export default function CreateListing() {
                         type="button"
                         onClick={improveDescription}
                         disabled={generatingDescription}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors disabled:opacity-50"
+                        className="market-button-primary flex w-full items-center justify-center space-x-2 px-4 py-2 disabled:opacity-50"
                       >
                         <Sparkles size={16} />
                         <span className="text-sm font-medium">
@@ -570,27 +570,27 @@ export default function CreateListing() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Description *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={6}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 placeholder="Describe your item in detail..."
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Category
               </label>
               <select
                 value={formData.category_id}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
               >
                 <option value="">Select a category</option>
                 {categories
@@ -604,13 +604,13 @@ export default function CreateListing() {
             </div>
             {/* Style selection for subcategories */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Style (optional)
               </label>
               <select
                 value={formData.style || ''}
                 onChange={(e) => setFormData({ ...formData, style: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
               >
                 <option value="">Select a style</option>
                 {categories
@@ -624,13 +624,13 @@ export default function CreateListing() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Item Condition
               </label>
               <select
                 value={formData.condition}
                 onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="market-input w-full"
                 required
               >
                 <option value="new">✨ New - Brand new, unused item</option>
@@ -640,7 +640,7 @@ export default function CreateListing() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-200">
                 Images *
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
@@ -664,18 +664,18 @@ export default function CreateListing() {
                   type="button"
                   onClick={handleImageAdd}
                   disabled={uploading}
-                  className="h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-32 items-center justify-center rounded-3xl border-2 border-dashed border-white/15 bg-slate-950/60 transition-colors hover:border-cyan-400/40 hover:bg-slate-900/80 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <div className="text-center">
                     {uploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-1"></div>
-                        <span className="text-sm text-gray-600">Uploading...</span>
+                        <div className="mx-auto mb-1 h-6 w-6 animate-spin rounded-full border-b-2 border-cyan-400"></div>
+                        <span className="text-sm text-slate-300">Uploading...</span>
                       </>
                     ) : (
                       <>
-                        <Plus size={24} className="mx-auto text-gray-400 mb-1" />
-                        <span className="text-sm text-gray-600">Upload Image</span>
+                        <Plus size={24} className="mx-auto mb-1 text-slate-500" />
+                        <span className="text-sm text-slate-300">Upload Image</span>
                       </>
                     )}
                   </div>
@@ -686,14 +686,14 @@ export default function CreateListing() {
                 <button
                   type="button"
                   onClick={handleImageAddByUrl}
-                  className="text-sm text-blue-600 hover:text-blue-700 underline"
+                  className="text-sm text-cyan-300 underline hover:text-cyan-200"
                 >
                   Or add image by URL
                 </button>
               </div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-400">
                 Click to add image URLs. For stock photos, try{' '}
-                <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:underline">
                   Pexels
                 </a>
               </p>
@@ -798,7 +798,7 @@ export default function CreateListing() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       Starting Bid ($) *
                     </label>
                     <input
@@ -807,14 +807,14 @@ export default function CreateListing() {
                       min="0"
                       value={formData.starting_bid}
                       onChange={(e) => setFormData({ ...formData, starting_bid: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="market-input w-full"
                       placeholder="0.00"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       Bid Increment ($) *
                     </label>
                     <input
@@ -823,13 +823,13 @@ export default function CreateListing() {
                       min="0.01"
                       value={formData.bid_increment}
                       onChange={(e) => setFormData({ ...formData, bid_increment: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="market-input w-full"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       Reserve Price ($)
                     </label>
                     <input
@@ -838,14 +838,14 @@ export default function CreateListing() {
                       min="0"
                       value={formData.reserve_price}
                       onChange={(e) => setFormData({ ...formData, reserve_price: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="market-input w-full"
                       placeholder="Optional"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Minimum price you'll accept</p>
+                    <p className="mt-1 text-xs text-slate-400">Minimum price you'll accept</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-slate-200">
                       Buy Now Price ($)
                     </label>
                     <input
@@ -854,21 +854,21 @@ export default function CreateListing() {
                       min="0"
                       value={formData.buy_now_price}
                       onChange={(e) => setFormData({ ...formData, buy_now_price: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="market-input w-full"
                       placeholder="Optional"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Allow instant purchase</p>
+                    <p className="mt-1 text-xs text-slate-400">Allow instant purchase</p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-slate-200">
                     Auction Duration (Days) *
                   </label>
                   <select
                     value={formData.duration}
                     onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="market-input w-full"
                     required
                   >
                         <option value="1">1 day</option>
@@ -901,43 +901,43 @@ export default function CreateListing() {
               />
             ) : (
               /* Trade/Barter Fields */
-              <div className="space-y-6 bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
-                <div className="flex items-center space-x-2 text-blue-700 mb-4">
+              <div className="space-y-6 rounded-3xl border border-cyan-400/25 bg-cyan-500/10 p-6">
+                <div className="mb-4 flex items-center space-x-2 text-cyan-100">
                   <Repeat size={24} />
                   <h3 className="text-lg font-semibold">Trade/Barter Details</h3>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-slate-200">
                     What are you looking for in trade? *
                   </label>
                   <input
                     type="text"
                     value={formData.trade_for}
                     onChange={(e) => setFormData({ ...formData, trade_for: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="market-input w-full"
                     placeholder="e.g., Vintage camera, Power tools, Musical instruments"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">Be specific about what you'd like to trade for</p>
+                  <p className="mt-1 text-xs text-slate-400">Be specific about what you'd like to trade for</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-slate-200">
                     Trade Preferences (Optional)
                   </label>
                   <textarea
                     value={formData.trade_preferences}
                     onChange={(e) => setFormData({ ...formData, trade_preferences: e.target.value })}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="market-input w-full"
                     placeholder="Additional details about trades you're willing to consider, condition requirements, etc."
                   />
                 </div>
 
-                <div className="bg-blue-100 p-4 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    💡 <strong>Tip:</strong> No money is exchanged in trade listings. Interested traders will contact you directly to arrange the exchange.
+                <div className="rounded-2xl border border-cyan-400/25 bg-cyan-500/10 p-4">
+                  <p className="text-sm text-cyan-100/90">
+                    <strong>Tip:</strong> No money is exchanged in trade listings. Interested traders will contact you directly to arrange the exchange.
                   </p>
                 </div>
               </div>
@@ -956,23 +956,23 @@ export default function CreateListing() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
                 {error}
               </div>
             )}
 
-            <div className="flex justify-end space-x-4 pt-6 border-t">
+            <div className="flex justify-end space-x-4 border-t border-white/10 pt-6">
               <button
                 type="button"
                 onClick={() => navigate('/')}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="market-button-secondary px-6 py-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-gradient-primary text-white rounded-lg hover:bg-gradient-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                className="market-button-primary px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? 'Creating...' : 'Create Listing'}
               </button>
