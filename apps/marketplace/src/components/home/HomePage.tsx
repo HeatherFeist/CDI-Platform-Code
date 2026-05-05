@@ -28,9 +28,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (selectedCity) {
-      fetchListings();
-    }
+    fetchListings();
   }, [selectedCategory, selectedCondition, sortBy, selectedCity]);
 
   const loadDefaultCity = async () => {
@@ -39,9 +37,14 @@ export default function HomePage() {
       const dayton = await locationService.getCityByName('Dayton', 'Ohio');
       if (dayton) {
         setSelectedCity(dayton);
+      } else {
+        // No city found in DB — load listings without city filter
+        fetchListings();
       }
     } catch (error) {
       console.error('Error loading default city:', error);
+      // Still fetch listings without city filter
+      fetchListings();
     }
   };
 
@@ -60,8 +63,6 @@ export default function HomePage() {
   };
 
   const fetchListings = async () => {
-    if (!selectedCity) return;
-    
     try {
       setLoading(true);
       let query = supabase
@@ -73,9 +74,12 @@ export default function HomePage() {
           city:cities(id, name, state)
         `)
         .eq('status', 'active')
-        .eq('city_id', selectedCity.id)
         .eq('listing_type', 'auction')
         .gt('end_time', new Date().toISOString());
+
+      if (selectedCity) {
+        query = query.eq('city_id', selectedCity.id);
+      }
 
       if (selectedCategory !== 'all') {
         query = query.eq('category_id', selectedCategory);
@@ -210,46 +214,42 @@ export default function HomePage() {
               <div className="space-y-2">
                 <button
                   onClick={() => setSelectedCondition('all')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     selectedCondition === 'all'
                       ? 'bg-gradient-primary text-white font-medium shadow-md'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="mr-2">📦</span>
                   All Items
                 </button>
                 <button
                   onClick={() => setSelectedCondition('new')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     selectedCondition === 'new'
                       ? 'bg-gradient-primary text-white font-medium shadow-md'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="mr-2">✨</span>
                   New Items
                 </button>
                 <button
                   onClick={() => setSelectedCondition('used')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     selectedCondition === 'used'
                       ? 'bg-gradient-primary text-white font-medium shadow-md'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="mr-2">♻️</span>
                   Used Items
                 </button>
                 <button
                   onClick={() => setSelectedCondition('handcrafted')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     selectedCondition === 'handcrafted'
                       ? 'bg-gradient-primary text-white font-medium shadow-md'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="mr-2">🤲</span>
                   Hand-crafted
                 </button>
               </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Plus, ArrowLeft, Sparkles, Wand2, DollarSign, Lightbulb, Repeat, Image as ImageIcon, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { X, Plus, ArrowLeft, Sparkles, Wand2, DollarSign, Lightbulb, Repeat, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, Download } from 'lucide-react';
 import { supabase, DeliveryOption } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { geminiAIService } from '../../services/GeminiAIService';
@@ -31,6 +31,9 @@ interface ListingFormData {
   allow_offers: boolean;
   trade_for: string;
   trade_preferences: string;
+  // Digital-specific fields
+  digital_download_url: string;
+  digital_file_type: string;
   delivery_options: DeliveryOption[];
   seller_address: string;
   pickup_instructions: string;
@@ -54,7 +57,7 @@ export default function CreateListing() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [error, setError] = useState('');
-  const [listingType, setListingType] = useState<'auction' | 'store' | 'trade'>('store');
+  const [listingType, setListingType] = useState<'auction' | 'store' | 'trade' | 'digital'>('store');
   
   // AI Assistant states
   const [generatingDescription, setGeneratingDescription] = useState(false);
@@ -84,6 +87,9 @@ export default function CreateListing() {
     // Trade-specific fields
     trade_for: '',
     trade_preferences: '',
+    // Digital-specific fields
+    digital_download_url: '',
+    digital_file_type: 'pdf',
     // Delivery options
     delivery_options: [] as DeliveryOption[],
     seller_address: '',
@@ -639,8 +645,13 @@ export default function CreateListing() {
       return;
     }
 
-    if (formData.images.length === 0) {
+    if (formData.images.length === 0 && listingType !== 'digital') {
       setError('Please add at least one image');
+      return;
+    }
+
+    if (listingType === 'digital' && !formData.digital_download_url) {
+      setError('Please provide a download URL for your digital item');
       return;
     }
 
@@ -693,12 +704,25 @@ export default function CreateListing() {
         listingData.trade_preferences = formData.trade_preferences;
         listingData.allow_offers = true; // Always allow trade offers
         // No end_time, no prices
+      } else if (listingType === 'digital') {
+        // Digital item fields
+        listingData.starting_bid = parseFloat(formData.starting_bid);
+        listingData.current_bid = parseFloat(formData.starting_bid);
+        listingData.stock_quantity = 999; // Unlimited digital copies
+        listingData.compare_at_price = formData.compare_at_price ? parseFloat(formData.compare_at_price) : null;
+        listingData.allow_offers = false;
+        listingData.digital_download_url = formData.digital_download_url;
+        listingData.digital_file_type = formData.digital_file_type;
+        // No physical delivery
+        listingData.delivery_options = [];
       }
 
-      // Add delivery options (for both auction and store)
-      listingData.delivery_options = formData.delivery_options;
-      listingData.seller_address = formData.seller_address || null;
-      listingData.pickup_instructions = formData.pickup_instructions || null;
+      // Add delivery options (not for digital items)
+      if (listingType !== 'digital') {
+        listingData.delivery_options = formData.delivery_options;
+        listingData.seller_address = formData.seller_address || null;
+        listingData.pickup_instructions = formData.pickup_instructions || null;
+      }
 
       // Debug: Log what we're sending to the database
       console.log('🎯 Creating listing with type:', listingData.listing_type);
@@ -856,16 +880,34 @@ export default function CreateListing() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Select a category</option>
-                {categories
-                  .filter((category) => !category.parent_id)
-                  .map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
+                {listingType === 'digital' ? (
+                  // Hardcoded digital categories
+                  <>
+                    <option value="ebook">📚 eBook / Document</option>
+                    <option value="audio">🎵 Music / Audio</option>
+                    <option value="video">🎬 Video / Film</option>
+                    <option value="photography">🖼️ Photography / Art</option>
+                    <option value="software">💻 Software / App</option>
+                    <option value="template">🗂️ Templates / Presets</option>
+                    <option value="course">🎓 Course / Education</option>
+                    <option value="fonts">🔤 Fonts / Design Assets</option>
+                    <option value="game">🎮 Game / Interactive</option>
+                    <option value="other">📦 Other Digital</option>
+                  </>
+                ) : (
+                  categories
+                    .filter((category) => !category.parent_id)
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))
+                )}
               </select>
             </div>
-            {/* Style selection for subcategories */}
+
+            {/* Style selection – hidden for digital items */}
+            {listingType !== 'digital' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Style (optional)
@@ -885,7 +927,10 @@ export default function CreateListing() {
                   ))}
               </select>
             </div>
+            )}
 
+            {/* Condition – hidden for digital items */}
+            {listingType !== 'digital' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Item Condition
@@ -901,6 +946,7 @@ export default function CreateListing() {
                 <option value="handcrafted">🤲 Hand-crafted - Unique handmade item</option>
               </select>
             </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1304,7 +1350,7 @@ export default function CreateListing() {
                   setFormData({ ...formData, [mappedField]: value });
                 }}
               />
-            ) : (
+            ) : listingType === 'trade' ? (
               /* Trade/Barter Fields */
               <div className="space-y-6 bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
                 <div className="flex items-center space-x-2 text-blue-700 mb-4">
@@ -1346,9 +1392,96 @@ export default function CreateListing() {
                   </p>
                 </div>
               </div>
-            )}
+            ) : listingType === 'digital' ? (
+              /* Digital Item Fields */
+              <div className="space-y-6 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg border-2 border-blue-300">
+                <div className="flex items-center space-x-2 text-blue-700 mb-4">
+                  <Download size={24} />
+                  <h3 className="text-lg font-semibold">Digital Item Details</h3>
+                </div>
 
-            {/* Delivery Options */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Price ($) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.starting_bid}
+                    onChange={(e) => setFormData({ ...formData, starting_bid: e.target.value })}
+                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Compare-at Price ($)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.compare_at_price}
+                    onChange={(e) => setFormData({ ...formData, compare_at_price: e.target.value })}
+                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    placeholder="Optional – show a crossed-out original price"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    File Type *
+                  </label>
+                  <select
+                    value={formData.digital_file_type}
+                    onChange={(e) => setFormData({ ...formData, digital_file_type: e.target.value })}
+                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    required
+                  >
+                    <option value="pdf">PDF Document</option>
+                    <option value="ebook">eBook (EPUB/MOBI)</option>
+                    <option value="audio">Audio (MP3/WAV)</option>
+                    <option value="video">Video (MP4/MOV)</option>
+                    <option value="image">Image/Artwork (PNG/JPG/SVG)</option>
+                    <option value="software">Software / App</option>
+                    <option value="planner">Planner / Organizer</option>
+                    <option value="template">Template / Preset</option>
+                    <option value="course">Online Course</option>
+                    <option value="zip">ZIP Archive</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Download URL *
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.digital_download_url}
+                    onChange={(e) => setFormData({ ...formData, digital_download_url: e.target.value })}
+                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    placeholder="https://drive.google.com/... or https://dropbox.com/..."
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Link to your file (Google Drive, Dropbox, your own server, etc.). Buyers will receive this link after purchase.
+                  </p>
+                </div>
+
+                <div className="bg-blue-100 p-4 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    💡 <strong>Tip:</strong> Make sure your download link is set to &quot;Anyone with the link can view&quot; before listing. A cover/preview image is optional but recommended to attract buyers.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Delivery Options – only for physical items */}
+            {listingType !== 'digital' && (
             <div className="border-t pt-6">
               <DeliveryOptions
                 options={formData.delivery_options}
@@ -1359,6 +1492,7 @@ export default function CreateListing() {
                 onInstructionsChange={(instructions) => setFormData({ ...formData, pickup_instructions: instructions })}
               />
             </div>
+            )}
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

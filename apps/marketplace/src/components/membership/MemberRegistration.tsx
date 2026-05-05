@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, Store, Mail, Phone, MapPin, Building2, ChevronRight, CheckCircle } from 'lucide-react';
+import { User, Store, Mail, Phone, MapPin, Building2, ChevronRight, CheckCircle, LogIn } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import AuthModal from '../auth/AuthModal';
 
 interface MemberRegistrationData {
   // Personal Information
@@ -37,7 +38,6 @@ const membershipTiers = [
     id: 'free',
     name: 'Community Member',
     price: 'Free',
-    icon: '🌱',
     description: 'Perfect for getting started in our community',
     features: [
       'Basic store listing',
@@ -55,7 +55,6 @@ const membershipTiers = [
     id: 'partner',
     name: 'Partner Level',
     price: '$29/month',
-    icon: '🤝',
     description: 'Enhanced features for growing businesses',
     features: [
       'Enhanced store customization',
@@ -74,7 +73,6 @@ const membershipTiers = [
     id: 'professional',
     name: 'Professional',
     price: '$79/month',
-    icon: '⭐',
     description: 'Professional tools for established businesses',
     features: [
       'Custom store branding',
@@ -93,7 +91,6 @@ const membershipTiers = [
     id: 'enterprise',
     name: 'Enterprise',
     price: '$199/month',
-    icon: '👑',
     description: 'Full-featured solution for serious businesses',
     features: [
       'White-label store options',
@@ -115,6 +112,7 @@ export default function MemberRegistration() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [formData, setFormData] = useState<MemberRegistrationData>({
     firstName: '',
     lastName: '',
@@ -198,15 +196,22 @@ export default function MemberRegistration() {
   };
 
   const processApplication = async (applicationId: string) => {
-    try {
-      // Create store slug
-      const storeSlug = formData.storeName
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
+    // Create store slug
+    const storeSlug = formData.storeName
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
 
-      // Create member store
+    // Check if store slug already exists for this user
+    const { data: existingStore } = await supabase
+      .from('member_stores')
+      .select('id')
+      .eq('user_id', user!.id)
+      .maybeSingle();
+
+    if (!existingStore) {
+      // Create member store (only if one doesn't already exist)
       const { error: storeError } = await supabase
         .from('member_stores')
         .insert({
@@ -220,37 +225,63 @@ export default function MemberRegistration() {
         });
 
       if (storeError) throw storeError;
-
-      // Update user profile with member status
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          is_nonprofit_member: true,
-          is_organization_member: true,
-          membership_joined_at: new Date().toISOString(),
-          member_tier: formData.tierRequested,
-          city: formData.city,
-          state: formData.state
-        })
-        .eq('id', user!.id);
-
-      if (profileError) throw profileError;
-
-      await ensureBusinessProfile(user!.id, formData.storeName || `${formData.firstName} ${formData.lastName}`);
-
-      // Update application status
-      await supabase
-        .from('member_applications')
-        .update({ 
-          status: 'approved',
-          processed_at: new Date().toISOString()
-        })
-        .eq('id', applicationId);
-
-    } catch (error) {
-      console.error('Error processing application:', error);
     }
+
+    // Update user profile with member status
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        is_nonprofit_member: true,
+        is_organization_member: true,
+        membership_joined_at: new Date().toISOString(),
+        member_tier: formData.tierRequested,
+        city: formData.city,
+        state: formData.state
+      })
+      .eq('id', user!.id);
+
+    if (profileError) throw profileError;
+
+    await ensureBusinessProfile(user!.id, formData.storeName || `${formData.firstName} ${formData.lastName}`);
+
+    // Update application status
+    await supabase
+      .from('member_applications')
+      .update({ 
+        status: 'approved',
+        processed_at: new Date().toISOString()
+      })
+      .eq('id', applicationId);
   };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-10 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <LogIn className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">Create Your Account First</h2>
+          <p className="text-gray-600 mb-8">
+            To become a member and set up your store, you'll need a free account. It only takes a minute.
+          </p>
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition mb-4"
+          >
+            Create Free Account
+          </button>
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="w-full text-gray-600 hover:text-gray-900 transition text-sm"
+          >
+            Already have an account? Sign in
+          </button>
+        </div>
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode="signup" />
+      </div>
+    );
+  }
 
   if (submitted) {
     return (

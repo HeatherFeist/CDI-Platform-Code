@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Star, Heart, TrendingUp, ShoppingCart, ArrowLeftRight, Edit, Truck, Package, MapPin, Home } from 'lucide-react';
+import { ArrowLeft, Clock, Star, Heart, TrendingUp, ShoppingCart, ArrowLeftRight, Edit, Truck, Package, MapPin, Home, Download } from 'lucide-react';
 import { supabase, Listing, Bid, DeliveryOption } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
@@ -367,15 +367,23 @@ export default function ListingDetail() {
                 )}
                 
                 {/* Condition Badge */}
-                <div className={`absolute top-4 left-4 text-white px-3 py-1 rounded-lg font-medium shadow-md ${
-                  listing.condition === 'new' ? 'bg-gradient-primary' :
-                  listing.condition === 'handcrafted' ? 'bg-purple-600' :
-                  'bg-gray-500'
-                }`}>
-                  {listing.condition === 'new' ? '✨ New Item' :
-                   listing.condition === 'handcrafted' ? '🤲 Hand-crafted' :
-                   '♻️ Used Item'}
-                </div>
+                {listing.listing_type !== 'digital' && (
+                  <div className={`absolute top-4 left-4 text-white px-3 py-1 rounded-lg font-medium shadow-md ${
+                    listing.condition === 'new' ? 'bg-gradient-primary' :
+                    listing.condition === 'handcrafted' ? 'bg-purple-600' :
+                    'bg-gray-500'
+                  }`}>
+                    {listing.condition === 'new' ? '✨ New Item' :
+                     listing.condition === 'handcrafted' ? '🤲 Hand-crafted' :
+                     '♻️ Used Item'}
+                  </div>
+                )}
+                {listing.listing_type === 'digital' && (
+                  <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-lg font-medium shadow-md flex items-center gap-1">
+                    <Download size={14} />
+                    Digital Download
+                  </div>
+                )}
               </div>
 
               {listing.images && listing.images.length > 1 && (
@@ -424,15 +432,23 @@ export default function ListingDetail() {
                 </span>
               )}
               
-              <span className={`inline-block px-3 py-1 rounded-full text-sm mb-4 ${
-                listing.condition === 'new' ? 'bg-blue-100 text-blue-700' :
-                listing.condition === 'handcrafted' ? 'bg-purple-100 text-purple-700' :
-                'bg-gray-100 text-gray-700'
-              }`}>
-                {listing.condition === 'new' ? '✨ New Item' :
-                 listing.condition === 'handcrafted' ? '🤲 Hand-crafted' :
-                 '♻️ Used Item'}
-              </span>
+              {listing.listing_type !== 'digital' && (
+                <span className={`inline-block px-3 py-1 rounded-full text-sm mb-4 ${
+                  listing.condition === 'new' ? 'bg-blue-100 text-blue-700' :
+                  listing.condition === 'handcrafted' ? 'bg-purple-100 text-purple-700' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  {listing.condition === 'new' ? '✨ New Item' :
+                   listing.condition === 'handcrafted' ? '🤲 Hand-crafted' :
+                   '♻️ Used Item'}
+                </span>
+              )}
+              {listing.listing_type === 'digital' && listing.digital_file_type && (
+                <span className="inline-block bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm mb-4 flex items-center gap-1 w-fit">
+                  <Download size={12} />
+                  {listing.digital_file_type.toUpperCase()} File
+                </span>
+              )}
 
               <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">
                 {listing.description}
@@ -576,7 +592,83 @@ export default function ListingDetail() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
               {/* Store Item UI */}
-              {listing.listing_type === 'store' ? (
+              {listing.listing_type === 'digital' ? (
+                /* Digital Item UI */
+                <>
+                  <div className="mb-6">
+                    <span className="inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium mb-4">
+                      DIGITAL ITEM
+                    </span>
+                    <div className="flex items-baseline space-x-3 mb-2">
+                      <p className="text-3xl font-bold text-orange-600">
+                        ${(listing.starting_bid || 0).toFixed(2)}
+                      </p>
+                      {listing.compare_at_price && listing.starting_bid && listing.compare_at_price > listing.starting_bid && (
+                        <p className="text-lg text-gray-400 line-through">
+                          ${listing.compare_at_price.toFixed(2)}
+                        </p>
+                      )}
+                    </div>
+                    {listing.compare_at_price && listing.starting_bid && listing.compare_at_price > listing.starting_bid && (
+                      <p className="text-sm text-green-600 font-medium">
+                        Save ${(listing.compare_at_price - listing.starting_bid).toFixed(2)} (
+                        {Math.round(((listing.compare_at_price - listing.starting_bid) / listing.compare_at_price) * 100)}% off)
+                      </p>
+                    )}
+                    {listing.digital_file_type && (
+                      <p className="text-sm text-gray-500 mt-2 flex items-center">
+                        <Download size={14} className="mr-1" />
+                        File type: {listing.digital_file_type.toUpperCase()}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-orange-800 font-medium flex items-center mb-1">
+                      <Download size={14} className="mr-1" />
+                      Instant Download
+                    </p>
+                    <p className="text-xs text-orange-700">
+                      You'll receive your download link immediately after payment.
+                    </p>
+                  </div>
+
+                  {user && user.id !== listing.seller_id && (
+                    <CheckoutButton
+                      listingId={listing.id}
+                      title={listing.title}
+                      price={listing.starting_bid || 0}
+                      sellerId={listing.seller_id}
+                      imageUrl={listing.images?.[0]}
+                      deliveryOptions={[]}
+                    />
+                  )}
+
+                  {user && user.id === listing.seller_id && (
+                    <div className="space-y-3">
+                      <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                        This is your listing
+                      </div>
+                      <button
+                        onClick={() => navigate(`/listings/${listing.id}/edit`)}
+                        className="w-full flex items-center justify-center space-x-2 bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                      >
+                        <Edit size={20} />
+                        <span>Edit Listing</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {!user && (
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="w-full bg-orange-600 text-white py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                    >
+                      Sign in to Purchase
+                    </button>
+                  )}
+                </>
+              ) : listing.listing_type === 'store' ? (
                 <>
                   <div className="mb-6">
                     <span className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">

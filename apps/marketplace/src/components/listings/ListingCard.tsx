@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, Eye, Star, Package, ShoppingCart, Trash2 } from 'lucide-react';
+import { Clock, Eye, Star, Package, ShoppingCart, Trash2, Download } from 'lucide-react';
 import { Listing, supabase } from '../../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,6 +19,7 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
   const [showConfirm, setShowConfirm] = useState(false);
   const isStore = listing.listing_type === 'store';
   const isAuction = listing.listing_type === 'auction' || !listing.listing_type; // Default to auction for old listings
+  const isDigital = listing.listing_type === 'digital';
   const isOwner = user?.id === listing.seller_id;
 
   useEffect(() => {
@@ -128,7 +129,12 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
         />
         
         {/* Type Badge */}
-        {isStore ? (
+        {isDigital ? (
+          <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
+            <Download size={12} className="mr-1" />
+            DIGITAL
+          </div>
+        ) : isStore ? (
           <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
             <ShoppingCart size={12} className="mr-1" />
             STORE
@@ -152,9 +158,14 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
            '♻️ Used'}
         </div>
         
-        {/* Bottom Badge - Time Left (auction) or Stock (store) */}
+        {/* Bottom Badge - Time Left (auction) or Stock (store/digital) */}
         <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded flex items-center">
-          {isStore ? (
+          {isDigital ? (
+            <>
+              <Download size={12} className="mr-1" />
+              Instant Download
+            </>
+          ) : isStore ? (
             <>
               <Package size={12} className="mr-1" />
               {listing.stock_quantity || 0} in stock
@@ -173,8 +184,8 @@ export default function ListingCard({ listing, onClick, onDelete, showActions = 
           {listing.title}
         </h3>
 
-        {/* Pricing Section - Different for Store vs Auction */}
-        {isStore ? (
+        {/* Pricing Section - Different for Store/Digital vs Auction */}
+        {(isStore || isDigital) ? (
           <div className="mb-3">
             {listing.compare_at_price && listing.compare_at_price > listing.starting_bid && (
               <div className="flex items-center space-x-2 mb-1">

@@ -20,7 +20,7 @@ export default function AboutPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex items-center min-h-[500px]">
           <div className="text-center w-full">
             <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">About Constructive Designs Inc.</h1>
-            <p className="text-2xl text-blue-100 max-w-3xl mx-auto drop-shadow-md">
+            <p className="text-2xl text-white max-w-3xl mx-auto drop-shadow-md">
               Building stronger communities through economic empowerment and innovative solutions
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function AboutPage() {
         {/* Get Involved CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-2xl p-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Join Our Mission</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
             Whether through donations, volunteering, or using our marketplace, you can help build 
             a stronger community.
           </p>

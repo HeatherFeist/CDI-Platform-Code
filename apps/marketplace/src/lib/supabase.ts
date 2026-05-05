@@ -61,13 +61,16 @@ export type Listing = {
   seller?: Profile;
   category?: Category;
   // Store/Auction hybrid fields
-  listing_type?: 'auction' | 'store' | 'trade';
+  listing_type?: 'auction' | 'store' | 'trade' | 'digital';
   stock_quantity?: number;
   compare_at_price?: number;
   allow_offers?: boolean;
   // Trade-specific fields
   trade_for?: string;
   trade_preferences?: string;
+  // Digital-specific fields
+  digital_download_url?: string;
+  digital_file_type?: string;
   // Delivery options
   delivery_options?: DeliveryOption[];
   seller_address?: string;

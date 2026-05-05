@@ -14,19 +14,19 @@ export default function ImpactPage() {
       name: 'Sarah M.',
       role: 'Job Training Program Graduate',
       quote: 'The job training program gave me the skills and confidence I needed to land my dream job. The mentorship and support were invaluable.',
-      image: '👩‍💼'
+      initials: 'SM'
     },
     {
       name: 'James T.',
       role: 'Marketplace Seller',
       quote: 'The marketplace has been a game-changer for my small business. The platform is easy to use, and the community is incredibly supportive.',
-      image: '👨‍💻'
+      initials: 'JT'
     },
     {
       name: 'Maria G.',
       role: 'Housing Assistance Recipient',
       quote: 'When I was struggling to find housing, Constructive Designs helped me navigate the process and connected me with resources. I finally have a stable home for my family.',
-      image: '👩‍👧‍👦'
+      initials: 'MG'
     }
   ];
 
@@ -57,7 +57,7 @@ export default function ImpactPage() {
           <div className="text-center w-full">
             <TrendingUp className="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
             <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">Our Impact</h1>
-            <p className="text-2xl text-purple-100 max-w-3xl mx-auto drop-shadow-md">
+            <p className="text-2xl text-white max-w-3xl mx-auto drop-shadow-md">
               See how we're creating lasting change in the Dayton community
             </p>
           </div>
@@ -98,7 +98,9 @@ export default function ImpactPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white p-8 rounded-xl shadow-lg">
-                <div className="text-6xl mb-4">{testimonial.image}</div>
+                <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                  <span className="text-xl font-bold text-purple-600">{testimonial.initials}</span>
+                </div>
                 <p className="text-gray-700 italic mb-6">"{testimonial.quote}"</p>
                 <div className="border-t border-gray-200 pt-4">
                   <div className="font-semibold text-gray-900">{testimonial.name}</div>
@@ -242,7 +244,7 @@ export default function ImpactPage() {
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-2xl p-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Be Part of Our Impact</h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
             Your support helps us continue creating opportunities and changing lives in the Dayton community
           </p>
           <div className="flex flex-wrap gap-4 justify-center">

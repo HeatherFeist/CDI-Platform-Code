@@ -21,7 +21,7 @@ export default function NonprofitStatusPage() {
           <div className="text-center w-full">
             <Shield className="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
             <h1 className="text-4xl font-bold mb-4 drop-shadow-lg">501(c)(3) Tax-Exempt Status</h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto drop-shadow-md">
+            <p className="text-xl text-white max-w-2xl mx-auto drop-shadow-md">
               Constructive Designs Inc. is a registered nonprofit organization recognized by the IRS
             </p>
           </div>

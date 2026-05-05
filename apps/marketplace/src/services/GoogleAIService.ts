@@ -38,7 +38,7 @@ class GoogleAIService {
   constructor() {
     this.apiKey = API_KEY || '';
     if (!this.apiKey) {
-      throw new Error('Google AI API key not configured');
+      console.warn('Google AI API key not configured. AI features will be disabled.');
     }
   }
 

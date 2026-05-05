@@ -21,7 +21,7 @@ export default function ProgramsPage() {
           <div className="text-center w-full">
             <Package className="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
             <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">Our Programs</h1>
-            <p className="text-2xl text-orange-100 max-w-3xl mx-auto drop-shadow-md">
+            <p className="text-2xl text-white max-w-3xl mx-auto drop-shadow-md">
               Creating pathways to economic empowerment through innovative community programs
             </p>
           </div>
@@ -84,22 +84,22 @@ export default function ProgramsPage() {
                   <div>
                     <div className="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2">1</div>
                     <h4 className="font-semibold mb-2">Create Account</h4>
-                    <p className="text-blue-100">Sign up for free and set up your profile</p>
+                    <p className="text-white">Sign up for free and set up your profile</p>
                   </div>
                   <div>
                     <div className="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2">2</div>
                     <h4 className="font-semibold mb-2">List Items or Browse</h4>
-                    <p className="text-blue-100">Sellers list items with photos and descriptions. Buyers browse and bid or buy.</p>
+                    <p className="text-white">Sellers list items with photos and descriptions. Buyers browse and bid or buy.</p>
                   </div>
                   <div>
                     <div className="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2">3</div>
                     <h4 className="font-semibold mb-2">Choose Delivery</h4>
-                    <p className="text-blue-100">Select pickup, local delivery, or shipping options</p>
+                    <p className="text-white">Select pickup, local delivery, or shipping options</p>
                   </div>
                   <div>
                     <div className="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2">4</div>
                     <h4 className="font-semibold mb-2">Complete Transaction</h4>
-                    <p className="text-blue-100">Secure payment through Stripe. 10% platform fee supports our programs.</p>
+                    <p className="text-white">Secure payment through Stripe. 10% platform fee supports our programs.</p>
                   </div>
                 </div>
               </div>
@@ -238,19 +238,19 @@ export default function ProgramsPage() {
                 <div className="space-y-6">
                   <div>
                     <h4 className="font-semibold mb-2">Families in Crisis</h4>
-                    <p className="text-purple-100">Facing eviction or homelessness and need immediate assistance</p>
+                    <p className="text-white">Facing eviction or homelessness and need immediate assistance</p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">First-Time Renters</h4>
-                    <p className="text-purple-100">Navigating the rental process for the first time</p>
+                    <p className="text-white">Navigating the rental process for the first time</p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Individuals in Transition</h4>
-                    <p className="text-purple-100">Moving from unstable to stable housing situations</p>
+                    <p className="text-white">Moving from unstable to stable housing situations</p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Low-Income Households</h4>
-                    <p className="text-purple-100">Struggling to afford housing in the current market</p>
+                    <p className="text-white">Struggling to afford housing in the current market</p>
                   </div>
                 </div>
               </div>

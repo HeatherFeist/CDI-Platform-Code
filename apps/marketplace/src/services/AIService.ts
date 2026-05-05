@@ -1,16 +1,21 @@
-import OpenAI from 'openai';
-
 // AI Service for Trader Bid
 export class AIService {
   private static instance: AIService;
-  private openai: OpenAI;
+  private openai: any;
 
   private constructor() {
-    // Initialize OpenAI with API key from environment
-    this.openai = new OpenAI({
-      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true // For demo purposes - in production, use a backend API
-    });
+    try {
+      // OpenAI package may not be installed; fail gracefully
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const OpenAI = (window as any).__OpenAI || require('openai').default;
+      this.openai = new OpenAI({
+        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        dangerouslyAllowBrowser: true
+      });
+    } catch {
+      console.warn('AIService: openai package not available. OpenAI features disabled.');
+      this.openai = null;
+    }
   }
 
   public static getInstance(): AIService {
