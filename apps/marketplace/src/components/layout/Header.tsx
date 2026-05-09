@@ -35,7 +35,7 @@ export default function Header() {
                 <div className="hidden sm:block">
                   <div className="font-bold text-lg">Constructive Designs</div>
                   <div className="text-xs text-gray-400">Marketplace</div>
-                  <div className="text-xs text-purple-100">Auction & Trading Platform</div>
+                  <div className="text-xs text-teal-300">Auction & Trading Platform</div>
                 </div>
               </Link>
 
@@ -43,7 +43,7 @@ export default function Header() {
                 <Link
                   to="/"
                   className={`font-medium transition-colors ${
-                    location.pathname === '/' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                    location.pathname === '/' ? 'text-white font-bold' : 'text-teal-100 hover:text-white'
                   }`}
                 >
                   Auctions
@@ -52,7 +52,7 @@ export default function Header() {
                 <Link
                   to="/trade"
                   className={`font-medium transition-colors ${
-                    location.pathname === '/trade' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                    location.pathname === '/trade' ? 'text-white font-bold' : 'text-teal-100 hover:text-white'
                   }`}
                 >
                   Trade
@@ -60,28 +60,28 @@ export default function Header() {
                 
                 {/* Store Directory Dropdown */}
                 <div className="relative group">
-                  <button className="font-medium text-purple-100 hover:text-white transition-colors flex items-center space-x-1">
+                  <button className="font-medium text-teal-100 hover:text-white transition-colors flex items-center space-x-1">
                     <span>Stores</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="absolute left-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                     <Link
                       to="/store/browse"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700 rounded-t-lg"
                     >
                       Shop Store Items
                     </Link>
                     <Link
                       to="/store/directory"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                     >
                       Browse All Stores
                     </Link>
                     <Link
                       to="/members/register"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700 rounded-b-lg"
                     >
                       Become a Member
                     </Link>
@@ -90,34 +90,34 @@ export default function Header() {
                 
                 {/* Nonprofit Dropdown */}
                 <div className="relative group">
-                  <button className="font-medium text-purple-100 hover:text-white transition-colors flex items-center space-x-1">
+                  <button className="font-medium text-teal-100 hover:text-white transition-colors flex items-center space-x-1">
                     <span>About Us</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="absolute left-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                     <Link
                       to="/about"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700 rounded-t-lg"
                     >
                       Our Mission
                     </Link>
                     <Link
                       to="/programs"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                     >
                       Programs
                     </Link>
                     <Link
                       to="/impact"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                     >
                       Our Impact
                     </Link>
                     <Link
                       to="/contact"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
+                      className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700 rounded-b-lg"
                     >
                       Contact
                     </Link>
@@ -136,7 +136,7 @@ export default function Header() {
                     <Link
                       to="/dashboard"
                       className={`font-medium transition-colors ${
-                        location.pathname === '/dashboard' ? 'text-white font-bold' : 'text-purple-100 hover:text-white'
+                      location.pathname === '/dashboard' ? 'text-white font-bold' : 'text-teal-100 hover:text-white'
                       }`}
                     >
                       My Auctions
@@ -151,7 +151,7 @@ export default function Header() {
                 <>
                   <Link
                     to="/listings/create"
-                    className="hidden sm:flex items-center space-x-2 bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-50 transition-colors font-medium shadow-md"
+                    className="hidden sm:flex items-center space-x-2 bg-white text-teal-700 px-4 py-2 rounded-lg hover:bg-teal-50 transition-colors font-medium shadow-md"
                   >
                     <Plus size={20} />
                     <span>List Item</span>
@@ -159,74 +159,74 @@ export default function Header() {
 
                   <button 
                     onClick={() => setCartOpen(true)}
-                    className="relative text-white hover:text-purple-100 transition-colors"
+                    className="relative text-white hover:text-teal-200 transition-colors"
                   >
                     <ShoppingCart size={24} />
                     {getCartItemCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-white text-purple-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
+                      <span className="absolute -top-1 -right-1 bg-teal-400 text-slate-900 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
                         {getCartItemCount()}
                       </span>
                     )}
                   </button>
 
-                  <button className="relative text-white hover:text-purple-100 transition-colors">
+                  <button className="relative text-white hover:text-teal-200 transition-colors">
                     <Bell size={24} />
-                    <span className="absolute -top-1 -right-1 bg-white text-purple-600 text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-md font-bold">
+                    <span className="absolute -top-1 -right-1 bg-teal-400 text-slate-900 text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-md font-bold">
                       0
                     </span>
                   </button>
 
                   <div className="relative group">
-                    <button className="flex items-center space-x-2 text-white hover:text-purple-100 transition-colors">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-purple-600 font-bold shadow-md">
+                    <button className="flex items-center space-x-2 text-white hover:text-teal-200 transition-colors">
+                      <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">
                         {profile?.username?.[0]?.toUpperCase() || 'U'}
                       </div>
                       <span className="hidden sm:block font-medium">{profile?.username}</span>
                     </button>
 
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                    <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                       <Link
                         to="/profile"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                        className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700 rounded-t-lg"
                       >
                         Profile
                       </Link>
                       <Link
                         to="/dashboard"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                       >
                         Dashboard
                       </Link>
                       <Link
                         to="/trading"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                       >
                         Trading
                       </Link>
                       <Link
                         to="/settings/ai"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                       >
                         AI Settings
                       </Link>
                       <Link
                         to="/settings/social"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                       >
                         Social Settings
                       </Link>
                       {profile?.is_admin && (
                         <Link
                           to="/admin"
-                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          className="block w-full text-left px-4 py-2 text-slate-200 hover:bg-slate-700"
                         >
                           Admin Panel
                         </Link>
                       )}
-                      <hr className="my-1" />
+                      <hr className="my-1 border-slate-700" />
                       <button
                         onClick={signOut}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 rounded-b-lg"
+                        className="block w-full text-left px-4 py-2 text-red-400 hover:bg-slate-700 rounded-b-lg"
                       >
                         Sign Out
                       </button>
@@ -237,13 +237,13 @@ export default function Header() {
                 <div className="hidden sm:flex items-center space-x-3">
                   <button
                     onClick={() => handleAuthClick('signin')}
-                    className="px-4 py-2 text-white hover:text-purple-100 font-medium transition-colors"
+                    className="px-4 py-2 text-white hover:text-teal-200 font-medium transition-colors"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="px-4 py-2 bg-white text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium shadow-md"
+                    className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-400 transition-colors font-medium shadow-md"
                   >
                     Sign Up
                   </button>
@@ -252,7 +252,7 @@ export default function Header() {
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden text-gray-600 hover:text-gray-900"
+                className="md:hidden text-slate-300 hover:text-white"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -261,7 +261,7 @@ export default function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-purple-300 bg-gradient-to-br from-purple-600 to-blue-500">
+          <div className="md:hidden border-t border-teal-700 bg-gradient-to-br from-teal-900 to-slate-900">
             <div className="px-4 py-3 space-y-2">
               <Link
                 to="/"

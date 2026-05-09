@@ -6,7 +6,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto">
+    <footer className="bg-slate-900 border-t border-slate-800 text-slate-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* About Section */}
@@ -90,19 +90,19 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="border-t border-slate-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-center md:text-left">
               <p>© {currentYear} Constructive Designs Inc. All rights reserved.</p>
-              <p className="text-gray-500 mt-1">
+              <p className="text-slate-500 mt-1">
                 501(c)(3) Nonprofit Organization | EIN: 86-3183952 | Founded 2021
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
-              <span className="text-gray-600">•</span>
+              <span className="text-slate-600">•</span>
               <Link to="/contact" className="hover:text-white transition">Terms of Service</Link>
-              <span className="text-gray-600">•</span>
+              <span className="text-slate-600">•</span>
               <a 
                 href="https://www.guidestar.org" 
                 target="_blank" 

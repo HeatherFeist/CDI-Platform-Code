@@ -12,7 +12,7 @@
   body {
     @apply bg-slate-950 text-slate-100 font-sans antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #0a2520 50%, #0f172a 100%);
     background-attachment: fixed;
     min-height: 100vh;
   }
@@ -32,7 +32,7 @@
   input:focus,
   textarea:focus,
   select:focus {
-    @apply ring-2 ring-indigo-500/50 border-indigo-500/50;
+    @apply ring-2 ring-teal-500/50 border-teal-500/50;
   }
 }
 
@@ -62,16 +62,16 @@
 
   /* Premium Buttons */
   .btn-primary {
-    @apply relative overflow-hidden bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-indigo-900/30 transition-all duration-300;
+    @apply relative overflow-hidden bg-gradient-to-r from-teal-600 to-cyan-500 hover:from-teal-500 hover:to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-teal-900/30 transition-all duration-300;
     box-shadow:
-      0 0 20px rgba(79, 70, 229, 0.3),
-      0 10px 20px -5px rgba(79, 70, 229, 0.4);
+      0 0 20px rgba(13, 148, 136, 0.3),
+      0 10px 20px -5px rgba(13, 148, 136, 0.4);
   }
 
   .btn-primary:hover {
     box-shadow:
-      0 0 30px rgba(79, 70, 229, 0.5),
-      0 15px 30px -5px rgba(79, 70, 229, 0.5);
+      0 0 30px rgba(13, 148, 136, 0.5),
+      0 15px 30px -5px rgba(13, 148, 136, 0.5);
     transform: translateY(-2px);
   }
 
@@ -113,7 +113,7 @@
   .product-card::before {
     content: '';
     @apply absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500;
-    background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(79, 70, 229, 0.1), transparent 40%);
+    background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(13, 148, 136, 0.1), transparent 40%);
   }
 
   .product-card:hover::before {
@@ -121,10 +121,10 @@
   }
 
   .product-card:hover {
-    @apply border-slate-700/80;
+    @apply border-teal-700/80;
     transform: translateY(-4px) scale(1.02);
     box-shadow:
-      0 0 40px rgba(79, 70, 229, 0.15),
+      0 0 40px rgba(13, 148, 136, 0.15),
       0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 
@@ -149,13 +149,13 @@
 
   /* Gradient Text Effects */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-400;
     background-size: 200% auto;
     animation: gradient-shift 3s ease infinite;
   }
 
   .gradient-text-emerald {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-indigo-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-teal-300;
   }
 
   .gradient-text-cyan {
@@ -163,29 +163,29 @@
   }
 
   .gradient-text-purple {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-300;
   }
 
   .gradient-text-indigo {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-indigo-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-teal-300;
   }
 
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400;
   }
 
   /* Background Gradients */
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
   }
 
   .bg-gradient-primary-hover {
-    background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
+    background: linear-gradient(135deg, #0f766e 0%, #0891b2 100%);
   }
 
   /* Animated Gradient Backgrounds */
   .gradient-bg-animated {
-    background: linear-gradient(-45deg, #1e1b4b, #0f172a, #064e3b, #0f172a);
+    background: linear-gradient(-45deg, #0a2520, #0f172a, #0a1f2e, #0f172a);
     background-size: 400% 400%;
     animation: gradient-shift 15s ease infinite;
   }
@@ -193,9 +193,9 @@
   /* Glow Effects */
   .glow-emerald {
     box-shadow:
-      0 0 20px rgba(79, 70, 229, 0.3),
-      0 0 40px rgba(79, 70, 229, 0.2),
-      0 0 60px rgba(79, 70, 229, 0.1);
+      0 0 20px rgba(13, 148, 136, 0.3),
+      0 0 40px rgba(13, 148, 136, 0.2),
+      0 0 60px rgba(13, 148, 136, 0.1);
   }
 
   .glow-cyan {
@@ -214,9 +214,9 @@
 
   .glow-indigo {
     box-shadow:
-      0 0 20px rgba(99, 102, 241, 0.3),
-      0 0 40px rgba(99, 102, 241, 0.2),
-      0 0 60px rgba(99, 102, 241, 0.1);
+      0 0 20px rgba(13, 148, 136, 0.3),
+      0 0 40px rgba(13, 148, 136, 0.2),
+      0 0 60px rgba(13, 148, 136, 0.1);
   }
 
   /* Custom Scrollbar */
@@ -230,13 +230,13 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-indigo-500/50 to-cyan-500/50 rounded-full;
+    @apply bg-gradient-to-b from-teal-500/50 to-cyan-500/50 rounded-full;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply from-indigo-500/70 to-cyan-500/70;
+    @apply from-teal-500/70 to-cyan-500/70;
   }
 
   /* Backdrop Blur Utilities */
@@ -264,7 +264,7 @@
 
   /* Badge Styles */
   .badge-success {
-    @apply bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30;
+    @apply bg-teal-500/20 text-teal-400 px-3 py-1 rounded-full text-xs font-bold border border-teal-500/30;
   }
 
   .badge-warning {
@@ -276,7 +276,7 @@
   }
 
   .badge-primary {
-    @apply bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30;
+    @apply bg-teal-500/20 text-teal-400 px-3 py-1 rounded-full text-xs font-bold border border-teal-500/30;
   }
 }
 

@@ -3,6 +3,7 @@ import { User, Store, Mail, Phone, MapPin, Building2, ChevronRight, CheckCircle,
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import AuthModal from '../auth/AuthModal';
+import { notifyNewMember } from '../../services/discordService';
 
 interface MemberRegistrationData {
   // Personal Information
@@ -185,6 +186,9 @@ export default function MemberRegistration() {
       if (formData.tierRequested === 'free') {
         await processApplication(application.id);
       }
+
+      // Notify Discord (fire-and-forget)
+      notifyNewMember(formData.storeName, formData.tierRequested, formData.city, formData.state);
 
       setSubmitted(true);
     } catch (error) {
